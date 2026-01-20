@@ -15,9 +15,15 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 // Imports da WPILib
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.networktables.NetworkTableInstance;
 
 import frc.robot.Constants;
+import frc.robot.subsystems.Shooter.DirecaoShooter;
 
 // Declara o subsistema de tração
 public class Traction extends SubsystemBase {
@@ -41,6 +47,11 @@ public class Traction extends SubsystemBase {
     // Encoders do Spark
     private RelativeEncoder leftEncoder;
     private RelativeEncoder rightEncoder;
+
+    private final StructPublisher<Pose2d> robotPosePub =
+    NetworkTableInstance.getDefault()
+        .getStructTopic("/RobotPose", Pose2d.struct)
+        .publish();
 
     // Gyro
     private final Pigeon2 pigeon = new Pigeon2(22); // id 22 can
@@ -77,7 +88,6 @@ public class Traction extends SubsystemBase {
 
         // Configuração motores da direita
         configSparkMotorDireita
-                .inverted(true)
                 .idleMode(IdleMode.kBrake)
                 .smartCurrentLimit(60);
 
@@ -93,7 +103,6 @@ public class Traction extends SubsystemBase {
 
         // Configuração motores da esquerda
         configSparkMotorEsquerda
-                .inverted(false)
                 .idleMode(IdleMode.kBrake)
                 .smartCurrentLimit(60);
 
@@ -110,6 +119,9 @@ public class Traction extends SubsystemBase {
         // Inicializa encoders do Spark
         leftEncoder = leftMotorFront.getEncoder();
         rightEncoder = rightMotorFront.getEncoder();
+
+        leftMotorControllerGroup.setInverted(false);
+        rightMotorControllerGroup.setInverted(true);
     }
 
     // CONTROLE DE MOVIMENTO
@@ -154,4 +166,9 @@ public class Traction extends SubsystemBase {
         // Usa o maior valor absoluto para mais estabilidade
         return Math.max(Math.abs(leftDistance), Math.abs(rightDistance));
     }
+    @Override
+public void periodic() {
+    robotPosePub.set(new Pose2d(3.0, 2.0, new Rotation2d()));
+}
+
 }

@@ -35,27 +35,32 @@ public class AlinharAprilTag extends Command {
         }
 
         double erroX    = limelight.getTx();
-double erroArea = TARGET_AREA - limelight.getTa();
+        double erroArea = TARGET_AREA - limelight.getTa();
 
-double rotacao = erroX * KP_ROTACAO;
-double avanco  = erroArea * KP_DISTANCIA;
+        double rotacao = erroX * KP_ROTACAO;
+        double avanco  = erroArea * KP_DISTANCIA;
 
-// Limites
-rotacao = Math.max(Math.min(rotacao, 0.5), -0.5);
-avanco  = Math.max(Math.min(avanco, 0.5), -0.5);
+        // Limites
+        rotacao = Math.max(Math.min(rotacao, 0.5), -0.5);
+        avanco  = Math.max(Math.min(avanco, 0.5), -0.5);
 
-// Nunca zera totalmente o avanço
-double fatorAlinhamento =
-    Math.max(0.3, 1.0 - Math.abs(erroX) / 20.0);
+        // Reduz avanço enquanto não está alinhado
+        double fatorAlinhamento =
+            Math.max(0.3, 1.0 - Math.abs(erroX) / 20.0);
 
-avanco *= fatorAlinhamento;
+        avanco *= fatorAlinhamento;
 
-traction.arcadeMode(avanco, rotacao);
+        // ZERA ROTAÇÃO ANTES DE ENVIAR PARA A TRACTION
+        if (Math.abs(erroX) < 0.5) {
+            rotacao = 0;
+        }
+
+        traction.arcadeMode(avanco, rotacao);
     }
 
     @Override
     public boolean isFinished() {
-        return false; // termina somente ao soltar o botão
+        return false;
     }
 
     @Override

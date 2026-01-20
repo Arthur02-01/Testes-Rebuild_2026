@@ -83,7 +83,7 @@ private final JoystickButton btnAlinhar =
         btnB.onTrue(new ShooterVelocidade(shooter, VelocidadeShooter.ALTA));
         btnY.onTrue(new ShooterVelocidade(shooter, VelocidadeShooter.TURBO));
         rt.onTrue(new PararAlinhador(alinhador));
-        btnAlinhar.whileTrue(
+        btnAlinhar.onTrue(
     new AlinharAprilTag(limelight, traction)
 );
 
