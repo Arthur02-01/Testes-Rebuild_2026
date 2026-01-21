@@ -4,19 +4,22 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+
 import frc.robot.subsystems.Traction;
 import frc.robot.subsystems.Alinhador;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Shooter.VelocidadeShooter;
+
+import frc.robot.commands.Limelight.AlinhadorHorizontalAprilTag;
+import frc.robot.commands.Limelight.AlinhadorVerticalAprilTag;
+
+import frc.robot.commands.Alinhador.AlinhadorManualJoytick;
 import frc.robot.commands.Alinhador.PararAlinhador;
+
 import frc.robot.commands.Autonomo.Tracao.AndarEncoder;
 import frc.robot.commands.Autonomo.Tracao.GiroPorAngulo;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.AlinharAprilTag;
-import frc.robot.commands.Alinhador.AlinhadorManualJoytick;
-
-
 
 import frc.robot.commands.Shooter.*;
 import frc.robot.commands.Traction.AtivarTurbo;
@@ -24,81 +27,91 @@ import frc.robot.commands.Traction.Controller;
 
 public class RobotContainer {
 
-
-    /* ===== SUBSYSTEM ===== */
+    /* ===== SUBSYSTEMS ===== */
     private final Shooter shooter = new Shooter();
-    public final Traction traction = new Traction();
+    private final Traction traction = new Traction();
     private final Alinhador alinhador = new Alinhador();
     private final Limelight limelight = new Limelight();
-        /* ===== CONTROLE ===== */
+
+    /* ===== CONTROLES ===== */
     private final XboxController xbox1 = new XboxController(0);
     private final XboxController xbox2 = new XboxController(1);
 
     /* ===== BOTÕES ===== */
-    private final JoystickButton btnTurbo = new JoystickButton(xbox1, 1);
+    private final JoystickButton btnTurbo =
+        new JoystickButton(xbox1, XboxController.Button.kA.value);
 
+    // LIMELIGHT
     private final JoystickButton rb =
-            new JoystickButton(xbox2, XboxController.Button.kRightBumper.value);
+        new JoystickButton(xbox2, XboxController.Button.kRightBumper.value);
 
     private final JoystickButton lb =
-            new JoystickButton(xbox2, XboxController.Button.kLeftBumper.value);
+        new JoystickButton(xbox2, XboxController.Button.kLeftBumper.value);
 
+    // SHOOTER
     private final JoystickButton btnA =
-            new JoystickButton(xbox2, XboxController.Button.kA.value);
+        new JoystickButton(xbox2, XboxController.Button.kA.value);
 
     private final JoystickButton btnX =
-            new JoystickButton(xbox2, XboxController.Button.kX.value);
+        new JoystickButton(xbox2, XboxController.Button.kX.value);
 
     private final JoystickButton btnB =
-            new JoystickButton(xbox2, XboxController.Button.kB.value);
+        new JoystickButton(xbox2, XboxController.Button.kB.value);
 
     private final JoystickButton btnY =
-            new JoystickButton(xbox2, XboxController.Button.kY.value);
-    private final Trigger rt =
-            new Trigger(() -> xbox2.getRightTriggerAxis() > 0.2);
-private final JoystickButton btnAlinhar =
-    new JoystickButton(xbox1, XboxController.Button.kX.value);
+        new JoystickButton(xbox2, XboxController.Button.kY.value);
 
-        
+    private final Trigger rt =
+        new Trigger(() -> xbox2.getRightTriggerAxis() > 0.2);
+
+    private final JoystickButton btnRb = new JoystickButton(xbox1, 6);
+    private final JoystickButton btnLb = new JoystickButton(xbox1, 5);
 
     public RobotContainer() {
         configureBindings();
+
+        // CONTROLE MANUAL DA TRAÇÃO (DEFAULT)
         traction.setDefaultCommand(
-        new Controller(traction, xbox1)
-    );
+            new Controller(traction, xbox1)
+        );
     }
 
     private void configureBindings() {
 
+        /* ===== TRAÇÃO ===== */
         btnTurbo.onTrue(new AtivarTurbo(traction));
-        /* ===== DIREÇÃO ===== */
+
+        /* ===== LIMELIGHT / APRILTAG ===== */
+        btnRb.whileTrue(
+            new AlinhadorHorizontalAprilTag(limelight, traction)
+        );
+
+        btnLb.whileTrue(
+            new AlinhadorVerticalAprilTag(limelight, traction)
+        );
+
+        /* ===== SHOOTER ===== */
         rb.onTrue(new AtivarFrenteShooter(shooter));
         lb.onTrue(new AtivarAtrasShooter(shooter));
 
-        /* ===== PARAR ===== */
         btnA.onTrue(new PararShooter(shooter));
-
-        /* ===== VELOCIDADES ===== */
         btnX.onTrue(new ShooterVelocidade(shooter, VelocidadeShooter.MEDIA));
         btnB.onTrue(new ShooterVelocidade(shooter, VelocidadeShooter.ALTA));
         btnY.onTrue(new ShooterVelocidade(shooter, VelocidadeShooter.TURBO));
+
+        /* ===== ALINHADOR ===== */
         rt.onTrue(new PararAlinhador(alinhador));
-        btnAlinhar.onTrue(
-    new AlinharAprilTag(limelight, traction)
-);
-
-
 
         new Trigger(() -> Math.abs(xbox2.getLeftY()) > 0.1)
-    .whileTrue(
-        new AlinhadorManualJoytick(
-            alinhador,
-            () -> -xbox2.getLeftY()
-        )
-    );
-
-    
+            .whileTrue(
+                new AlinhadorManualJoytick(
+                    alinhador,
+                    () -> -xbox2.getLeftY()
+                )
+            );
     }
+
+    /* ===== AUTÔNOMO ===== */
     public Command getAutonomousCommand() {
         return new SequentialCommandGroup(
             new AndarEncoder(traction, 0.6, 0.5),
