@@ -10,7 +10,7 @@ public class AlinhadorHorizontalAprilTag extends Command {
     private final Traction traction;
 
     private static final double KP_ROT = 0.035;
-    private static final double ANGULO_OK = 0.5;
+    private static final double ANGULO_OK = 0.05;
 
     public AlinhadorHorizontalAprilTag(Limelight limelight, Traction traction) {
         this.limelight = limelight;

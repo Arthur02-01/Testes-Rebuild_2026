@@ -201,7 +201,7 @@ private double aplicarZonaDesaceleracao(double velocidade) {
     
     @Override
 public void periodic() {
-    if (holdAtivo) {
+    /*if (holdAtivo) {
         moverParaAngulo(anguloHold);
     }
     SmartDashboard.putNumber(
@@ -252,7 +252,7 @@ public void periodic() {
     SmartDashboard.putNumber(
         "Alinhador/Motor Output",
         AlinhadorMotor.get()
-    );
+    );*/
 }
 
 }

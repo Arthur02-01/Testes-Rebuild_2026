@@ -151,7 +151,7 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putString("Shooter/Direcao", direcaoAtual.name());
+        /*SmartDashboard.putString("Shooter/Direcao", direcaoAtual.name());
         SmartDashboard.putString("Shooter/Velocidade", velocidadeAtual.name());
 
         SmartDashboard.putBoolean("Shooter/Ativo", direcaoAtual != DirecaoShooter.PARADO);
@@ -160,6 +160,6 @@ public class Shooter extends SubsystemBase {
         SmartDashboard.putString("Shooter/Direcao", direcaoAtual.name());
         SmartDashboard.putString("Shooter/Velocidade", velocidadeAtual.name());
         SmartDashboard.putBoolean("Shooter/Ativo", direcaoAtual != DirecaoShooter.PARADO);
-        
+        */
     }
 }

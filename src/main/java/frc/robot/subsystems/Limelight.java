@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Limelight extends SubsystemBase {
@@ -13,9 +14,16 @@ public class Limelight extends SubsystemBase {
 
     private static final double ALPHA = 0.2; 
 
-    private static final double ALTURA_CAMERA = 0.65;   
-    private static final double ALTURA_TAG    = 0.55;   
-    private static final double ANGULO_CAMERA = 25.0;  
+// Alturas em metros
+private static final double ALTURA_CAMERA = 0.35;
+private static final double ALTURA_TAG = 1.135;
+
+// Ângulo EFETIVO calibrado (não o físico)
+private static final double ANGULO_CAMERA_EFETIVO = 20.4; // exemplo
+
+// Distância da câmera até o bumper (em metros)
+private static final double OFFSET_CAMERA_BUMPER = 0.25;
+ 
 
     public Limelight() {
         table = NetworkTableInstance.getDefault().getTable("limelight");
@@ -39,14 +47,22 @@ public class Limelight extends SubsystemBase {
     }
 
     public double getDistanciaAprilTag() {
-        double ty = getTy();
-        double anguloTotal = Math.toRadians(ANGULO_CAMERA + ty);
+    double ty = getTy();
 
-        double distancia =
-            (ALTURA_TAG - ALTURA_CAMERA) / Math.tan(anguloTotal);
+    // Ângulo total da linha de visão
+    double anguloTotalGraus = ANGULO_CAMERA_EFETIVO + ty;
+    double anguloTotalRad = Math.toRadians(anguloTotalGraus);
 
-        return Math.abs(distancia);
-    }
+    // Distância da câmera até a tag
+    double distanciaCamera =
+        (ALTURA_TAG - ALTURA_CAMERA) / Math.tan(anguloTotalRad);
+
+    // Converter para distância do bumper
+    double distanciaBumper = distanciaCamera - OFFSET_CAMERA_BUMPER;
+
+    return Math.max(distanciaBumper, 0.0);
+}
+
 
     public double getDistanciaFiltrada() {
         double d = getDistanciaAprilTag();
@@ -64,5 +80,13 @@ public class Limelight extends SubsystemBase {
 
     public void setPipeline(int pipeline) {
         table.getEntry("pipeline").setNumber(pipeline);
+    }
+    @Override
+    public void periodic() {
+        SmartDashboard.putBoolean("Limelight/Tem Alvo", temAlvo());
+        SmartDashboard.putNumber("Limelight/tx (graus)", getTx());
+        SmartDashboard.putNumber("Limelight/ty (graus)", getTy());
+        SmartDashboard.putNumber("Limelight/Distancia (m)", getDistanciaAprilTag());
+        SmartDashboard.putNumber("limelight/Distancia Filtrada (m)", getDistanciaFiltrada());
     }
 }
