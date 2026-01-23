@@ -6,33 +6,27 @@ import frc.robot.subsystems.Angulador;
 public class MoverAnguladorComhold extends Command {
 
     private final Angulador angulador;
-    private final double alvoGraus;
+    private final double alvo;
 
-    public MoverAnguladorComhold(Angulador angulador, double alvoGraus) {
+    public MoverAnguladorComhold(Angulador angulador, double alvo) {
         this.angulador = angulador;
-        this.alvoGraus = alvoGraus;
+        this.alvo = alvo;
         addRequirements(angulador);
     }
 
     @Override
     public void initialize() {
-        // Sai do hold antes de mover
-        angulador.desativarHold();
-
-        // Move para o novo ângulo
-        angulador.moverParaAngulo(alvoGraus);
+        angulador.moverParaAngulo(alvo);
     }
 
     @Override
     public boolean isFinished() {
-        // Termina quando chega perto do alvo
-        return Math.abs(angulador.getAngulo() - alvoGraus)
+        return Math.abs(angulador.getAngulo() - alvo)
                <= Angulador.MargenErro;
     }
 
     @Override
     public void end(boolean interrupted) {
-        // Ativa o hold no ângulo final
-        angulador.iniciarHold();
+        angulador.moverParaAngulo(alvo);
     }
 }

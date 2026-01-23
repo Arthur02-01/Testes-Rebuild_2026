@@ -15,14 +15,10 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 // Imports da WPILib
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
-import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.networktables.NetworkTableInstance;
+
 
 import frc.robot.Constants;
-import frc.robot.subsystems.Shooter.DirecaoShooter;
 
 // Declara o subsistema de tração
 public class Traction extends SubsystemBase {

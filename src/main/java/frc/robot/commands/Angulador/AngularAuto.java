@@ -9,16 +9,13 @@ public class AngularAuto extends Command {
     private final Angulador angulador;
     private final Limelight limelight;
 
-    // ===== ESTADOS LÓGICOS =====
-    private enum EstadoAngulo {
-        INFERIOR,   // 5°
-        CENTRAL,    // 15°
-        SUPERIOR    // 25°
+    private enum Estado {
+        INFERIOR,
+        CENTRAL,
+        SUPERIOR
     }
 
-    private EstadoAngulo estadoAtual;
-
-    // Histerese em metros
+    private Estado estado = Estado.CENTRAL;
     private static final double HISTERESIS = 0.07;
 
     public AngularAuto(Angulador angulador, Limelight limelight) {
@@ -28,88 +25,26 @@ public class AngularAuto extends Command {
     }
 
     @Override
-    public void initialize() {
-
-        double angulo = angulador.getAngulo();
-
-        // Sincroniza estado lógico com posição real
-        if (angulo >= Angulador.LIMITE_SUPERIOR - 1.0) {
-            estadoAtual = EstadoAngulo.SUPERIOR;
-        }
-        else if (angulo >= Angulador.LIMITE_CENTRAL - 1.0) {
-            estadoAtual = EstadoAngulo.CENTRAL;
-        }
-        else {
-            estadoAtual = EstadoAngulo.INFERIOR;
-        }
-    }
-
-    @Override
     public void execute() {
 
-        if (!limelight.temAlvo()) {
-            // Mantém o último ângulo conhecido
-            aplicarEstado();
-            return;
+        if (!limelight.temAlvo()) return;
+
+        double d = limelight.getDistanciaFiltrada();
+
+        if (estado == Estado.CENTRAL && d > 2.30 + HISTERESIS)
+            estado = Estado.SUPERIOR;
+        else if (estado == Estado.SUPERIOR && d < 2.30 - HISTERESIS)
+            estado = Estado.CENTRAL;
+        else if (estado == Estado.INFERIOR && d > 1.55 + HISTERESIS)
+            estado = Estado.CENTRAL;
+        else if (estado == Estado.CENTRAL && d < 1.55 - HISTERESIS)
+            estado = Estado.INFERIOR;
+
+        switch (estado) {
+            case SUPERIOR -> angulador.moverParaAngulo(Angulador.LIMITE_SUPERIOR);
+            case CENTRAL  -> angulador.moverParaAngulo(Angulador.LIMITE_CENTRAL);
+            case INFERIOR -> angulador.moverParaAngulo(Angulador.LIMITE_INFERIOR);
         }
-
-        double distancia = limelight.getDistanciaFiltrada();
-
-        // ===== TRANSIÇÕES COM HISTERESE =====
-
-        // CENTRAL -> SUPERIOR (15° → 25°)
-        if (estadoAtual == EstadoAngulo.CENTRAL &&
-            distancia > 2.30 + HISTERESIS) {
-
-            estadoAtual = EstadoAngulo.SUPERIOR;
-        }
-
-        // SUPERIOR -> CENTRAL (25° → 15°)
-        else if (estadoAtual == EstadoAngulo.SUPERIOR &&
-                 distancia < 2.30 - HISTERESIS) {
-
-            estadoAtual = EstadoAngulo.CENTRAL;
-        }
-
-        // INFERIOR -> CENTRAL (5° → 15°)
-        else if (estadoAtual == EstadoAngulo.INFERIOR &&
-                 distancia > 1.55 + HISTERESIS) {
-
-            estadoAtual = EstadoAngulo.CENTRAL;
-        }
-
-        // CENTRAL -> INFERIOR (15° → 5°)
-        else if (estadoAtual == EstadoAngulo.CENTRAL &&
-                 distancia < 1.55 - HISTERESIS) {
-
-            estadoAtual = EstadoAngulo.INFERIOR;
-        }
-
-        aplicarEstado();
-    }
-
-    private void aplicarEstado() {
-
-        switch (estadoAtual) {
-
-            case SUPERIOR:
-                angulador.moverParaAngulo(Angulador.LIMITE_SUPERIOR);
-                break;
-
-            case CENTRAL:
-                angulador.moverParaAngulo(Angulador.LIMITE_CENTRAL);
-                break;
-
-            case INFERIOR:
-            default:
-                angulador.moverParaAngulo(Angulador.LIMITE_INFERIOR);
-                break;
-        }
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-        angulador.iniciarHold();
     }
 
     @Override

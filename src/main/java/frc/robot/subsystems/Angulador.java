@@ -1,70 +1,65 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.ClosedLoopSlot;
-import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.*;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Angulador extends SubsystemBase {
 
-    private final SparkMax AlinhadorMotor;
-    private final RelativeEncoder AlinhadorEncoder;
+    private final SparkMax motor;
+    private final RelativeEncoder encoder;
     private final SparkClosedLoopController pid;
     private final ArmFeedforward feedforward;
 
-    // Limites mecânicos (graus)
-    public static final double LIMITE_SUPERIOR = 55.0;
-    public static final double LIMITE_CENTRAL = 30.0;
-    public static final double LIMITE_INFERIOR = 10.0;
+    public static final double LIMITE_SUPERIOR = 45.0;
+    public static final double LIMITE_CENTRAL = 20.0;
+    public static final double LIMITE_INFERIOR = 5.0;
     public static final double MargenErro = 1.0;
-    private double anguloHold = 0.0;
-    private boolean holdAtivo = false;
 
-
-    // Redução do sistema
     private static final double REDUCAO = 5.0;
 
-    // Controle manual
-    private static final double VELOCIDADE_MAX = 0.15;
+    private final TrapezoidProfile.Constraints constraints =
+        new TrapezoidProfile.Constraints(90.0, 180.0);
+
+    private TrapezoidProfile.State goal =
+        new TrapezoidProfile.State(0.0, 0.0);
+
+    private TrapezoidProfile.State setpoint =
+        new TrapezoidProfile.State(0.0, 0.0);
+
+    private boolean perfilAtivo = false;
 
     public Angulador() {
 
-        AlinhadorMotor = new SparkMax(
+        motor = new SparkMax(
             Constants.Alinhador.AlinhadorMotor,
-            MotorType.kBrushless
+            SparkLowLevel.MotorType.kBrushless
         );
 
-        AlinhadorEncoder = AlinhadorMotor.getEncoder();
-        pid = AlinhadorMotor.getClosedLoopController();
+        encoder = motor.getEncoder();
+        pid = motor.getClosedLoopController();
 
         SparkMaxConfig cfg = new SparkMaxConfig();
         cfg.idleMode(IdleMode.kBrake)
-           .inverted(false)
-           .smartCurrentLimit(20);
+           .smartCurrentLimit(25);
 
         cfg.closedLoop
            .p(0.8)
            .i(0.0)
-           .d(0.0)
-           .outputRange(-1.0, 1.0);
+           .d(0.0);
 
-        AlinhadorMotor.configure(
+        motor.configure(
             cfg,
-            ResetMode.kNoResetSafeParameters,
-            PersistMode.kPersistParameters
+            SparkBase.ResetMode.kNoResetSafeParameters,
+            SparkBase.PersistMode.kPersistParameters
         );
 
         feedforward = new ArmFeedforward(
@@ -73,188 +68,69 @@ public class Angulador extends SubsystemBase {
             Constants.FFAlinhador.kV
         );
     }
+
     public double getAngulo() {
-        return AlinhadorEncoder.getPosition() * (360.0 / REDUCAO);
+        return encoder.getPosition() * (360.0 / REDUCAO);
     }
 
-    public double getAnguloRad() {
-        return Math.toRadians(getAngulo());
-    }
-    public double getAlinhadorPosition(){
-    return AlinhadorEncoder.getPosition();
-    }
     private double grausParaRotacao(double graus) {
         return (graus / 360.0) * REDUCAO;
     }
-    public boolean noLimiteSuperior(){
-    return getAngulo() >= (LIMITE_SUPERIOR - MargenErro);
-    }
-    public boolean noLimiteInferior(){
-    return getAngulo() <= (LIMITE_INFERIOR + MargenErro);
-    }
-    // Zona onde começa a desacelerar (graus)
-private static final double ZONA_DESACELERACAO = 1.0;
 
-private double aplicarZonaDesaceleracao(double velocidade) {
+    public void moverParaAngulo(double graus) {
 
-    double angulo = getAngulo();
+    graus = MathUtil.clamp(graus, LIMITE_INFERIOR, LIMITE_SUPERIOR);
 
-    // Subindo (em direção ao limite superior)
-    if (velocidade > 0 && angulo >= (LIMITE_SUPERIOR - ZONA_DESACELERACAO)) {
-        double fator =
-            (LIMITE_SUPERIOR - angulo) / ZONA_DESACELERACAO;
-        return velocidade * MathUtil.clamp(fator, 0.0, 1.0);
+    if (jaEstaNoAlvo(graus)) {
+        perfilAtivo = false;
+        motor.set(0.0);
+        return;
     }
 
-    // Descendo (em direção ao limite inferior)
-    if (velocidade < 0 && angulo <= (LIMITE_INFERIOR + ZONA_DESACELERACAO)) {
-        double fator =
-            (angulo - LIMITE_INFERIOR) / ZONA_DESACELERACAO;
-        return velocidade * MathUtil.clamp(fator, 0.0, 1.0);
+    goal = new TrapezoidProfile.State(graus, 0.0);
+    perfilAtivo = true;
     }
 
-    return velocidade;
-}
-
-
-    public void moverParaAngulo(double alvoGraus) {
-
-        alvoGraus = MathUtil.clamp(
-            alvoGraus,
-            LIMITE_INFERIOR,
-            LIMITE_SUPERIOR
-        );
-
-        double ffVolts = feedforward.calculate(
-            Math.toRadians(alvoGraus),
-            0.0
-        );
-
-        pid.setSetpoint(
-    grausParaRotacao(alvoGraus),
-    ControlType.kPosition,
-    ClosedLoopSlot.kSlot0,
-    ffVolts
-);
-    }
-
-    public void controleManual(double velocidade) {
     
-        // Hard stop absoluto
-        if (noLimiteInferior() && velocidade < 0) {
-            AlinhadorMotor.set(0.0);
-            return;
-        }
-    
-        if (noLimiteSuperior() && velocidade > 0) {
-            AlinhadorMotor.set(0.0);
-            return;
-        }
-    
-        // Sai do hold ao mover manualmente
-        desativarHold();
-    
-        // Clamp básico
-        velocidade = MathUtil.clamp(
-            velocidade,
-            -VELOCIDADE_MAX,
-            VELOCIDADE_MAX
-        );
-    
-        // Zona de desaceleração
-        velocidade = aplicarZonaDesaceleracao(velocidade);
-    
-        // Feedforward contra a gravidade
-        double ffVolts = feedforward.calculate(
-            getAnguloRad(),
-            0.0
-        );
-    
-        double ffPercent = ffVolts / 12.0;
-    
-        AlinhadorMotor.set(velocidade + ffPercent);
-    }
-    
-    public void paradaEmergencia() {
-        // Cancela qualquer referência de closed-loop
-        pid.setSetpoint(
-            AlinhadorEncoder.getPosition(),
-            ControlType.kPosition,
-            ClosedLoopSlot.kSlot0,
-            0.0
-        );
-    
-        // Garante saída zero
-        AlinhadorMotor.set(0.0);
+    private boolean jaEstaNoAlvo(double alvo) {
+    return Math.abs(getAngulo() - alvo) <= MargenErro;
     }
 
     public void parar() {
-        AlinhadorMotor.set(0.0);
+        perfilAtivo = false;
+        motor.set(0.0);
     }
-    public void iniciarHold() {
-        anguloHold = getAngulo();
-        holdAtivo = true;
-    }
-    
-    public void desativarHold() {
-        holdAtivo = false;
-    }
-    
+
     @Override
-public void periodic() {
-    if (holdAtivo) {
-        moverParaAngulo(anguloHold);
+    public void periodic() {
+
+        if (perfilAtivo) {
+
+            TrapezoidProfile profile =
+                new TrapezoidProfile(constraints);
+
+            setpoint = profile.calculate(0.02,setpoint,goal
+            );
+
+
+            double ffVolts = feedforward.calculate(
+                Math.toRadians(setpoint.position),
+                Math.toRadians(setpoint.velocity)
+            );
+
+            pid.setSetpoint(
+                grausParaRotacao(setpoint.position),
+                SparkBase.ControlType.kPosition,
+                ClosedLoopSlot.kSlot0,
+                ffVolts
+            );
+
+            if (Math.abs(goal.position - setpoint.position) < MargenErro &&
+                Math.abs(setpoint.velocity) < 1.0) {
+                perfilAtivo = false;
+            }
+        }
+
+        SmartDashboard.putNumber("Angulador/Angulo", getAngulo());
     }
-    SmartDashboard.putNumber(
-        "Alinhador/Angulo (graus)",
-        getAngulo()
-    );
-
-    SmartDashboard.putNumber(
-        "Alinhador/Encoder (rotacoes)",
-        AlinhadorEncoder.getPosition()
-    );
-
-    SmartDashboard.putBoolean(
-        "Alinhador/Limite Superior",
-        noLimiteSuperior()
-    );
-
-    SmartDashboard.putBoolean(
-        "Alinhador/Limite Inferior",
-        noLimiteInferior()
-    );
-
-    SmartDashboard.putNumber(
-        "Alinhador/Corrente (A)",
-        AlinhadorMotor.getOutputCurrent()
-    );
-
-    SmartDashboard.putBoolean(
-        "Alinhador/Hold Ativo",
-        holdAtivo
-    );
-
-    SmartDashboard.putNumber(
-        "Alinhador/Hold Angulo",
-        anguloHold
-    );
-
-    double ffVolts = feedforward.calculate(
-        getAnguloRad(),
-        0.0
-    );
-
-    SmartDashboard.putNumber(
-        "Alinhador/FeedForward (V)",
-        ffVolts
-    );
-
-    SmartDashboard.putNumber(
-        "Alinhador/Motor Output",
-        AlinhadorMotor.get()
-    );
 }
-
-}
-

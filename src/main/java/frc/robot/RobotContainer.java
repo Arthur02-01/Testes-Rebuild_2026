@@ -17,7 +17,7 @@ import frc.robot.commands.Limelight.AlinhadorVerticalAprilTag;
 import frc.robot.commands.Angulador.AngularAuto;
 
 //import frc.robot.commands.Alinhador.AlinhadorManualJoytick;
-import frc.robot.commands.Angulador.PararAngulador;
+//import frc.robot.commands.Angulador.PararAngulador;
 import frc.robot.commands.Angulador.MoverAngulador;
 import frc.robot.commands.Autonomo.Tracao.AndarEncoder;
 import frc.robot.commands.Autonomo.Tracao.GiroPorAngulo;
@@ -143,12 +143,8 @@ new POVButton(xbox2, 180)
     /* ===== AUTÔNOMO ===== */
     public Command getAutonomousCommand() {
         return new SequentialCommandGroup(
-            new AndarEncoder(traction, 0.6, 0.5),
-            new GiroPorAngulo(traction, 90).withTimeout(0.55),
-            new AndarEncoder(traction, 0.6, 0.3),
-            new AndarEncoder(traction, -0.6, 0.3),
-            new GiroPorAngulo(traction, 90).withTimeout(0.43),
-            new AndarEncoder(traction, 0.6, 0.4)
+            new AndarEncoder(traction, 0.6, 1.0),
+            new GiroPorAngulo(traction, 90)
         );
     }
 }
