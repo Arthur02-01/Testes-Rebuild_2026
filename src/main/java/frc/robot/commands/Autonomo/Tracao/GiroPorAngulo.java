@@ -7,7 +7,7 @@ public class GiroPorAngulo extends Command {
 
     private final Traction traction;
     private final double anguloAlvo;
-    private final double velocidade = 0.75;
+    private final double velocidade = 0.5;
 
     private double anguloInicial;
 
@@ -19,13 +19,14 @@ public class GiroPorAngulo extends Command {
 
     @Override
     public void initialize() {
-        // Salva o ângulo atual — NÃO zera o gyro
-        anguloInicial = traction.getYaw();
+        anguloInicial = traction.getYaw(); // salva o ângulo atual
     }
 
     @Override
     public void execute() {
-        traction.arcadeMode(0, -velocidade);
+        // gira pro lado certo dependendo do sinal do anguloAlvo
+        double direcao = Math.signum(anguloAlvo);
+        traction.arcadeMode(0, -velocidade * direcao);
     }
 
     @Override
@@ -36,6 +37,8 @@ public class GiroPorAngulo extends Command {
     @Override
     public boolean isFinished() {
         double anguloAtual = traction.getYaw();
-        return Math.abs(anguloAtual - anguloInicial) >= anguloAlvo;
+
+        // para quando atingir o anguloAlvo (em graus)
+        return Math.abs(anguloAtual - anguloInicial) >= Math.abs(anguloAlvo);
     }
 }

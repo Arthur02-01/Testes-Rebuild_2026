@@ -27,7 +27,7 @@ public class Shooter extends SubsystemBase {
         NORMAL(0.40),
         MEDIA(0.60),
         ALTA(0.80),
-        TURBO(1.0);
+        TURBO(0.825);
 
         public final double valor;
 

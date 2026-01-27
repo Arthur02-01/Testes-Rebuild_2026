@@ -15,7 +15,8 @@ import frc.robot.subsystems.Shooter.VelocidadeShooter;
 import frc.robot.commands.Limelight.AlinhadorHorizontalAprilTag;
 import frc.robot.commands.Limelight.AlinhadorVerticalAprilTag;
 import frc.robot.commands.Angulador.AngularAuto;
-
+import frc.robot.commands.Autonomo.LimelightAuto.AlinhadorHorizontalAuto;
+import frc.robot.commands.Autonomo.LimelightAuto.AlinhadorVerticalAuto;
 //import frc.robot.commands.Alinhador.AlinhadorManualJoytick;
 //import frc.robot.commands.Angulador.PararAngulador;
 //import frc.robot.commands.Angulador.MoverAngulador;
@@ -89,7 +90,7 @@ public class RobotContainer {
 
         /* ===== LIMELIGHT / APRILTAG ===== */
         btnRb.whileTrue(
-            new AlinhadorHorizontalAprilTag(limelight, traction)
+            new AlinhadorHorizontalAprilTag(limelight, traction )
         );
 
         btnLb.whileTrue(
@@ -143,8 +144,9 @@ new POVButton(xbox2, 180)
     /* ===== AUTÔNOMO ===== */
     public Command getAutonomousCommand() {
         return new SequentialCommandGroup(
-            new AndarEncoder(traction, 0.6, 1.0),
-            new GiroPorAngulo(traction, 90)
-        );
+     new GiroPorAngulo(traction, 180),
+     new AlinhadorHorizontalAuto(limelight, traction, 7),
+     new AlinhadorVerticalAuto(limelight, traction, 7)
+       );
     }
 }

@@ -9,12 +9,16 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.RelativeEncoder;
 
+
 // Gyro
 import com.ctre.phoenix6.hardware.Pigeon2;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 // Imports da WPILib
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
@@ -25,6 +29,7 @@ public class Traction extends SubsystemBase {
 
     // VARIÁVEIS
     public boolean turbo;
+    private double ultimoPrint = 0;
 
     // Motores
     private SparkMax rightMotorFront =
@@ -139,6 +144,25 @@ public class Traction extends SubsystemBase {
         return pigeon.getRotation2d().getDegrees(); // contínuo
     }
 
+
+    @Override
+public void periodic() {
+    double agora = Timer.getFPGATimestamp();
+
+    if (agora - ultimoPrint >= 0.2) {
+        ultimoPrint = agora;
+
+        double yaw = pigeon.getYaw().getValueAsDouble();
+        double rateZ = pigeon.getAngularVelocityZWorld().getValueAsDouble();
+
+        DriverStation.reportWarning(
+            "PIGEON | Yaw=" + yaw + " | RateZ=" + rateZ,
+            false
+        );
+    }
+}
+
+
     // ENCODERS
 
     public void resetEncoders() {
@@ -154,7 +178,7 @@ public class Traction extends SubsystemBase {
             (-rightEncoder.getPosition() / GEAR_RATIO) * METERS_PER_ROTATION;
 
 
-        return Math.max(Math.abs(leftDistance), Math.abs(rightDistance));
-    }
+        return (Math.abs(leftDistance) + Math.abs(rightDistance)) / 2.0;
+        }
 
 }

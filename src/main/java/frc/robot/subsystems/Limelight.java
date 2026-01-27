@@ -47,20 +47,20 @@ private static final double OFFSET_CAMERA_BUMPER = 0.25;
     }
 
     public double getDistanciaAprilTag() {
-    double ty = getTy();
+if (!temAlvo()) return -1;
 
-    // Ângulo total da linha de visão
-    double anguloTotalGraus = ANGULO_CAMERA_EFETIVO + ty;
-    double anguloTotalRad = Math.toRadians(anguloTotalGraus);
 
-    // Distância da câmera até a tag
-    double distanciaCamera =
-        (ALTURA_TAG - ALTURA_CAMERA) / Math.tan(anguloTotalRad);
+double ty = getTy();
+double anguloTotalGraus = ANGULO_CAMERA_EFETIVO + ty;
+double anguloTotalRad = Math.toRadians(anguloTotalGraus);
 
-    // Converter para distância do bumper
-    double distanciaBumper = distanciaCamera - OFFSET_CAMERA_BUMPER;
 
-    return Math.max(distanciaBumper, 0.0);
+double distanciaCamera =
+(ALTURA_TAG - ALTURA_CAMERA) / Math.tan(anguloTotalRad);
+
+
+double distanciaBumper = distanciaCamera - OFFSET_CAMERA_BUMPER;
+return Math.max(distanciaBumper, 0.0);
 }
 
 
@@ -78,6 +78,9 @@ private static final double OFFSET_CAMERA_BUMPER = 0.25;
         table.getEntry("ledMode").setNumber(1);
     }
 
+    public int getAprilTagID() {
+        return (int) table.getEntry("tid").getDouble(-1);
+    }
     public void setPipeline(int pipeline) {
         table.getEntry("pipeline").setNumber(pipeline);
     }

@@ -27,8 +27,8 @@ public final class Constants {
 
   // ===== ENCODERS (PORTAS DIO DO roboRIO) =====
   // Ajuste se os fios estiverem em outras portas
-  public static final int leftEncoderChannelA  = 32;
-  public static final int rightEncoderChannelA = 4;
+  public static final int leftEncoderChannelA  = 3;
+  public static final int rightEncoderChannelA = 1;
     }
     public static class Alinhador{
       public static final int AlinhadorMotor =9;
