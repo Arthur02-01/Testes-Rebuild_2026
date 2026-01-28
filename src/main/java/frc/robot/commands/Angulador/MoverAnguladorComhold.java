@@ -1,4 +1,4 @@
-package frc.robot.commands.Angulador;
+/*package frc.robot.commands.Angulador;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Angulador;
@@ -42,4 +42,4 @@ public class MoverAnguladorComhold extends Command {
             angulador.iniciarHold();
         }
     }
-}
+}*/

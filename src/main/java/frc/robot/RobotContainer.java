@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 import frc.robot.subsystems.Traction;
 import frc.robot.subsystems.Angulador;
+import frc.robot.subsystems.AnguloPreset;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shooter;
@@ -15,7 +16,10 @@ import frc.robot.subsystems.Shooter.VelocidadeShooter;
 
 import frc.robot.commands.Limelight.AlinhadorHorizontalAprilTag;
 import frc.robot.commands.Limelight.AlinhadorVerticalAprilTag;
-import frc.robot.commands.Angulador.AngularAuto;
+//import frc.robot.commands.Angulador.AngularAuto;
+import frc.robot.commands.Angulador.AnguladorManual;
+import frc.robot.commands.Angulador.MoverAnguladoPreset;
+import frc.robot.commands.Angulador.MoverAnguladorAngulo;
 import frc.robot.commands.Autonomo.LimelightAuto.AlinhadorHorizontalAuto;
 import frc.robot.commands.Autonomo.LimelightAuto.AlinhadorVerticalAuto;
 //import frc.robot.commands.Alinhador.AlinhadorManualJoytick;
@@ -25,7 +29,7 @@ import frc.robot.commands.Autonomo.Tracao.AndarEncoder;
 import frc.robot.commands.Autonomo.Tracao.GiroPorAngulo;
 import frc.robot.commands.Climber.ClimberMovendo;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
-import frc.robot.commands.Angulador.MoverAnguladorComhold;
+//import frc.robot.commands.Angulador.MoverAnguladorComhold;
 
 
 import frc.robot.commands.Shooter.*;
@@ -107,7 +111,7 @@ public class RobotContainer {
         btnA.onTrue(new PararShooter(shooter));
 
         btnY.whileTrue(new ShooterAutoPorDistancia(shooter, limelight));
-        btnB.whileTrue(new AngularAuto(angulador, limelight));
+        //btnB.whileTrue(new AngularAuto(angulador, limelight));
         
         btnX.onTrue(new ShooterVelocidade(shooter, VelocidadeShooter.MEDIA));
         btnB.onTrue(new ShooterVelocidade(shooter, VelocidadeShooter.ALTA));
@@ -121,21 +125,21 @@ public class RobotContainer {
         //rt.onTrue(new PararAngulador(angulador));
 
 new POVButton(xbox2, 0)
-    .onTrue(new MoverAnguladorComhold(
+    .onTrue(new MoverAnguladoPreset(
         angulador,
-        Angulador.LIMITE_SUPERIOR
+        AnguloPreset.ALTO
     ));
 
 new POVButton(xbox2, 270)
-    .onTrue(new MoverAnguladorComhold(
+    .onTrue(new MoverAnguladoPreset(
         angulador,
-        Angulador.LIMITE_CENTRAL
+        AnguloPreset.CENTRAL
     ));
 
 new POVButton(xbox2, 180)
-    .onTrue(new MoverAnguladorComhold(
+    .onTrue(new MoverAnguladoPreset(
         angulador,
-        Angulador.LIMITE_INFERIOR
+        AnguloPreset.BAIXO
     ));
 
 
