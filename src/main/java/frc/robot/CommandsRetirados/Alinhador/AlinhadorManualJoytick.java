@@ -1,3 +1,4 @@
+package frc.robot.CommandsRetirados.Alinhador;
 /*package frc.robot.commands.Alinhador;
 
 import java.util.Set;

@@ -133,7 +133,7 @@ public class Climber extends SubsystemBase {
 
         alvoAltura = alturaMetros;
 
-        pid.setReference(
+        pid.setSetpoint(
             alturaParaRotacoesMotor(alturaMetros),
             SparkBase.ControlType.kPosition
         );
@@ -192,7 +192,7 @@ public class Climber extends SubsystemBase {
             return;
         }
 
-        pid.setReference(
+        pid.setSetpoint(
             alturaParaRotacoesMotor(alvoAltura),
             SparkBase.ControlType.kPosition
         );
@@ -206,7 +206,7 @@ public class Climber extends SubsystemBase {
             return;
         }
 
-        pid.setReference(
+        pid.setSetpoint(
             rotacoesHoldMotor,
             SparkBase.ControlType.kPosition
         );

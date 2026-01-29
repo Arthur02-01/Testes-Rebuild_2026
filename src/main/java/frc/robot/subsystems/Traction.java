@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj.Timer;
 // Imports da WPILib
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
-//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
@@ -141,7 +140,7 @@ public class Traction extends SubsystemBase {
     }
 
     public double getYaw() {
-        return pigeon.getRotation2d().getDegrees(); // contínuo
+        return pigeon.getRotation2d().getDegrees();
     }
 
 

@@ -1,6 +1,5 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -21,18 +20,6 @@ import frc.robot.commands.Autonomo.LimelightAuto.AlinhadorVerticalAuto;
 import frc.robot.commands.Autonomo.Tracao.GiroPorAngulo;
 import frc.robot.commands.Angulador.MoverAnguladoPreset;
 import frc.robot.commands.Climber.ClimberStep;
-//import frc.robot.commands.Alinhador.AlinhadorManualJoytick;
-//import frc.robot.commands.Angulador.PararAngulador;
-//import frc.robot.commands.Angulador.MoverAngulador;
-//import frc.robot.commands.Autonomo.Tracao.AndarEncoder;
-//import frc.robot.commands.Angulador.AngularAuto;
-//import frc.robot.commands.Angulador.AnguladorManual;
-//import frc.robot.commands.Angulador.MoverAnguladorAngulo;
-//import frc.robot.commands.Climber.ClimberMovendo;
-//import frc.robot.commands.Angulador.MoverAnguladorComhold;
-//import edu.wpi.first.wpilibj2.command.button.Trigger;
-
-
 import frc.robot.commands.Shooter.*;
 import frc.robot.commands.Traction.AtivarTurbo;
 import frc.robot.commands.Traction.Controller;
@@ -77,10 +64,6 @@ public class RobotContainer {
         private final JoystickButton L4 = new JoystickButton(xbox2, 7);
     private final JoystickButton R4 = new JoystickButton(xbox2, 8);
 
-        /*private final JoystickButton btnY = new JoystickButton(xbox2, XboxController.Button.kY.value);
-    private final JoystickButton btnB = new JoystickButton(xbox2, XboxController.Button.kB.value);*/
-    //private final Trigger rt = new Trigger(() -> xbox2.getRightTriggerAxis() > 0.2);#Atualmente o movedor do shooter
-
     private final JoystickButton btnRb = new JoystickButton(xbox1, 6);
     private final JoystickButton btnLb = new JoystickButton(xbox1, 5);
 
@@ -114,7 +97,7 @@ public class RobotContainer {
         btnA.onTrue(new PararShooter(shooter));
 
         btnY.whileTrue(new ShooterAutoPorDistancia(shooter, limelight));
-        //btnB.whileTrue(new AngularAuto(angulador, limelight));
+
         
         btnX.onTrue(new ShooterVelocidade(shooter, VelocidadeShooter.MEDIA));
         btnB.onTrue(new ShooterVelocidade(shooter, VelocidadeShooter.ALTA));
@@ -153,15 +136,6 @@ new POVButton(xbox2, 180)
         angulador,
         AnguloPreset.BAIXO
     ));
-
-
-       /*  new Trigger(() -> Math.abs(xbox2.getLeftY()) > 0.1)
-            .whileTrue(
-                new AlinhadorManualJoytick(
-                    alinhador,
-                    () -> -xbox2.getLeftY()
-                )
-            );*/
     }
 
     /* ===== AUTÔNOMO ===== */
