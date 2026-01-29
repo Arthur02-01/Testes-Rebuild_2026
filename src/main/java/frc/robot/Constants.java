@@ -51,6 +51,9 @@ public final class Constants {
     public static final int ClimberMotor2 = 24;
     public static final double kS = 0.15;
     public static final double kG = 0.45;
-    public static final double kV = 0.0;
+    public static final double kV = 1.4;
+    public static final double CLIMBER_BAIXO = 0.10;
+    public static final double CLIMBER_MEDIO = 0.60;
+    public static final double CLIMBER_ALTO  = 1.10;
   }
 }

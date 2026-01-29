@@ -40,7 +40,7 @@ public class Angulador extends SubsystemBase {
     public static final double LIMITE_INFERIOR = 10.0;
 
     /* margem maior → evita forçar motor */
-    public static final double MARGEM_ERRO = 1.65;
+    private static final double MARGEM_ERRO = 1.65;
 
     /* ================= CONTROLE ================= */
 

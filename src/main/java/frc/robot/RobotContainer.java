@@ -1,10 +1,11 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-//import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 
 import frc.robot.subsystems.Traction;
 import frc.robot.subsystems.Angulador;
@@ -13,23 +14,23 @@ import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Shooter.VelocidadeShooter;
-
 import frc.robot.commands.Limelight.AlinhadorHorizontalAprilTag;
 import frc.robot.commands.Limelight.AlinhadorVerticalAprilTag;
-//import frc.robot.commands.Angulador.AngularAuto;
-import frc.robot.commands.Angulador.AnguladorManual;
-import frc.robot.commands.Angulador.MoverAnguladoPreset;
-import frc.robot.commands.Angulador.MoverAnguladorAngulo;
 import frc.robot.commands.Autonomo.LimelightAuto.AlinhadorHorizontalAuto;
 import frc.robot.commands.Autonomo.LimelightAuto.AlinhadorVerticalAuto;
+import frc.robot.commands.Autonomo.Tracao.GiroPorAngulo;
+import frc.robot.commands.Angulador.MoverAnguladoPreset;
+import frc.robot.commands.Climber.ClimberStep;
 //import frc.robot.commands.Alinhador.AlinhadorManualJoytick;
 //import frc.robot.commands.Angulador.PararAngulador;
 //import frc.robot.commands.Angulador.MoverAngulador;
-import frc.robot.commands.Autonomo.Tracao.AndarEncoder;
-import frc.robot.commands.Autonomo.Tracao.GiroPorAngulo;
-import frc.robot.commands.Climber.ClimberMovendo;
-import edu.wpi.first.wpilibj2.command.button.POVButton;
+//import frc.robot.commands.Autonomo.Tracao.AndarEncoder;
+//import frc.robot.commands.Angulador.AngularAuto;
+//import frc.robot.commands.Angulador.AnguladorManual;
+//import frc.robot.commands.Angulador.MoverAnguladorAngulo;
+//import frc.robot.commands.Climber.ClimberMovendo;
 //import frc.robot.commands.Angulador.MoverAnguladorComhold;
+//import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 
 import frc.robot.commands.Shooter.*;
@@ -73,8 +74,10 @@ public class RobotContainer {
 
     private final JoystickButton btnY =
         new JoystickButton(xbox2, XboxController.Button.kY.value);
+        private final JoystickButton L4 = new JoystickButton(xbox2, 7);
+    private final JoystickButton R4 = new JoystickButton(xbox2, 8);
 
-   /*private final JoystickButton btnY = new JoystickButton(xbox2, XboxController.Button.kY.value);
+        /*private final JoystickButton btnY = new JoystickButton(xbox2, XboxController.Button.kY.value);
     private final JoystickButton btnB = new JoystickButton(xbox2, XboxController.Button.kB.value);*/
     //private final Trigger rt = new Trigger(() -> xbox2.getRightTriggerAxis() > 0.2);#Atualmente o movedor do shooter
 
@@ -117,12 +120,21 @@ public class RobotContainer {
         btnB.onTrue(new ShooterVelocidade(shooter, VelocidadeShooter.ALTA));
         btnY.onTrue(new ShooterVelocidade(shooter, VelocidadeShooter.TURBO));
 
-        climber.setDefaultCommand(
-            new ClimberMovendo(climber ,() -> -xbox1.getLeftY())
+        new JoystickButton(xbox1, 0);
+
+        R4.debounce(0.15).onTrue(
+            new ClimberStep(
+                climber,
+                0.10   // sobe 10 cm
+            )
         );
-    
-        /* ===== ALINHADOR ===== */
-        //rt.onTrue(new PararAngulador(angulador));
+
+        L4.debounce(0.15).onTrue(
+            new ClimberStep(
+                climber,
+                -0.10  // desce 10 cm
+            )
+        );  
 
 new POVButton(xbox2, 0)
     .onTrue(new MoverAnguladoPreset(

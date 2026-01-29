@@ -15,6 +15,7 @@ import frc.robot.Constants;
 
 public class Shooter extends SubsystemBase {
 
+
     /* ========= ENUMS ========= */
 
     public enum DirecaoShooter {
