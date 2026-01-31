@@ -2,6 +2,7 @@ package frc.robot.commands.Climber;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Climber;
+import frc.robot.StatesMachines.StateMachineClimber;
 
 public class ClimberStep extends Command {
 
@@ -16,15 +17,13 @@ public class ClimberStep extends Command {
 
     @Override
     public void initialize() {
-        if (step > 0) {
-            climber.subirStep(step);
-        } else {
-            climber.descerStep(Math.abs(step));
-        }
+     double alturaAtual = climber.getAltura();
+     climber.irParaAltura(alturaAtual + step);
     }
 
     @Override
     public boolean isFinished() {
-        return true;
+         return climber.getEstado() == StateMachineClimber.Estado.HOLD
+            || climber.getEstado() == StateMachineClimber.Estado.FALHA;
     }
 }

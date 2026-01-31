@@ -1,0 +1,66 @@
+package frc.robot.Hardwares;
+
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkBase;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkLowLevel;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
+
+import frc.robot.Constants;
+
+public class HardwaresClimber {
+
+    public final SparkMax motor;
+    public final RelativeEncoder encoder;
+    public final SparkClosedLoopController pid;
+
+    public HardwaresClimber() {
+
+        motor = new SparkMax(
+            Constants.ClimberConstants.ClimberMotor,
+            MotorType.kBrushless
+        );
+
+        SparkMax follower = new SparkMax(
+            Constants.ClimberConstants.ClimberMotor2,
+            MotorType.kBrushless
+        );
+
+        encoder = motor.getEncoder();
+        pid = motor.getClosedLoopController();
+
+        SparkMaxConfig masterCfg = new SparkMaxConfig();
+        masterCfg
+            .idleMode(IdleMode.kBrake)
+            .smartCurrentLimit(60);
+
+        masterCfg.closedLoop
+            .p(0.4)
+            .i(0.0)
+            .d(0.02)
+            .outputRange(-1.0, 1.0);
+
+        SparkMaxConfig followerCfg = new SparkMaxConfig();
+        followerCfg
+            .follow(motor, false)
+            .idleMode(IdleMode.kBrake)
+            .smartCurrentLimit(60);
+
+        motor.configure(
+            masterCfg,
+            ResetMode.kNoResetSafeParameters,
+            PersistMode.kNoPersistParameters
+        );
+
+        follower.configure(
+            followerCfg,
+            ResetMode.kNoResetSafeParameters,
+            PersistMode.kNoPersistParameters
+        );
+    }
+}

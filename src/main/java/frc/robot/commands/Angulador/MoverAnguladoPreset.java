@@ -1,8 +1,9 @@
-/*package frc.robot.commands.Angulador;
+package frc.robot.commands.Angulador;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Angulador;
-import frc.robot.subsystems.AnguloPreset;
+import frc.robot.Extras.AnguloPreset;
+import frc.robot.StatesMachines.StateMachineAngulador;
 
 public class MoverAnguladoPreset extends Command {
 
@@ -21,12 +22,12 @@ public class MoverAnguladoPreset extends Command {
     }
 
     @Override
-    public boolean isFinished() {
-        return angulador.emHold();
-    }
-
+public boolean isFinished() {
+    var estado = angulador.getEstado();
+    return estado == StateMachineAngulador.Estado.HOLD
+        || estado == StateMachineAngulador.Estado.FALHA;
+}
     @Override
     public void end(boolean interrupted) {
-        // nada a fazer, o HOLD já mantém posição
     }
-}*/
+}

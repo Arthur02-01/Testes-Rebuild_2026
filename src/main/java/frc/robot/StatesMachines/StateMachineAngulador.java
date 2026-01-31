@@ -15,8 +15,8 @@ public class StateMachineAngulador {
         return estado;
     }
 
-    public boolean is(Estado e) {
-        return estado == e;
+    public boolean is(Estado Es) {
+        return estado == Es;
     }
 
     public void set(Estado novo) {

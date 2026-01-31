@@ -41,9 +41,6 @@ public class IntakeFloor extends SubsystemBase {
         // Define limite de corrente em 60A para proteção
         config.smartCurrentLimit(60);
 
-        // Aplica a configuração no motor
-        // Não reseta parâmetros seguros
-        // Não salva permanentemente na memória do Spark
         IntakeMotor.configure(
             config,
             ResetMode.kNoResetSafeParameters,

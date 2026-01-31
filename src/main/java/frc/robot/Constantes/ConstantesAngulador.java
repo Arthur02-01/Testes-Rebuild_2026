@@ -31,5 +31,5 @@ public final class ConstantesAngulador {
     public static final double TEMPO_MAX_TRAVADO = 0.8;
     public static final double ERRO_TOLERANCIA = 2.0;
 
-    private ConstantesAngulador () {}
+    private ConstantesAngulador() {}
 }

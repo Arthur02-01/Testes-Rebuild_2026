@@ -34,8 +34,8 @@ public final class Constants {
       public static final int AlinhadorMotor =9;
     }
     public static class FFAlinhador{
-      public static final double kS = 0.13;
-      public static final double kG = 0.40;
+      public static final double kS = 0.15;
+      public static final double kG = 0.50;
       public static final double kV = 1.0;
     }
     public static class EncoderAlinhador{

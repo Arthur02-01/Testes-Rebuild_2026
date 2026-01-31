@@ -8,17 +8,17 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 
 import frc.robot.subsystems.Traction;
 import frc.robot.subsystems.Angulador;
-import frc.robot.subsystems.AnguloPreset;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.Shooter.VelocidadeShooter;
 import frc.robot.commands.Limelight.AlinhadorHorizontalAprilTag;
 import frc.robot.commands.Limelight.AlinhadorVerticalAprilTag;
 import frc.robot.commands.Autonomo.LimelightAuto.AlinhadorHorizontalAuto;
 import frc.robot.commands.Autonomo.LimelightAuto.AlinhadorVerticalAuto;
 import frc.robot.commands.Autonomo.Tracao.GiroPorAngulo;
-//import frc.robot.commands.Angulador.MoverAnguladoPreset;
+import frc.robot.Constantes.ConstantesShooter;
+import frc.robot.Extras.AnguloPreset;
+import frc.robot.commands.Angulador.MoverAnguladoPreset;
 import frc.robot.commands.Climber.ClimberStep;
 import frc.robot.commands.Shooter.*;
 import frc.robot.commands.Traction.AtivarTurbo;
@@ -61,8 +61,8 @@ public class RobotContainer {
 
     private final JoystickButton btnY =
         new JoystickButton(xbox2, XboxController.Button.kY.value);
-        private final JoystickButton L4 = new JoystickButton(xbox2, 7);
-    private final JoystickButton R4 = new JoystickButton(xbox2, 8);
+        //private final JoystickButton L4 = new JoystickButton(xbox2, 7);
+    //private final JoystickButton R4 = new JoystickButton(xbox2, 8);
 
     private final JoystickButton btnRb = new JoystickButton(xbox1, 6);
     private final JoystickButton btnLb = new JoystickButton(xbox1, 5);
@@ -91,21 +91,46 @@ public class RobotContainer {
         );
 
         /* ===== SHOOTER ===== */
-        rb.onTrue(new AtivarFrenteShooter(shooter));
-        lb.onTrue(new AtivarAtrasShooter(shooter));//lb trocado para testar
+        rb.onTrue(
+            new AtivarFrenteShooter(
+                shooter,
+                ConstantesShooter.Velocidade.MEDIA
+            )
+        );
+
+        lb.onTrue(
+            new AtivarAtrasShooter(
+                shooter,
+                ConstantesShooter.Velocidade.MEDIA
+            )
+        );
 
         btnA.onTrue(new PararShooter(shooter));
 
-        btnY.whileTrue(new ShooterAutoPorDistancia(shooter, limelight));
+        btnX.onTrue(
+            new AtivarFrenteShooter(
+                shooter,
+                ConstantesShooter.Velocidade.MEDIA
+            )
+        );
 
-        
-        btnX.onTrue(new ShooterVelocidade(shooter, VelocidadeShooter.MEDIA));
-        btnB.onTrue(new ShooterVelocidade(shooter, VelocidadeShooter.ALTA));
-        btnY.onTrue(new ShooterVelocidade(shooter, VelocidadeShooter.TURBO));
+        btnB.onTrue(
+            new AtivarFrenteShooter(
+                shooter,
+                ConstantesShooter.Velocidade.ALTA
+            )
+        );
 
-        new JoystickButton(xbox1, 0);
+        btnY.onTrue(
+            new AtivarFrenteShooter(
+                shooter,
+                ConstantesShooter.Velocidade.TURBO
+            )
+        );
 
-        R4.debounce(0.15).onTrue(
+        new JoystickButton(xbox1, 0); 
+
+       /* * R4.debounce(0.15).onTrue(
             new ClimberStep(
                 climber,
                 0.10   // sobe 10 cm
@@ -117,9 +142,9 @@ public class RobotContainer {
                 climber,
                 -0.10  // desce 10 cm
             )
-        );  
+        ); */ 
 
-/*new POVButton(xbox2, 0)
+new POVButton(xbox2, 0)
     .onTrue(new MoverAnguladoPreset(
         angulador,
         AnguloPreset.ALTO
@@ -135,7 +160,7 @@ new POVButton(xbox2, 180)
     .onTrue(new MoverAnguladoPreset(
         angulador,
         AnguloPreset.BAIXO
-    ));*/
+    ));
     }
 
     /* ===== AUTÔNOMO ===== */

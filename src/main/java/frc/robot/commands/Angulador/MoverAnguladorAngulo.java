@@ -1,6 +1,7 @@
-/*package frc.robot.commands.Angulador;
+package frc.robot.commands.Angulador;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.StatesMachines.StateMachineAngulador;
 import frc.robot.subsystems.Angulador;
 
 public class MoverAnguladorAngulo extends Command {
@@ -21,6 +22,7 @@ public class MoverAnguladorAngulo extends Command {
 
     @Override
     public boolean isFinished() {
-        return angulador.emHold();
+    var estado = angulador.getEstado();
+    return estado == StateMachineAngulador.Estado.HOLD;
     }
-}*/
+}

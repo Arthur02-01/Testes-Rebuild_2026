@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Constantes.ConstantesAngulador;
+import frc.robot.Extras.AnguloPreset;
 import frc.robot.Hardwares.HardwaresAngulador;
 import frc.robot.Kinematics.KInematicsAngulador;
 import frc.robot.StatesMachines.StateMachineAngulador;
@@ -38,6 +39,7 @@ public class Angulador extends SubsystemBase {
     private double alvoGraus = Double.NaN;
     private double manualOutput = 0.0;
     private double anguloHold = 0.0;
+    public static final double ERRO_MAX_HOLD =  2.0;
 
     /* ================= API ================= */
 
@@ -46,11 +48,25 @@ public class Angulador extends SubsystemBase {
             io.encoder.getPosition()
         );
     }
+    public StateMachineAngulador.Estado getEstado() {
+    return sm.get();
+}
 
     public void moverParaAngulo(double graus) {
-        alvoGraus = graus;
-        goal = new TrapezoidProfile.State(graus, 0.0);
-        sm.set(StateMachineAngulador.Estado.PERFIL);
+    alvoGraus = graus;
+    goal = new TrapezoidProfile.State(graus, 0.0);
+
+    setpoint = new TrapezoidProfile.State(
+        getAngulo(),
+        0.0
+    );
+
+    sm.set(StateMachineAngulador.Estado.PERFIL);
+}
+
+
+    public void moverParaPreset(AnguloPreset preset) {
+    moverParaAngulo(preset.graus);
     }
 
     public void controleManual(double output) {
@@ -78,36 +94,63 @@ public class Angulador extends SubsystemBase {
         SmartDashboard.putString("Angulador/Estado", sm.get().name());
     }
 
-    private void executarPerfil() {
-        TrapezoidProfile profile = new TrapezoidProfile(constraints);
-        setpoint = profile.calculate(
-            ConstantesAngulador.DT, setpoint, goal
-        );
+   private void executarPerfil() {
+    TrapezoidProfile profile = new TrapezoidProfile(constraints);
 
-        double ffVolts = ff.calculate(
-            Math.toRadians(setpoint.position),
-            Math.toRadians(setpoint.velocity)
-        );
+    setpoint = profile.calculate(
+        ConstantesAngulador.DT,
+        setpoint,
+        goal
+    );
 
-        io.pid.setSetpoint(
-            KInematicsAngulador.grausParaRotacoes(setpoint.position),
-            SparkBase.ControlType.kPosition,
-            ClosedLoopSlot.kSlot0,
-            ffVolts
-        );
+    double ffVolts = ff.calculate(
+        Math.toRadians(setpoint.position),
+        Math.toRadians(setpoint.velocity)
+    );
 
-        if (Math.abs(goal.position - setpoint.position)
-            < ConstantesAngulador.MARGEM_ERRO_BASE) {
+    io.pid.setSetpoint(
+        KInematicsAngulador.grausParaRotacoes(setpoint.position),
+        SparkBase.ControlType.kPosition,
+        ClosedLoopSlot.kSlot0,
+        ffVolts
+    );
 
-            anguloHold = goal.position;
-            sm.set(StateMachineAngulador.Estado.HOLD);
-        }
+    if (Math.abs(goal.position - setpoint.position)
+        < ConstantesAngulador.MARGEM_ERRO_BASE) {
+
+        anguloHold = goal.position;
+        sm.set(StateMachineAngulador.Estado.HOLD);
     }
+}
+
 
     private void executarHold() {
-        io.pid.setSetpoint(
-            KInematicsAngulador.grausParaRotacoes(anguloHold),
-            SparkBase.ControlType.kPosition
+
+    double anguloAtual = getAngulo();
+    double erro = anguloHold - anguloAtual;
+
+    double ffVolts = ff.calculate(
+        Math.toRadians(anguloHold),
+        0.0
+    );
+
+    io.pid.setSetpoint(
+        KInematicsAngulador.grausParaRotacoes(anguloHold),
+        SparkBase.ControlType.kPosition,
+        ClosedLoopSlot.kSlot0,
+        ffVolts
+    );
+    if (Math.abs(erro) > ERRO_MAX_HOLD) {
+        setpoint = new TrapezoidProfile.State(
+            anguloAtual,
+            0.0
         );
+        goal = new TrapezoidProfile.State(
+            anguloHold,
+            0.0
+        );
+        sm.set(StateMachineAngulador.Estado.PERFIL);
     }
+}
+
 }
