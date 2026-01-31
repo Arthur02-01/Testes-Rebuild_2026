@@ -1,4 +1,4 @@
-package frc.robot.commands.Angulador;
+/*package frc.robot.commands.Angulador;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Angulador;
@@ -29,4 +29,4 @@ public class MoverAnguladoPreset extends Command {
     public void end(boolean interrupted) {
         // nada a fazer, o HOLD já mantém posição
     }
-}
+}*/

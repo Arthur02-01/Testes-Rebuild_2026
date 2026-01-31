@@ -18,7 +18,7 @@ import frc.robot.commands.Limelight.AlinhadorVerticalAprilTag;
 import frc.robot.commands.Autonomo.LimelightAuto.AlinhadorHorizontalAuto;
 import frc.robot.commands.Autonomo.LimelightAuto.AlinhadorVerticalAuto;
 import frc.robot.commands.Autonomo.Tracao.GiroPorAngulo;
-import frc.robot.commands.Angulador.MoverAnguladoPreset;
+//import frc.robot.commands.Angulador.MoverAnguladoPreset;
 import frc.robot.commands.Climber.ClimberStep;
 import frc.robot.commands.Shooter.*;
 import frc.robot.commands.Traction.AtivarTurbo;
@@ -119,7 +119,7 @@ public class RobotContainer {
             )
         );  
 
-new POVButton(xbox2, 0)
+/*new POVButton(xbox2, 0)
     .onTrue(new MoverAnguladoPreset(
         angulador,
         AnguloPreset.ALTO
@@ -135,7 +135,7 @@ new POVButton(xbox2, 180)
     .onTrue(new MoverAnguladoPreset(
         angulador,
         AnguloPreset.BAIXO
-    ));
+    ));*/
     }
 
     /* ===== AUTÔNOMO ===== */
