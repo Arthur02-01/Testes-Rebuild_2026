@@ -17,8 +17,7 @@ public class AutoTras extends SequentialCommandGroup {
 
             // Liga o shooter PARA TRÁS já com velocidade
             new AtivarAtrasShooter(
-                shooter,
-                ConstantesShooter.Velocidade.ALTA
+                shooter
             ),
 
             // Tempo para pegar giro

@@ -17,6 +17,7 @@ import frc.robot.commands.Autonomo.LimelightAuto.AlinhadorHorizontalAuto;
 import frc.robot.commands.Autonomo.LimelightAuto.AlinhadorVerticalAuto;
 import frc.robot.commands.Autonomo.Tracao.GiroPorAngulo;
 import frc.robot.Constantes.ConstantesShooter;
+import frc.robot.Constantes.ConstantesShooter.Velocidade;
 import frc.robot.Extras.AnguloPreset;
 import frc.robot.commands.Angulador.MoverAnguladoPreset;
 import frc.robot.commands.Climber.ClimberStep;
@@ -91,42 +92,30 @@ public class RobotContainer {
         );
 
         /* ===== SHOOTER ===== */
-        rb.onTrue(
-            new AtivarFrenteShooter(
-                shooter,
-                ConstantesShooter.Velocidade.MEDIA
-            )
-        );
-
-        lb.onTrue(
-            new AtivarAtrasShooter(
-                shooter,
-                ConstantesShooter.Velocidade.MEDIA
-            )
-        );
-
-        btnA.onTrue(new PararShooter(shooter));
-
         btnX.onTrue(
-            new AtivarFrenteShooter(
-                shooter,
-                ConstantesShooter.Velocidade.MEDIA
-            )
-        );
+    new ShooterVelocidade(
+        shooter,
+        ConstantesShooter.Velocidade.MEDIA
+    )
+);
 
-        btnB.onTrue(
-            new AtivarFrenteShooter(
-                shooter,
-                ConstantesShooter.Velocidade.ALTA
-            )
-        );
+btnB.onTrue(
+    new ShooterVelocidade(
+        shooter,
+        ConstantesShooter.Velocidade.ALTA
+    )
+);
 
-        btnY.onTrue(
-            new AtivarFrenteShooter(
-                shooter,
-                ConstantesShooter.Velocidade.TURBO
-            )
-        );
+btnY.onTrue(
+    new ShooterVelocidade(
+        shooter,
+        ConstantesShooter.Velocidade.TURBO
+    )
+);
+
+
+        rb.onTrue(new AtivarFrenteShooter(shooter));
+        lb.onTrue(new AtivarAtrasShooter(shooter));
 
         new JoystickButton(xbox1, 0); 
 

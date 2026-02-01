@@ -17,16 +17,26 @@ public class Shooter extends SubsystemBase {
 
     /* ================= API ================= */
 
-    public void atirarFrente(ConstantesShooter.Velocidade vel) {
-        velocidade = vel;
+    /** Apenas muda a velocidade (NÃO gira) */
+    public void setVelocidade(ConstantesShooter.Velocidade vel) {
+        this.velocidade = vel;
+    }
+
+    /** Ativa giro para frente */
+    public void atirarFrente() {
         sm.set(StateMachineShooter.Estado.ATIRANDO_FRENTE);
     }
 
-    public void atirarTras(ConstantesShooter.Velocidade vel) {
-        velocidade = vel;
+    /** Ativa giro para trás */
+    public void atirarTras() {
         sm.set(StateMachineShooter.Estado.ATIRANDO_TRAS);
     }
 
+    public ConstantesShooter.Velocidade getVelocidade() {
+    return velocidade;
+    }
+
+    /** Para completamente */
     public void parar() {
         sm.set(StateMachineShooter.Estado.PARADO);
     }
@@ -60,15 +70,8 @@ public class Shooter extends SubsystemBase {
             }
         }
 
-        SmartDashboard.putString(
-            "Shooter/Estado",
-            sm.get().name()
-        );
-
-        SmartDashboard.putString(
-            "Shooter/Velocidade",
-            velocidade.name()
-        );
+        SmartDashboard.putString("Shooter/Estado", sm.get().name());
+        SmartDashboard.putString("Shooter/Velocidade", velocidade.name());
 
         SmartDashboard.putNumber(
             "Shooter/Arlindo RPM",
