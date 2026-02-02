@@ -15,6 +15,7 @@ import frc.robot.commands.Limelight.AlinhadorHorizontalAprilTag;
 import frc.robot.commands.Limelight.AlinhadorVerticalAprilTag;
 import frc.robot.commands.Autonomo.LimelightAuto.AlinhadorHorizontalAuto;
 import frc.robot.commands.Autonomo.LimelightAuto.AlinhadorVerticalAuto;
+import frc.robot.commands.Autonomo.Shooter.AutoAtirar;
 import frc.robot.commands.Autonomo.Tracao.GiroPorAngulo;
 import frc.robot.Constantes.ConstantesShooter;
 import frc.robot.Constantes.ConstantesShooter.Velocidade;
@@ -155,9 +156,7 @@ new POVButton(xbox2, 180)
     /* ===== AUTÔNOMO ===== */
     public Command getAutonomousCommand() {
         return new SequentialCommandGroup(
-     new GiroPorAngulo(traction, 180),
-     new AlinhadorHorizontalAuto(limelight, traction, 7),
-     new AlinhadorVerticalAuto(limelight, traction, 7)
+     new AutoAtirar(shooter)
        );
     }
 }

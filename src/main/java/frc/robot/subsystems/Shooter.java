@@ -24,12 +24,20 @@ public class Shooter extends SubsystemBase {
 
     /** Ativa giro para frente */
     public void atirarFrente() {
-        sm.set(StateMachineShooter.Estado.ATIRANDO_FRENTE);
+        if (sm.is(StateMachineShooter.Estado.ATIRANDO_FRENTE)) {
+            sm.set(StateMachineShooter.Estado.PARADO);
+        } else {
+            sm.set(StateMachineShooter.Estado.ATIRANDO_FRENTE);
+        }
     }
 
     /** Ativa giro para trás */
     public void atirarTras() {
+       if (sm.is(StateMachineShooter.Estado.ATIRANDO_TRAS)){
+        sm.set(StateMachineShooter.Estado.PARADO);
+       } else {
         sm.set(StateMachineShooter.Estado.ATIRANDO_TRAS);
+       }
     }
 
     public ConstantesShooter.Velocidade getVelocidade() {
