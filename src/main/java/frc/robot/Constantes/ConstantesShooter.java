@@ -3,19 +3,19 @@ package frc.robot.Constantes;
 public class ConstantesShooter {
 
     public enum Velocidade {
-        NORMAL(0.40),
-        MEDIA(0.60),
-        ALTA(0.80),
-        TURBO(0.825);
+        NORMAL(2400),
+        MEDIA(3500),
+        ALTA(4200),
+        TURBO(5700);
 
-        public final double valor;
+        public final double rpm;
 
-        Velocidade(double valor) {
-            this.valor = valor;
+        Velocidade(double rpm) {
+            this.rpm = rpm;
         }
     }
 
-    public static final double RPM_MIN_GIRANDO = 50.0;
+    public static final double TOLERANCIA_RPM = 100;
 
     private ConstantesShooter() {}
 }

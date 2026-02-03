@@ -15,6 +15,9 @@ public class HardwaresShooter {
     public final RelativeEncoder arlindoEncoder;
     public final RelativeEncoder boquinhaEncoder;
 
+    public final SparkClosedLoopController arlindopid;
+    public final SparkClosedLoopController boquinhapid;
+
     public HardwaresShooter() {
 
         arlindo = new SparkMax(
@@ -30,9 +33,19 @@ public class HardwaresShooter {
         arlindoEncoder = arlindo.getEncoder();
         boquinhaEncoder = boquinha.getEncoder();
 
+        arlindopid = arlindo.getClosedLoopController();
+        boquinhapid = boquinha.getClosedLoopController();
+
         SparkMaxConfig cfg = new SparkMaxConfig();
         cfg.idleMode(IdleMode.kBrake)
            .smartCurrentLimit(60);
+
+        cfg.closedLoop
+        .p(0.00025)
+        .i(0.0)
+        .d(0.0)
+        .velocityFF(1.0/5700.0)
+        .outputRange(-1.0, 1.0);
 
         arlindo.configure(cfg,
             SparkBase.ResetMode.kNoResetSafeParameters,

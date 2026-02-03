@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.spark.SparkBase.ControlType;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -12,6 +14,8 @@ public class Shooter extends SubsystemBase {
     private final HardwaresShooter io = new HardwaresShooter();
     private final StateMachineShooter sm = new StateMachineShooter();
 
+    private double rpmAlvo = 0.0;
+
     private ConstantesShooter.Velocidade velocidade =
         ConstantesShooter.Velocidade.NORMAL;
 
@@ -20,6 +24,7 @@ public class Shooter extends SubsystemBase {
     /** Apenas muda a velocidade (NÃO gira) */
     public void setVelocidade(ConstantesShooter.Velocidade vel) {
         this.velocidade = vel;
+        this.rpmAlvo = vel.rpm;
     }
 
     /** Ativa giro para frente */
@@ -52,24 +57,35 @@ public class Shooter extends SubsystemBase {
     public boolean estaAtivo() {
         return !sm.is(StateMachineShooter.Estado.PARADO);
     }
+    public boolean pronto(){
+        return 
+            Math.abs(rpmAlvo - io.arlindoEncoder.getVelocity()) < ConstantesShooter.TOLERANCIA_RPM &&
+            Math.abs(rpmAlvo - io.boquinhaEncoder.getVelocity()) < ConstantesShooter.TOLERANCIA_RPM;
+    }
 
     /* ================= LOOP ================= */
 
     @Override
     public void periodic() {
 
-        double v = velocidade.valor;
-
         switch (sm.get()) {
 
             case ATIRANDO_FRENTE -> {
-                io.arlindo.set(-v);
-                io.boquinha.set(+v);
+                io.arlindopid.setSetpoint(
+                    -rpmAlvo, ControlType.kVelocity
+                );
+                io.boquinhapid.setSetpoint(
+                    +rpmAlvo, ControlType.kVelocity
+                );
             }
 
             case ATIRANDO_TRAS -> {
-                io.arlindo.set(+v);
-                io.boquinha.set(-v);
+                io.arlindopid.setSetpoint(
+                    +rpmAlvo, ControlType.kVelocity
+                );
+                io.boquinhapid.setSetpoint(
+                    -rpmAlvo, ControlType.kVelocity
+                );
             }
 
             case PARADO -> {
@@ -78,17 +94,9 @@ public class Shooter extends SubsystemBase {
             }
         }
 
-        SmartDashboard.putString("Shooter/Estado", sm.get().name());
-        SmartDashboard.putString("Shooter/Velocidade", velocidade.name());
-
-        SmartDashboard.putNumber(
-            "Shooter/Arlindo RPM",
-            io.arlindoEncoder.getVelocity()
-        );
-
-        SmartDashboard.putNumber(
-            "Shooter/Boquinha RPM",
-            io.boquinhaEncoder.getVelocity()
-        );
+         SmartDashboard.putString("Shooter/Estado", sm.get().name());
+        SmartDashboard.putNumber("Shooter/RPM Alvo", rpmAlvo);
+        SmartDashboard.putNumber("Shooter/Arlindo RPM", io.arlindoEncoder.getVelocity());
+        SmartDashboard.putNumber("Shooter/Boquinha RPM", io.boquinhaEncoder.getVelocity());
     }
 }
