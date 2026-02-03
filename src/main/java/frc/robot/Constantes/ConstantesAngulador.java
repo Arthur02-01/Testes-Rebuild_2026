@@ -2,6 +2,7 @@ package frc.robot.Constantes;
 
 import frc.robot.subsystems.Angulador;
 
+@SuppressWarnings("unused")
 public final class ConstantesAngulador {
 
     public static class Alinhador{

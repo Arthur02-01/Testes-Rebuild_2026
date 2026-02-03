@@ -6,6 +6,7 @@ import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shooter;
 import frc.robot.StatesMachines.StateMachineShooter;
 
+@SuppressWarnings("unused")
 public class ShooterAutoPorDistancia extends Command {
 
     private final Shooter shooter;

@@ -5,7 +5,8 @@ public class StateMachineShooter {
     public enum Estado {
         PARADO,
         ATIRANDO_FRENTE,
-        ATIRANDO_TRAS
+        ATIRANDO_TRAS,
+        
     }
 
     private Estado estado = Estado.PARADO;

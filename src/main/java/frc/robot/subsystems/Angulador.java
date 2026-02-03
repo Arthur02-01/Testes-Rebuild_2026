@@ -4,7 +4,8 @@ import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.kinematics.Kinematics;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -38,8 +39,11 @@ public class Angulador extends SubsystemBase {
 
     private double alvoGraus = Double.NaN;
     private double manualOutput = 0.0;
+    private double testeOutput = 0.0;
     private double anguloHold = 0.0;
     public static final double ERRO_MAX_HOLD =  2.0;
+    private double tempoSemMovimento = 0.0;
+    private double ultimoTimestamp = Timer.getFPGATimestamp();
 
     /* ================= API ================= */
 
@@ -53,14 +57,18 @@ public class Angulador extends SubsystemBase {
 }
 
     public void moverParaAngulo(double graus) {
-    alvoGraus = graus;
-    goal = new TrapezoidProfile.State(graus, 0.0);
+    double grausLimitado = MathUtil.clamp(
+        graus,
+        ConstantesAngulador.LIMITE_INFERIOR,
+        ConstantesAngulador.LIMITE_SUPERIOR
+        );
+        alvoGraus = grausLimitado;
+        goal = new TrapezoidProfile.State(grausLimitado, 0.0);
 
     setpoint = new TrapezoidProfile.State(
         getAngulo(),
         0.0
     );
-
     sm.set(StateMachineAngulador.Estado.PERFIL);
 }
 
@@ -72,6 +80,17 @@ public class Angulador extends SubsystemBase {
     public void controleManual(double output) {
         manualOutput = output;
         sm.set(StateMachineAngulador.Estado.MANUAL);
+    }
+
+    public void testeMotor (double output){
+        testeOutput = output;
+        sm.set(StateMachineAngulador.Estado.TESTE);
+    }
+
+    public void resetarFalha(){
+        tempoSemMovimento = 0.0;
+        sm.set(StateMachineAngulador.Estado.DESABILITADO);
+        io.motor.stopMotor();
     }
 
     
@@ -86,12 +105,44 @@ public class Angulador extends SubsystemBase {
             case PERFIL -> executarPerfil();
             case HOLD   -> executarHold();
             case MANUAL -> io.motor.set(manualOutput);
+            case TESTE -> io.motor.set(testeOutput);
             default     -> io.motor.stopMotor();
         }
 
         
         SmartDashboard.putNumber("Angulador/Angulo", getAngulo());
         SmartDashboard.putString("Angulador/Estado", sm.get().name());
+
+        double agora = Timer.getFPGATimestamp();
+    double dt = agora - ultimoTimestamp;
+    if(dt <= 0.0) {
+         dt = ConstantesAngulador.DT;
+    }
+    double erroAlvo =
+            Double.isNaN(alvoGraus)
+                ? 0.0
+                : Math.abs(alvoGraus - getAngulo());
+    
+    double velocidadeGraus = KInematicsAngulador.rotacoesParaGraus(io.encoder.getVelocity());
+
+    if (sm.is(StateMachineAngulador.Estado.PERFIL)
+            && erroAlvo > ConstantesAngulador.ERRO_TOLERANCIA) {
+            if (Math.abs(velocidadeGraus)
+                < ConstantesAngulador.VELOCIDADE_MIN) {
+                tempoSemMovimento += dt;
+            } else {
+                tempoSemMovimento = 0.0;
+            }
+        } else {
+            tempoSemMovimento = 0.0;
+        }
+
+        if (tempoSemMovimento >= ConstantesAngulador.TEMPO_MAX_TRAVADO) {
+            sm.set(StateMachineAngulador.Estado.FALHA);
+            io.motor.stopMotor();
+        }
+
+        ultimoTimestamp = agora;
     }
 
    private void executarPerfil() {
@@ -130,7 +181,7 @@ public class Angulador extends SubsystemBase {
     double erro = anguloHold - anguloAtual;
 
     double ffVolts = ff.calculate(
-        Math.toRadians(anguloHold),
+        Math.toRadians(anguloAtual),
         0.0
     );
 

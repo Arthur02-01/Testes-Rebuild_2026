@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 
 import frc.robot.subsystems.Traction;
 import frc.robot.subsystems.Angulador;
-import frc.robot.subsystems.Climber;
+//import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shooter;
 import frc.robot.commands.Limelight.AlinhadorHorizontalAprilTag;
@@ -16,11 +16,11 @@ import frc.robot.commands.Limelight.AlinhadorVerticalAprilTag;
 //import frc.robot.commands.Autonomo.LimelightAuto.AlinhadorHorizontalAuto;
 //import frc.robot.commands.Autonomo.LimelightAuto.AlinhadorVerticalAuto;
 import frc.robot.commands.Autonomo.Shooter.AutoAtirar;
-import frc.robot.commands.Autonomo.Tracao.GiroPorAngulo;
+//import frc.robot.commands.Autonomo.Tracao.GiroPorAngulo;
 import frc.robot.Constantes.ConstantesShooter;
 import frc.robot.Extras.AnguloPreset;
 import frc.robot.commands.Angulador.MoverAnguladoPreset;
-import frc.robot.commands.Climber.ClimberStep;
+//import frc.robot.commands.Climber.ClimberStep;
 import frc.robot.commands.Shooter.*;
 import frc.robot.commands.Traction.AtivarTurbo;
 import frc.robot.commands.Traction.Controller;
@@ -32,7 +32,7 @@ public class RobotContainer {
     private final Traction traction = new Traction();
     private final Angulador angulador = new Angulador();
     private final Limelight limelight = new Limelight();
-    private final Climber climber = new Climber(); 
+    //private final Climber climber = new Climber(); 
 
     /* ===== CONTROLES ===== */
     private final XboxController xbox1 = new XboxController(0);
@@ -50,8 +50,7 @@ public class RobotContainer {
         new JoystickButton(xbox2, XboxController.Button.kLeftBumper.value);
 
     // SHOOTER
-    private final JoystickButton btnA =
-        new JoystickButton(xbox2, XboxController.Button.kA.value);
+    //private final JoystickButton btnA = new JoystickButton(xbox2, XboxController.Button.kA.value);
 
 
     private final JoystickButton btnX =

@@ -16,6 +16,8 @@ public class ConstantesShooter {
     }
 
     public static final double TOLERANCIA_RPM = 100;
+    public static final double TOLERANCIA_RPM_SAIDA = 150;
+    public static final double RAMP_RATE_S = 0.2;
 
     private ConstantesShooter() {}
 }

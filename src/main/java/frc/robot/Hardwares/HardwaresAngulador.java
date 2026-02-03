@@ -16,6 +16,7 @@ public class HardwaresAngulador {
     public final  RelativeEncoder encoder;
     public final SparkClosedLoopController pid;
 
+    @SuppressWarnings("removal")
     public HardwaresAngulador(){
         motor = new SparkMax(
             Constants.Alinhador.AlinhadorMotor,

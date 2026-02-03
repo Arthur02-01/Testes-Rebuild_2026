@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Traction;
 
+@SuppressWarnings("unused")
 public class AlinhadorVerticalAprilTag extends Command {
 
     private final Limelight limelight;

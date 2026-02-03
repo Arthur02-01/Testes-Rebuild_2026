@@ -24,6 +24,7 @@ public class IntakeFloor extends SubsystemBase {
     private boolean IntakeGirando = false;
 
     // Construtor do subsystem
+    @SuppressWarnings("removal")
     public IntakeFloor() {
 
         // Cria o Spark Max usando o ID definido em Constants
@@ -60,6 +61,18 @@ public class IntakeFloor extends SubsystemBase {
 
         // Considera o intake girando se a velocidade for maior que um deadband
         IntakeGirando = Math.abs(velocidadeLimitada) > 0.02;
+    }
+
+    public void IntakeOn(){
+        IntakeVelocidade(VELOCIDADE_MAX);
+    }
+
+    public void IntakeReverse(){
+        IntakeVelocidade(-VELOCIDADE_MAX);
+    }
+
+    public void PararIntake(){
+        ParaIntake();
     }
 
     // Para completamente o intake

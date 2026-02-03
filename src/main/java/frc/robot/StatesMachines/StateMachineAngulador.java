@@ -4,6 +4,7 @@ public class StateMachineAngulador {
     public enum Estado {
         DESABILITADO,
         MANUAL,
+        TESTE,
         PERFIL,
         HOLD,
         FALHA

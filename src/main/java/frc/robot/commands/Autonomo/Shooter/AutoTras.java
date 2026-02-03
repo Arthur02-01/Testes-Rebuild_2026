@@ -7,6 +7,7 @@ import frc.robot.commands.Shooter.AtivarAtrasShooter;
 import frc.robot.commands.Shooter.PararShooter;
 import frc.robot.subsystems.Shooter;
 
+@SuppressWarnings("unused")
 public class AutoTras extends SequentialCommandGroup {
 
     public AutoTras(Shooter shooter) {

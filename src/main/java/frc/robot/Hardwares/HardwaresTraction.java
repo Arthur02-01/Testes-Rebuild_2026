@@ -42,7 +42,8 @@ public class HardwaresTraction {
         
     private final Pigeon2 pigeon = new Pigeon2(22);
 
-    public HardwaresTraction() {
+    @SuppressWarnings("removal")
+public HardwaresTraction() {
 
         pigeon.reset();
 

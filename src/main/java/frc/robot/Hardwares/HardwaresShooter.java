@@ -6,6 +6,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import frc.robot.Constants;
+import frc.robot.Constantes.ConstantesShooter;
 
 public class HardwaresShooter {
 
@@ -18,6 +19,7 @@ public class HardwaresShooter {
     public final SparkClosedLoopController arlindopid;
     public final SparkClosedLoopController boquinhapid;
 
+    @SuppressWarnings("removal")
     public HardwaresShooter() {
 
         arlindo = new SparkMax(
@@ -46,6 +48,7 @@ public class HardwaresShooter {
         .d(0.0)
         .velocityFF(1.0/5700.0)
         .outputRange(-1.0, 1.0);
+        cfg.closedLoopRampRate(ConstantesShooter.RAMP_RATE_S);
 
         arlindo.configure(cfg,
             SparkBase.ResetMode.kNoResetSafeParameters,

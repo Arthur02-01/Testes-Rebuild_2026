@@ -1,11 +1,11 @@
 package frc.robot.Hardwares;
 
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkBase;
+//import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.spark.SparkLowLevel;
+//import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -19,6 +19,7 @@ public class HardwaresClimber {
     public final RelativeEncoder encoder;
     public final SparkClosedLoopController pid;
 
+    @SuppressWarnings("removal")
     public HardwaresClimber() {
 
         motor = new SparkMax(
@@ -26,6 +27,7 @@ public class HardwaresClimber {
             MotorType.kBrushless
         );
 
+        @SuppressWarnings("resource")
         SparkMax follower = new SparkMax(
             Constants.ClimberConstants.ClimberMotor2,
             MotorType.kBrushless

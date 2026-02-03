@@ -14,7 +14,10 @@ public class Shooter extends SubsystemBase {
     private final HardwaresShooter io = new HardwaresShooter();
     private final StateMachineShooter sm = new StateMachineShooter();
 
-    private double rpmAlvo = 0.0;
+    private double rpmAlvo = ConstantesShooter.Velocidade.NORMAL.rpm;
+    private double ultimoSetpointArlindo = Double.NaN;
+    private double ultimoSetpointBoquinha = Double.NaN;
+    private boolean pronto = false;
 
     private ConstantesShooter.Velocidade velocidade =
         ConstantesShooter.Velocidade.NORMAL;
@@ -58,10 +61,42 @@ public class Shooter extends SubsystemBase {
         return !sm.is(StateMachineShooter.Estado.PARADO);
     }
     public boolean pronto(){
-        return 
-            Math.abs(rpmAlvo - io.arlindoEncoder.getVelocity()) < ConstantesShooter.TOLERANCIA_RPM &&
-            Math.abs(rpmAlvo - io.boquinhaEncoder.getVelocity()) < ConstantesShooter.TOLERANCIA_RPM;
+        boolean dentro =
+            Math.abs(rpmAlvo - io.arlindoEncoder.getVelocity())
+                < ConstantesShooter.TOLERANCIA_RPM
+            && Math.abs(rpmAlvo - io.boquinhaEncoder.getVelocity())
+                < ConstantesShooter.TOLERANCIA_RPM;
+
+        boolean fora =
+            Math.abs(rpmAlvo - io.arlindoEncoder.getVelocity())
+                > ConstantesShooter.TOLERANCIA_RPM_SAIDA
+            || Math.abs(rpmAlvo - io.boquinhaEncoder.getVelocity())
+                > ConstantesShooter.TOLERANCIA_RPM_SAIDA;
+
+        if (!pronto && dentro) {
+            pronto = true;
+        } else if (pronto && fora) {
+            pronto = false;
+        }
+
+        return pronto;
     }
+
+    private void definirSetpoint(double arlindoRpm, double boquinhaRpm) {
+        if (Double.isNaN(ultimoSetpointArlindo)
+            || ultimoSetpointArlindo != arlindoRpm) {
+            io.arlindopid.setSetpoint(arlindoRpm, ControlType.kVelocity);
+            ultimoSetpointArlindo = arlindoRpm;
+        }
+        if (Double.isNaN(ultimoSetpointBoquinha)
+            || ultimoSetpointBoquinha != boquinhaRpm) {
+            io.boquinhapid.setSetpoint(boquinhaRpm, ControlType.kVelocity);
+            ultimoSetpointBoquinha = boquinhaRpm;
+        }
+    }
+    
+        
+    
 
     /* ================= LOOP ================= */
 
@@ -71,26 +106,19 @@ public class Shooter extends SubsystemBase {
         switch (sm.get()) {
 
             case ATIRANDO_FRENTE -> {
-                io.arlindopid.setSetpoint(
-                    -rpmAlvo, ControlType.kVelocity
-                );
-                io.boquinhapid.setSetpoint(
-                    +rpmAlvo, ControlType.kVelocity
-                );
+                definirSetpoint(-rpmAlvo, +rpmAlvo);
             }
 
             case ATIRANDO_TRAS -> {
-                io.arlindopid.setSetpoint(
-                    +rpmAlvo, ControlType.kVelocity
-                );
-                io.boquinhapid.setSetpoint(
-                    -rpmAlvo, ControlType.kVelocity
-                );
+                definirSetpoint(+rpmAlvo, -rpmAlvo);
             }
 
             case PARADO -> {
                 io.arlindo.stopMotor();
                 io.boquinha.stopMotor();
+                ultimoSetpointArlindo = Double.NaN;
+                ultimoSetpointBoquinha = Double.NaN;
+                pronto = false;
             }
         }
 

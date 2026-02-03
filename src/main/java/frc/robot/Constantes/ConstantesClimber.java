@@ -1,7 +1,9 @@
 package frc.robot.Constantes;
 
+
 import frc.robot.subsystems.Climber;
 
+@SuppressWarnings("unused")
 public class ConstantesClimber {
         /* ================== CONSTANTES FÍSICAS ================== */
 
