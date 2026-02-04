@@ -91,8 +91,11 @@ public class Angulador extends SubsystemBase {
 
     public void resetarFalha(){
         tempoSemMovimento = 0.0;
+        double anguloAtual = getAngulo();
+        anguloHold = anguloAtual;
+        goal = new TrapezoidProfile.State(anguloAtual, 0.0);
+        setpoint = new TrapezoidProfile.State(anguloAtual, 0.0);
         sm.set(StateMachineAngulador.Estado.HOLD);
-        io.motor.stopMotor();
     }
 
     

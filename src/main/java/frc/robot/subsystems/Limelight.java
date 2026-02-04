@@ -4,9 +4,10 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class Limelight extends SubsystemBase {
-
+    
     private final NetworkTable table;
 
     private double txFiltrado = 0.0;
@@ -15,18 +16,7 @@ public class Limelight extends SubsystemBase {
     private double ultimoDashboard = 0.0;  
     
     private static final double ALPHA = 0.2; 
-
-// Alturas em metros
-private static final double ALTURA_CAMERA = 0.35;
-private static final double ALTURA_TAG = 1.135;
-
-// Ângulo EFETIVO calibrado (não o físico)
-private static final double ANGULO_CAMERA_EFETIVO = 20.4; // exemplo
-
-// Distância da câmera até o bumper (em metros)
-private static final double OFFSET_CAMERA_BUMPER = 0.25;
  
-
     public Limelight() {
         table = NetworkTableInstance.getDefault().getTable("limelight");
     }
@@ -64,15 +54,15 @@ private static final double OFFSET_CAMERA_BUMPER = 0.25;
         }
 
 double ty = getTy();
-double anguloTotalGraus = ANGULO_CAMERA_EFETIVO + ty;
+double anguloTotalGraus = Constants.LimelightConstants.ANGULO_CAMERA_EFETIVO_GRAUS + ty;
 double anguloTotalRad = Math.toRadians(anguloTotalGraus);
 
 
 double distanciaCamera =
-(ALTURA_TAG - ALTURA_CAMERA) / Math.tan(anguloTotalRad);
+(Constants.LimelightConstants.ALTURA_TAG_METROS - Constants.LimelightConstants.ALTURA_CAMERA_METROS) / Math.tan(anguloTotalRad);
 
 
-double distanciaBumper = distanciaCamera - OFFSET_CAMERA_BUMPER;
+double distanciaBumper = distanciaCamera - Constants.LimelightConstants.OFFSET_CAMERA_BUMPER_METROS;
 return Math.max(distanciaBumper, 0.0);
 }
 

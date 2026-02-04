@@ -46,6 +46,13 @@ public final class Constants {
     public static final int IntakeMotor = 21;
   }
 
+  public static final class LimelightConstants {
+    public static final double ALTURA_CAMERA_METROS = 0.35;
+    public static final double ALTURA_TAG_METROS = 1.135;
+    public static final double ANGULO_CAMERA_EFETIVO_GRAUS = 20.4;
+    public static final double OFFSET_CAMERA_BUMPER_METROS = 0.25;
+  }
+
   public static final class ClimberConstants{
     public static final int ClimberMotor = 23;
     public static final int ClimberMotor2 = 24;

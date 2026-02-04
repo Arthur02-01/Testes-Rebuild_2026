@@ -1,10 +1,11 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
-import edu.wpi.first.wpilibj.DriverStation;
+//import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Hardwares.HardwaresTraction;
 public class Traction extends SubsystemBase {
 
@@ -62,10 +63,12 @@ public void periodic() {
         double yaw = pigeon.getYaw().getValueAsDouble();
         double rateZ = pigeon.getAngularVelocityZWorld().getValueAsDouble();
 
-        DriverStation.reportWarning(
+        /*DriverStation.reportWarning(
             "PIGEON | Yaw=" + yaw + " | RateZ=" + rateZ,
             false
-        );
+        );*/
+        SmartDashboard.putNumber("Pigeon/Yaw", yaw);
+        SmartDashboard.putNumber("Pigeon/RateZ", rateZ);
     }
 }
 
@@ -85,7 +88,8 @@ public void periodic() {
             (-io.rightEncoder.getPosition() / GEAR_RATIO) * METERS_PER_ROTATION;
 
 
-        return (Math.abs(leftDistance) + Math.abs(rightDistance)) / 2.0;
+        return (leftDistance) + (rightDistance) / 2.0;
+        //(Math.abs(leftDistance) + Math.abs(rightDistance)) / 2.0;
         }
 
 }
