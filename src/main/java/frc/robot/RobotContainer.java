@@ -116,7 +116,7 @@ btnY.onTrue(
         rb.onTrue(new AtivarFrenteShooter(shooter));
         lb.onTrue(new AtivarAtrasShooter(shooter));
 
-        new JoystickButton(xbox1, 0); 
+        //new JoystickButton(xbox1, 0); 
 
        /* * R4.debounce(0.15).onTrue(
             new ClimberStep(

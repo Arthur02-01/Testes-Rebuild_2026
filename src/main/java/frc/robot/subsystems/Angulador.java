@@ -16,6 +16,7 @@ import frc.robot.Hardwares.HardwaresAngulador;
 import frc.robot.Kinematics.KInematicsAngulador;
 import frc.robot.StatesMachines.StateMachineAngulador;
 
+    
 public class Angulador extends SubsystemBase {
 
     private final HardwaresAngulador io = new HardwaresAngulador();
@@ -37,6 +38,7 @@ public class Angulador extends SubsystemBase {
     private TrapezoidProfile.State goal = new TrapezoidProfile.State();
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
 
+    @SuppressWarnings("unused")
     private double alvoGraus = Double.NaN;
     private double manualOutput = 0.0;
     private double testeOutput = 0.0;
@@ -89,7 +91,7 @@ public class Angulador extends SubsystemBase {
 
     public void resetarFalha(){
         tempoSemMovimento = 0.0;
-        sm.set(StateMachineAngulador.Estado.DESABILITADO);
+        sm.set(StateMachineAngulador.Estado.HOLD);
         io.motor.stopMotor();
     }
 
@@ -118,18 +120,15 @@ public class Angulador extends SubsystemBase {
     if(dt <= 0.0) {
          dt = ConstantesAngulador.DT;
     }
-    double erroAlvo =
-            Double.isNaN(alvoGraus)
-                ? 0.0
-                : Math.abs(alvoGraus - getAngulo());
+    double erroSetpoint = Math.abs(setpoint.position - getAngulo());
     
     double velocidadeGraus = KInematicsAngulador.rotacoesParaGraus(io.encoder.getVelocity());
 
     if (sm.is(StateMachineAngulador.Estado.PERFIL)
-            && erroAlvo > ConstantesAngulador.ERRO_TOLERANCIA) {
-            if (Math.abs(velocidadeGraus)
-                < ConstantesAngulador.VELOCIDADE_MIN) {
-                tempoSemMovimento += dt;
+            && erroSetpoint > ConstantesAngulador.ERRO_TOLERANCIA) {
+            boolean perfilLento = Math.abs(setpoint.velocity) < ConstantesAngulador.VELOCIDADE_MIN;
+            if (Math.abs(velocidadeGraus) < ConstantesAngulador.VELOCIDADE_MIN 
+            && perfilLento){ tempoSemMovimento += dt;
             } else {
                 tempoSemMovimento = 0.0;
             }

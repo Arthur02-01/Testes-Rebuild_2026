@@ -11,7 +11,9 @@ public class Limelight extends SubsystemBase {
 
     private double txFiltrado = 0.0;
     private double distFiltrada = 0.0;
-
+    private double UltimaDistanciaValida = 0.0;
+    private double ultimoDashboard = 0.0;  
+    
     private static final double ALPHA = 0.2; 
 
 // Alturas em metros
@@ -40,6 +42,16 @@ private static final double OFFSET_CAMERA_BUMPER = 0.25;
     public double getTy() {
         return table.getEntry("ty").getDouble(0.0);
     }
+
+    public double getTxAlvo () {
+        return temAlvo() ? getTx() : Double.NaN;
+    }
+
+    public double getTyAlvo () {
+        return temAlvo() ? getTy() : Double.NaN;
+    }
+
+
     public double getTxFiltrado() {
         double tx = getTx();
         txFiltrado = (1 - ALPHA) * txFiltrado + ALPHA * tx;
@@ -47,8 +59,9 @@ private static final double OFFSET_CAMERA_BUMPER = 0.25;
     }
 
     public double getDistanciaAprilTag() {
-if (!temAlvo()) return -1;
-
+        if (!temAlvo()) {
+            return Double.NaN;
+        }
 
 double ty = getTy();
 double anguloTotalGraus = ANGULO_CAMERA_EFETIVO + ty;
@@ -66,7 +79,11 @@ return Math.max(distanciaBumper, 0.0);
 
     public double getDistanciaFiltrada() {
         double d = getDistanciaAprilTag();
+        if (Double.isNaN(d)) {
+            return UltimaDistanciaValida;
+        }
         distFiltrada = (1 - ALPHA) * distFiltrada + ALPHA * d;
+        UltimaDistanciaValida = distFiltrada;
         return distFiltrada;
     }
 
@@ -86,10 +103,14 @@ return Math.max(distanciaBumper, 0.0);
     }
     @Override
     public void periodic() {
+        double agora = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+        if (agora - ultimoDashboard >= 0.2) {
+        ultimoDashboard = agora;
         SmartDashboard.putBoolean("Limelight/Tem Alvo", temAlvo());
         SmartDashboard.putNumber("Limelight/tx (graus)", getTx());
         SmartDashboard.putNumber("Limelight/ty (graus)", getTy());
         SmartDashboard.putNumber("Limelight/Distancia (m)", getDistanciaAprilTag());
         SmartDashboard.putNumber("limelight/Distancia Filtrada (m)", getDistanciaFiltrada());
+        }
     }
 }

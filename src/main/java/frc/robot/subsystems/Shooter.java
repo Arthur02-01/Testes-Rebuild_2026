@@ -18,6 +18,7 @@ public class Shooter extends SubsystemBase {
     private double ultimoSetpointArlindo = Double.NaN;
     private double ultimoSetpointBoquinha = Double.NaN;
     private boolean pronto = false;
+    private double ultimoDashboard = 0.0;
 
     private ConstantesShooter.Velocidade velocidade =
         ConstantesShooter.Velocidade.NORMAL;
@@ -121,10 +122,13 @@ public class Shooter extends SubsystemBase {
                 pronto = false;
             }
         }
-
-         SmartDashboard.putString("Shooter/Estado", sm.get().name());
-        SmartDashboard.putNumber("Shooter/RPM Alvo", rpmAlvo);
-        SmartDashboard.putNumber("Shooter/Arlindo RPM", io.arlindoEncoder.getVelocity());
-        SmartDashboard.putNumber("Shooter/Boquinha RPM", io.boquinhaEncoder.getVelocity());
+        double agora = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+         if (agora - ultimoDashboard >= 0.2) {
+        ultimoDashboard = agora;
+            SmartDashboard.putString("Shooter/Estado", sm.get().name());
+            SmartDashboard.putNumber("Shooter/RPM Alvo", rpmAlvo);
+            SmartDashboard.putNumber("Shooter/Arlindo RPM", io.arlindoEncoder.getVelocity());
+            SmartDashboard.putNumber("Shooter/Boquinha RPM", io.boquinhaEncoder.getVelocity());
+        }
     }
 }
