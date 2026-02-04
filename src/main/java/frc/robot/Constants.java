@@ -18,8 +18,8 @@ public final class Constants {
 
    // ===== SPARK MAX - TRAÇÃO =====
   // Lado direito
-  public static final int rightFrontMotorID = 4;
-  public static final int rightBackMotorID  = 3;
+  public static final int rightFrontMotorID = 3;
+  public static final int rightBackMotorID  = 4;
 
   // Lado esquerdo
   public static final int leftFrontMotorID  = 1;

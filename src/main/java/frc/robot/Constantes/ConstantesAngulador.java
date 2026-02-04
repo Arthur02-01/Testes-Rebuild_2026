@@ -20,7 +20,7 @@ public final class ConstantesAngulador {
     public static final double LIMITE_SUPERIOR = 50.0;
     public static final double LIMITE_INFERIOR = 10.0;
 
-    public static final double REDUCAO = 5.0;
+    public static final double REDUCAO = 25.0;
 
     public static final double DT = 0.02;
     public static final double MARGEM_ERRO_BASE = 1.65;

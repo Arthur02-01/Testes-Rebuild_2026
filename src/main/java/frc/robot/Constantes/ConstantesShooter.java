@@ -18,6 +18,8 @@ public class ConstantesShooter {
     public static final double TOLERANCIA_RPM = 100;
     public static final double TOLERANCIA_RPM_SAIDA = 150;
     public static final double RAMP_RATE_S = 0.2;
+    public static final double boquinhaReducao = 25.0;
+    public static final double arlindoReducao = 9.0;
 
     private ConstantesShooter() {}
 }
