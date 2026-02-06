@@ -9,14 +9,14 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants;
+
 import frc.robot.Constantes.ConstantesAngulador;
 import frc.robot.Extras.AnguloPreset;
 import frc.robot.Hardwares.HardwaresAngulador;
 import frc.robot.Kinematics.KInematicsAngulador;
 import frc.robot.StatesMachines.StateMachineAngulador;
 
-    
+@SuppressWarnings ("unused")
 public class Angulador extends SubsystemBase {
 
     private final HardwaresAngulador io = new HardwaresAngulador();
@@ -24,9 +24,9 @@ public class Angulador extends SubsystemBase {
 
     private final ArmFeedforward ff =
         new ArmFeedforward(
-            Constants.FFAlinhador.kS,
-            Constants.FFAlinhador.kG,
-            Constants.FFAlinhador.kV
+            ConstantesAngulador.FFAlinhador.kS,
+            ConstantesAngulador.FFAlinhador.kG,
+            ConstantesAngulador.FFAlinhador.kV
         );
 
     private final TrapezoidProfile.Constraints constraints =

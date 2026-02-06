@@ -107,11 +107,11 @@ public class Shooter extends SubsystemBase {
         switch (sm.get()) {
 
             case ATIRANDO_FRENTE -> {
-                definirSetpoint(-rpmAlvo, +rpmAlvo);
+                definirSetpoint(+rpmAlvo, +rpmAlvo);
             }
 
             case ATIRANDO_TRAS -> {
-                definirSetpoint(+rpmAlvo, -rpmAlvo);
+                definirSetpoint(-rpmAlvo, -rpmAlvo);
             }
 
             case PARADO -> {

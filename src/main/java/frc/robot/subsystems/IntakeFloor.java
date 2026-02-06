@@ -3,93 +3,236 @@ package frc.robot.subsystems;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-
+import frc.robot.Hardwares.HardwaresIntake;
+import frc.robot.Constantes.ConstantesAngulador;
+import frc.robot.Constantes.ConstantesIntakeFloor;
+import frc.robot.Extras.AnguloPreset;
+import frc.robot.Extras.AngulosPresetPivot;
+import frc.robot.StatesMachines.StateMachineAngulador;
+import frc.robot.StatesMachines.StateMachineIntakeFloor;
+import frc.robot.Kinematics.KInematicsAngulador;
+import frc.robot.Kinematics.KinematicsIntakeFloor;
+import frc.robot.Constantes.ConstantesIntakeFloor;
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.MathUtil;
-import frc.robot.Constants;
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+
+@SuppressWarnings ("unused")
 public class IntakeFloor extends SubsystemBase {
-    
-    // Objeto que representa o motor do intake
-    private final SparkMax IntakeMotor;
 
-    // Velocidade máxima permitida para o intake (25%)
-    private static final double VELOCIDADE_MAX = 0.25;
+    private static final double VELOCIDADE_MAX_INTAKE = 0.25;
 
-    // Flag para indicar se o intake está girando
     private boolean IntakeGirando = false;
+    private boolean PivotSubindo = false;
+    private boolean PivotDescendo = false;
 
-    // Construtor do subsystem
-    @SuppressWarnings("removal")
-    public IntakeFloor() {
+    private final HardwaresIntake io = new HardwaresIntake();
+    private final StateMachineIntakeFloor sm = new StateMachineIntakeFloor();
 
-        // Cria o Spark Max usando o ID definido em Constants
-        IntakeMotor = new SparkMax(
-            Constants.IntakeFloorMotor.IntakeMotor,
-            MotorType.kBrushless
+    private final ArmFeedforward ff =
+        new ArmFeedforward(ConstantesIntakeFloor.FFPivot.kS,
+        ConstantesIntakeFloor.FFPivot.kG,
+        ConstantesIntakeFloor.FFPivot.kV
         );
 
-        // Cria o objeto de configuração do Spark Max
-        SparkMaxConfig config = new SparkMaxConfig();
+    private final TrapezoidProfile.Constraints constraints = 
+        new TrapezoidProfile.Constraints(
+            ConstantesIntakeFloor.MAX_VEL_PIVOT,
+            ConstantesIntakeFloor.MAX_ACC_PIVOT
+        );
 
-        // Define o motor para modo Brake (para parar rapidamente)
-        config.idleMode(IdleMode.kBrake);
+    private TrapezoidProfile.State goal = new TrapezoidProfile.State();
+    private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
+    
+    private double alvoGraus = Double.NaN;
+    private double manualOutput = 0.0;
+    private double testeOutput = 0.0;
+    private double anguloHold = 0.0;
+    public static final double ERRO_MAX_HOLD =  2.0;
+    private double tempoSemMovimento = 0.0;
+    private double ultimoTimestamp = Timer.getFPGATimestamp();
 
-        // Define limite de corrente em 60A para proteção
-        config.smartCurrentLimit(60);
-
-        IntakeMotor.configure(
-            config,
-            ResetMode.kNoResetSafeParameters,
-            PersistMode.kNoPersistParameters
-        );        
+    public double getAnguloPivot(){
+        return KinematicsIntakeFloor.rotacoesParaGrausPivot(
+            io.encoder_pivot.getPosition()
+        );
     }
 
-    // Define a velocidade do intake
+    public StateMachineIntakeFloor.EstadoPivot getEstadoPivot() {
+        return sm.get();
+    }
+
+    public void moverParaAnguloPivot(double graus) {
+        double grausLimitado = MathUtil.clamp(
+            graus,
+            ConstantesIntakeFloor.LIMITE_INFERIOR_PIVOT,
+            ConstantesIntakeFloor.LIMITE_SUPERIOR_PIVOT
+        );
+        alvoGraus = grausLimitado;
+        goal = new TrapezoidProfile.State(grausLimitado, 0.0);
+
+    setpoint = new TrapezoidProfile.State(
+        getAnguloPivot(),
+        0.0
+    );
+    sm.set(StateMachineIntakeFloor.EstadoPivot.PERFIL);
+    }
+
+    public void moverParaPreset (AngulosPresetPivot preset) {
+        moverParaAnguloPivot(preset.graus);
+    }
+
+    public void controleManual(double output) {
+        manualOutput = output;
+        sm.set(StateMachineIntakeFloor.EstadoPivot.MANUAL);
+    }
+
+    public void testeMotor (double output) {
+        testeOutput = output;
+        sm.set(StateMachineIntakeFloor.EstadoPivot.TESTE);
+    }
+
+    public void resetarFalha(){
+        tempoSemMovimento = 0.0;
+        double anguloAtual = getAnguloPivot();
+        anguloHold = anguloAtual;
+        goal = new TrapezoidProfile.State(anguloAtual, 0.0);
+        setpoint = new TrapezoidProfile.State(anguloAtual, 0.0);
+        sm.set(StateMachineIntakeFloor.EstadoPivot.HOLD);
+    }
+
     public void IntakeVelocidade(double velocidade) {
 
-        // Limita a velocidade entre -VELOCIDADE_MAX e +VELOCIDADE_MAX
         double velocidadeLimitada =
-            MathUtil.clamp(velocidade, -VELOCIDADE_MAX, VELOCIDADE_MAX);
+            MathUtil.clamp(velocidade, -VELOCIDADE_MAX_INTAKE, VELOCIDADE_MAX_INTAKE);
 
-        // Aplica a velocidade no motor
-        IntakeMotor.set(velocidadeLimitada);
+        io.IntakeMotor.set(velocidadeLimitada);
 
-        // Considera o intake girando se a velocidade for maior que um deadband
         IntakeGirando = Math.abs(velocidadeLimitada) > 0.02;
     }
 
     public void IntakeOn(){
-        IntakeVelocidade(VELOCIDADE_MAX);
+        IntakeVelocidade(VELOCIDADE_MAX_INTAKE);
     }
 
     public void IntakeReverse(){
-        IntakeVelocidade(-VELOCIDADE_MAX);
+        IntakeVelocidade(-VELOCIDADE_MAX_INTAKE);
     }
 
     public void PararIntake(){
         ParaIntake();
     }
 
-    // Para completamente o intake
     public void ParaIntake() {
 
-        // Zera a velocidade do motor
-        IntakeMotor.set(0);
+        io.IntakeMotor.set(0);
 
-        // Atualiza o estado interno
         IntakeGirando = false;
     }
 
-    // Método chamado automaticamente a cada ciclo do robô
     @Override
     public void periodic() {
 
-        // Envia para o SmartDashboard se o intake está girando
+        switch (sm.get()) {
+            case PERFIL -> executarPerfil();
+            case HOLD -> executarHold();
+            case MANUAL -> io.PivotMotor.set(manualOutput);
+            case TESTE -> io.PivotMotor.set(testeOutput);
+            default     -> io.PivotMotor.stopMotor();
+        }
+
         SmartDashboard.putBoolean("Intake girando", IntakeGirando);
+        SmartDashboard.putNumber("Pivot/Angulo", getAnguloPivot());
+        SmartDashboard.putString("Pivot/Estado", sm.get().name());
+
+        double agora = Timer.getFPGATimestamp();
+    double dt = agora - ultimoTimestamp;
+    if(dt <= 0.0) {
+         dt = ConstantesAngulador.DT;
     }
+    double erroSetpoint = Math.abs(setpoint.position - getAnguloPivot());
+    
+    double velocidadeGraus = KInematicsAngulador.rotacoesParaGraus(io.encoder_pivot.getVelocity());
+
+    if (sm.is(StateMachineIntakeFloor.EstadoPivot.PERFIL)
+    && erroSetpoint > ConstantesIntakeFloor.ERRO_TOLERANCIA_PIVOT){
+    boolean perfilLento = Math.abs(setpoint.velocity) < ConstantesIntakeFloor.VELOCIDADE_MIN_PIVOT;
+    if (Math.abs(velocidadeGraus) < ConstantesIntakeFloor.VELOCIDADE_MIN_PIVOT
+    && perfilLento){ tempoSemMovimento += dt;
+    } else {
+        tempoSemMovimento = 0.0;
+    }
+} else {
+    tempoSemMovimento = 0.0;
+}
+    if (tempoSemMovimento >= ConstantesIntakeFloor.TEMPO_MAX_TRAVADO_PIVOT) {
+        sm.set(StateMachineIntakeFloor.EstadoPivot.FALHA);
+        io.PivotMotor.stopMotor();
+    }
+        ultimoTimestamp = agora;
+    }
+
+private void executarPerfil() {
+ TrapezoidProfile profile = new TrapezoidProfile(constraints);
+
+ setpoint = profile.calculate(
+    ConstantesIntakeFloor.DT_PIVOT,
+    setpoint,
+    goal
+  );
+
+  double ffVolts = ff.calculate(Math.toRadians(setpoint.position), Math.toRadians(setpoint.velocity)
+  );
+
+  io.pid.setSetpoint(KinematicsIntakeFloor.grausParaRotacoesPivot(setpoint.position),
+   SparkBase.ControlType.kPosition,
+   ClosedLoopSlot.kSlot0,
+   ffVolts
+   );
+
+    if (Math.abs(goal.position - setpoint.position)
+    < ConstantesIntakeFloor.MARGEM_ERRO_BASE_PIVOT
+    ) {
+        anguloHold = goal.position;
+        sm.set(StateMachineIntakeFloor.EstadoPivot.HOLD);
+    }
+}
+private void executarHold() {
+
+    double anguloAtual = getAnguloPivot();
+    double erro = anguloHold - anguloAtual;
+
+    double ffVolts = ff.calculate(
+        Math.toRadians(anguloAtual),
+        0.0
+    );
+
+    io.pid.setSetpoint(
+        KinematicsIntakeFloor.grausParaRotacoesPivot(anguloHold),
+        SparkBase.ControlType.kPosition,
+        ClosedLoopSlot.kSlot0,
+        ffVolts
+    );
+    if (Math.abs(erro) > ERRO_MAX_HOLD) {
+        setpoint = new TrapezoidProfile.State(
+            anguloAtual,
+            0.0
+        );
+        goal = new TrapezoidProfile.State(
+            anguloHold,
+            0.0
+        );
+        sm.set(StateMachineIntakeFloor.EstadoPivot.PERFIL);
+    }
+}
 }

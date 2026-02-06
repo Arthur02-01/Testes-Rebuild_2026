@@ -5,9 +5,9 @@ import com.revrobotics.spark.*;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-import frc.robot.Constants;
 import frc.robot.Constantes.ConstantesShooter;
 
+@SuppressWarnings("unused")
 public class HardwaresShooter {
 
     public final SparkMax arlindo;
@@ -19,16 +19,17 @@ public class HardwaresShooter {
     public final SparkClosedLoopController arlindopid;
     public final SparkClosedLoopController boquinhapid;
 
-    @SuppressWarnings("removal")
+
+    @SuppressWarnings("removal" )
     public HardwaresShooter() {
 
         arlindo = new SparkMax(
-            Constants.Shooter.ShooterArlindo,
+            ConstantesShooter.Shooter.ShooterArlindo,
             SparkLowLevel.MotorType.kBrushless
         );
 
         boquinha = new SparkMax(
-            Constants.Shooter.ShooterBoquinha,
+            ConstantesShooter.Shooter.ShooterBoquinha,
             SparkLowLevel.MotorType.kBrushless
         );
 

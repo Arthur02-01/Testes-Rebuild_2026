@@ -10,5 +10,6 @@ public enum AnguloPreset {
 
     AnguloPreset(double graus) {
         this.graus = graus;
+
     }
 }

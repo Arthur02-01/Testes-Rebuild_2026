@@ -11,8 +11,9 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-import frc.robot.Constants;
+import frc.robot.Constantes.ConstantesClimber;
 
+@SuppressWarnings ("unused")
 public class HardwaresClimber {
 
     public final SparkMax motor;
@@ -23,13 +24,13 @@ public class HardwaresClimber {
     public HardwaresClimber() {
 
         motor = new SparkMax(
-            Constants.ClimberConstants.ClimberMotor,
+            ConstantesClimber.ClimberConstants.ClimberMotor,
             MotorType.kBrushless
         );
 
         @SuppressWarnings("resource")
         SparkMax follower = new SparkMax(
-            Constants.ClimberConstants.ClimberMotor2,
+            ConstantesClimber.ClimberConstants.ClimberMotor2,
             MotorType.kBrushless
         );
 

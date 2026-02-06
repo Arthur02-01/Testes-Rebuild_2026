@@ -5,8 +5,10 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.DriverStation;
-import frc.robot.Constants;
 
+import frc.robot.Constantes.ConstantesLimelight;
+
+@SuppressWarnings("unused")
 public class Limelight extends SubsystemBase {
     
     private final NetworkTable table;
@@ -56,7 +58,7 @@ public class Limelight extends SubsystemBase {
         }
 
 double ty = getTy();
-double anguloTotalGraus = Constants.LimelightConstants.ANGULO_CAMERA_EFETIVO_GRAUS + ty;
+double anguloTotalGraus = ConstantesLimelight.LimelightConstants.ANGULO_CAMERA_EFETIVO_GRAUS + ty;
 double anguloTotalRad = Math.toRadians(anguloTotalGraus);
 
 double tangente = Math.tan(anguloTotalRad);
@@ -70,10 +72,10 @@ if (Math.abs(tangente) < Tan_Angulo_Minimo) {
 
 
 double distanciaCamera =
-(Constants.LimelightConstants.ALTURA_TAG_METROS - Constants.LimelightConstants.ALTURA_CAMERA_METROS) / tangente;
+(ConstantesLimelight.LimelightConstants.ALTURA_TAG_METROS - ConstantesLimelight.LimelightConstants.ALTURA_CAMERA_METROS) / tangente;
 
 
-double distanciaBumper = distanciaCamera - Constants.LimelightConstants.OFFSET_CAMERA_BUMPER_METROS;
+double distanciaBumper = distanciaCamera - ConstantesLimelight.LimelightConstants.OFFSET_CAMERA_BUMPER_METROS;
 return Math.max(distanciaBumper, 0.0);
 }
 

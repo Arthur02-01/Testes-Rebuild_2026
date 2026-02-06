@@ -14,6 +14,17 @@ public class ConstantesShooter {
             this.rpm = rpm;
         }
     }
+  public static class OperatorConstants {
+    public static final int kDriverControllerPort = 0;
+  }
+  public static class Shooter{
+   public static final int ShooterArlindo =10;
+     public static final int ShooterBoquinha =11;
+  }
+  public static class EncoderShooter{
+    public static final int ArlindoEncoder = 13;
+    public static final int BoquinhaEncoder = 12;
+  }
 
     public static final double TOLERANCIA_RPM = 100;
     public static final double TOLERANCIA_RPM_SAIDA = 150;

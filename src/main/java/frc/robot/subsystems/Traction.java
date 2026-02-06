@@ -88,8 +88,8 @@ public void periodic() {
             (-io.rightEncoder.getPosition() / GEAR_RATIO) * METERS_PER_ROTATION;
 
 
-        return (leftDistance + rightDistance) / 2.0;
-        //(Math.abs(leftDistance) + Math.abs(rightDistance)) / 2.0;
+        return (Math.abs(leftDistance) + Math.abs(rightDistance)) / 2.0;
+        //(leftDistance + rightDistance) / 2.0;
         }
 
 }

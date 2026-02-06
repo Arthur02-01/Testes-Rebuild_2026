@@ -8,8 +8,9 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-import frc.robot.Constants;
+import frc.robot.Constantes.ConstantesAngulador;
 
+@SuppressWarnings ("unused")
 public class HardwaresAngulador {
 
     public final SparkMax motor;
@@ -19,7 +20,7 @@ public class HardwaresAngulador {
     @SuppressWarnings("removal")
     public HardwaresAngulador(){
         motor = new SparkMax(
-            Constants.Alinhador.AlinhadorMotor,
+            ConstantesAngulador.Alinhador.AlinhadorMotor,
             SparkLowLevel.MotorType.kBrushless
         );
 

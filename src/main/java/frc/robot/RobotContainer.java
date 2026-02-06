@@ -25,6 +25,7 @@ import frc.robot.commands.Shooter.*;
 import frc.robot.commands.Traction.AtivarTurbo;
 import frc.robot.commands.Traction.Controller;
 
+@SuppressWarnings ("unused")
 public class RobotContainer {
 
     /* ===== SUBSYSTEMS ===== */
@@ -115,8 +116,6 @@ btnY.onTrue(
 
         rb.onTrue(new AtivarFrenteShooter(shooter));
         lb.onTrue(new AtivarAtrasShooter(shooter));
-
-        //new JoystickButton(xbox1, 0); 
 
        /* * R4.debounce(0.15).onTrue(
             new ClimberStep(
