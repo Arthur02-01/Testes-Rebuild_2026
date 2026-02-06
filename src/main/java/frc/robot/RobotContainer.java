@@ -8,17 +8,20 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 
 import frc.robot.subsystems.Traction;
 import frc.robot.subsystems.Angulador;
+import frc.robot.subsystems.IntakeFloor;
 //import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shooter;
 import frc.robot.commands.Limelight.AlinhadorHorizontalAprilTag;
 import frc.robot.commands.Limelight.AlinhadorVerticalAprilTag;
+import frc.robot.commands.Pivot.MoverPivotPreset;
 //import frc.robot.commands.Autonomo.LimelightAuto.AlinhadorHorizontalAuto;
 //import frc.robot.commands.Autonomo.LimelightAuto.AlinhadorVerticalAuto;
 import frc.robot.commands.Autonomo.Shooter.AutoAtirar;
 //import frc.robot.commands.Autonomo.Tracao.GiroPorAngulo;
 import frc.robot.Constantes.ConstantesShooter;
 import frc.robot.Extras.AnguloPreset;
+import frc.robot.Extras.AngulosPresetPivot;
 import frc.robot.commands.Angulador.MoverAnguladoPreset;
 //import frc.robot.commands.Climber.ClimberStep;
 import frc.robot.commands.Shooter.*;
@@ -33,6 +36,7 @@ public class RobotContainer {
     private final Traction traction = new Traction();
     private final Angulador angulador = new Angulador();
     private final Limelight limelight = new Limelight();
+    private final IntakeFloor intakeFloor = new IntakeFloor();
     //private final Climber climber = new Climber(); 
 
     /* ===== CONTROLES ===== */
@@ -131,7 +135,7 @@ btnY.onTrue(
             )
         ); */ 
 
-new POVButton(xbox2, 0)
+/*new POVButton(xbox2, 0)
     .onTrue(new MoverAnguladoPreset(
         angulador,
         AnguloPreset.ALTO
@@ -147,6 +151,16 @@ new POVButton(xbox2, 180)
     .onTrue(new MoverAnguladoPreset(
         angulador,
         AnguloPreset.BAIXO
+    ));*/
+new POVButton(xbox2, 0)
+    .onTrue(new MoverPivotPreset(
+        intakeFloor,
+        AngulosPresetPivot.ALTO
+    ));
+new POVButton(xbox2, 180)
+    .onTrue(new MoverPivotPreset(
+        intakeFloor,
+        AngulosPresetPivot.BAIXO
     ));
     }
 
