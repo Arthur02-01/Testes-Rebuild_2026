@@ -41,7 +41,7 @@ public class ConstantesShooter {
     public static final double PID_IZONE_RPM = 250.0;
     public static final double FF_VELOCIDADE = 1.0 / 5700.0;
 
-    public static final double TAXA_RAMPA_SETPOINT_RPM_POR_S = 4500.0;
+    public static final double TAXA_RAMPA_SETPOINT_RPM_POR_S = 3000.0;
     public static final double FILTRO_RPM_TAU_S = 0.08;
 
     public static final double boquinhaReducao = 25.0;

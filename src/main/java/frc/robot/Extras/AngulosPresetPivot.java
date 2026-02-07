@@ -1,8 +1,8 @@
 package frc.robot.Extras;
 
 public enum AngulosPresetPivot {
-    BAIXO(15.0),
-    ALTO(120.0);
+    BAIXO(5.0),
+    ALTO(40.0);
 
     public final double graus;
 

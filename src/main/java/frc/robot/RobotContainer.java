@@ -159,12 +159,12 @@ new POVButton(xbox2, 180)
         AnguloPreset.BAIXO
     ));*/
 new POVButton(xbox2, 0)
-    .onTrue(new MoverPivotPreset(
+    .whileTrue(new MoverPivotPreset(
         intakeFloor,
         AngulosPresetPivot.ALTO
     ));
 new POVButton(xbox2, 180)
-    .onTrue(new MoverPivotPreset(
+    .whileTrue(new MoverPivotPreset(
         intakeFloor,
         AngulosPresetPivot.BAIXO
     ));

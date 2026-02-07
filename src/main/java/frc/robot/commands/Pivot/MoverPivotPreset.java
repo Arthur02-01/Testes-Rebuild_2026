@@ -27,6 +27,5 @@ public class MoverPivotPreset extends Command {
     }
     @Override
     public void end (boolean interrupted) {
-
     }   
 }

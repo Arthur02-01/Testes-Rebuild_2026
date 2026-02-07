@@ -17,10 +17,10 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
-
+@SuppressWarnings ("unused")
 public class IntakeFloor extends SubsystemBase {
 
-    private static final double VELOCIDADE_MAX_INTAKE = 0.40;
+    private static final double VELOCIDADE_MAX_INTAKE = 0.90;
 
     private boolean IntakeGirando = false;
 
