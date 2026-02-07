@@ -121,10 +121,10 @@ btnY.whileTrue(
 );
 
 
-        rb.onTrue(new AtivarFrenteShooter(shooter));
-        lb.onTrue(new AtivarAtrasShooter(shooter));
-        /*rb.onTrue(new GirarIntake(intakeFloor) );
-        lb.onTrue(new PararIntake(intakeFloor));*/
+        /*rb.onTrue(new AtivarFrenteShooter(shooter));
+        lb.onTrue(new AtivarAtrasShooter(shooter));*/
+        rb.onTrue(new GirarIntake(intakeFloor) );
+        lb.onTrue(new PararIntake(intakeFloor));
 
 
        /* * R4.debounce(0.15).onTrue(
@@ -141,7 +141,7 @@ btnY.whileTrue(
             )
         ); */ 
 
-new POVButton(xbox2, 0)
+/*new POVButton(xbox2, 0)
     .onTrue(new MoverAnguladoPreset(
         angulador,
         AnguloPreset.ALTO
@@ -157,8 +157,8 @@ new POVButton(xbox2, 180)
     .onTrue(new MoverAnguladoPreset(
         angulador,
         AnguloPreset.BAIXO
-    ));
-/*new POVButton(xbox2, 0)
+    ));*/
+new POVButton(xbox2, 0)
     .onTrue(new MoverPivotPreset(
         intakeFloor,
         AngulosPresetPivot.ALTO
@@ -167,7 +167,7 @@ new POVButton(xbox2, 180)
     .onTrue(new MoverPivotPreset(
         intakeFloor,
         AngulosPresetPivot.BAIXO
-    ));*/
+    ));
     }
 
     /* ===== AUTÔNOMO ===== */

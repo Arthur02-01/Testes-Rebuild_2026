@@ -38,6 +38,8 @@ public class HardwaresIntake {
 
         config.smartCurrentLimit(60);
 
+        PivotMotor.setInverted(true);
+
         SparkMaxConfig cfg = new SparkMaxConfig();
         cfg.idleMode(IdleMode.kBrake)
            .smartCurrentLimit(60);

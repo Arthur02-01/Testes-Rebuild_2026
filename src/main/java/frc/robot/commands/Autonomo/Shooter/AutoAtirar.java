@@ -19,14 +19,14 @@ public class AutoAtirar extends SequentialCommandGroup {
             // define velocidade (NÃO gira)
             new ShooterVelocidade(
                 shooter,
-                ConstantesShooter.Velocidade.TURBO
+                ConstantesShooter.Velocidade.NORMAL
             ),
 
             // inicia giro para frente
             new AtivarFrenteShooter(shooter),
 
             // tempo para ganhar RPM
-            new WaitCommand(10),
+            new WaitCommand(5),
 
             // tempo extra para disparo
             new WaitCommand(0.5),

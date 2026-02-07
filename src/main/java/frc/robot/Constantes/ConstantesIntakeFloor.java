@@ -14,10 +14,10 @@ public class ConstantesIntakeFloor {
 
   public static class FFPivot{
     public static final double kS = 0.13;
-    public static final double kG = 0.40;
+    public static final double kG = 1.20;
     public static final double kV = 1.0;
 }
-  public static final double LIMITE_INFERIOR_PIVOT = 5.0;
+  public static final double LIMITE_INFERIOR_PIVOT = 15.0;
   public static final double LIMITE_SUPERIOR_PIVOT = 120.0;
 
   public static final double REDUCAO_PIVOT = 25.0;

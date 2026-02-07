@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkBase.ControlType;
 
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -18,7 +19,18 @@ public class Shooter extends SubsystemBase {
     private double ultimoSetpointArlindo = Double.NaN;
     private double ultimoSetpointBoquinha = Double.NaN;
     private boolean pronto = false;
+    private double entrouNaFaixaEm = -1.0;
+    private double setpointAplicadoRpm = 0.0;
+    private double ultimaAtualizacaoSetpointS = 0.0;
     private double ultimoDashboard = 0.0;
+
+    private final LinearFilter filtroRpmArlindo =
+        LinearFilter.singlePoleIIR(ConstantesShooter.FILTRO_RPM_TAU_S, 0.02);
+    private final LinearFilter filtroRpmBoquinha =
+        LinearFilter.singlePoleIIR(ConstantesShooter.FILTRO_RPM_TAU_S, 0.02);
+
+    private double rpmArlindoFiltradoAtual = 0.0;
+    private double rpmBoquinhaFiltradoAtual = 0.0;
 
     private ConstantesShooter.Velocidade velocidade =
         ConstantesShooter.Velocidade.NORMAL;
@@ -62,29 +74,66 @@ public class Shooter extends SubsystemBase {
         return !sm.is(StateMachineShooter.Estado.PARADO);
     }
     public boolean pronto(){
+            double rpmArlindo = rpmArlindoFiltradoAtual;
+        double rpmBoquinha = rpmBoquinhaFiltradoAtual;
+
         boolean dentro =
-            Math.abs(rpmAlvo - Math.abs(io.arlindoEncoder.getVelocity()))
-                < ConstantesShooter.TOLERANCIA_RPM
-            && Math.abs(rpmAlvo - Math.abs(io.boquinhaEncoder.getVelocity()))
-                < ConstantesShooter.TOLERANCIA_RPM;
+            Math.abs(rpmAlvo - rpmArlindo) < ConstantesShooter.TOLERANCIA_RPM
+            && Math.abs(rpmAlvo - rpmBoquinha) < ConstantesShooter.TOLERANCIA_RPM;
 
         boolean fora =
-            Math.abs(rpmAlvo - Math.abs(io.arlindoEncoder.getVelocity()))
-                > ConstantesShooter.TOLERANCIA_RPM_SAIDA
-            || Math.abs(rpmAlvo - Math.abs(io.boquinhaEncoder.getVelocity()))
-                > ConstantesShooter.TOLERANCIA_RPM_SAIDA;
+             Math.abs(rpmAlvo - rpmArlindo) > ConstantesShooter.TOLERANCIA_RPM_SAIDA
+            || Math.abs(rpmAlvo - rpmBoquinha) > ConstantesShooter.TOLERANCIA_RPM_SAIDA;
 
-        if (!pronto && dentro) {
-            pronto = true;
-        } else if (pronto && fora) {
+            boolean motoresBalanceados =
+            Math.abs(rpmArlindo - rpmBoquinha)
+                <= ConstantesShooter.DELTA_MAXIMO_ENTRE_MOTORES_RPM;
+
+        double agora = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+
+        if (dentro && motoresBalanceados) {
+            if (entrouNaFaixaEm < 0.0) {
+                entrouNaFaixaEm = agora;
+            }
+            if (agora - entrouNaFaixaEm >= ConstantesShooter.TEMPO_ESTABILIZACAO_S) {
+                pronto = true;
+            }
+        } else if (fora || !motoresBalanceados) {
             pronto = false;
+            entrouNaFaixaEm = -1.0;
         }
 
         return pronto;
     }
 
+     private double calcularSetpointSuavizado(double rpmDesejado) {
+        double agora = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+
+        if (ultimaAtualizacaoSetpointS <= 0.0) {
+            ultimaAtualizacaoSetpointS = agora;
+            setpointAplicadoRpm = rpmDesejado;
+            return setpointAplicadoRpm;
+        }
+
+        double dt = Math.max(0.0, agora - ultimaAtualizacaoSetpointS);
+        double passoMaximo = ConstantesShooter.TAXA_RAMPA_SETPOINT_RPM_POR_S * dt;
+        double erro = rpmDesejado - setpointAplicadoRpm;
+
+        if (erro > passoMaximo) {
+            erro = passoMaximo;
+        } else if (erro < -passoMaximo) {
+            erro = -passoMaximo;
+        }
+
+        setpointAplicadoRpm += erro;
+        ultimaAtualizacaoSetpointS = agora;
+        return setpointAplicadoRpm;
+    }
+
+
     private void definirSetpoint(double arlindoRpm, double boquinhaRpm) {
-                double arlindoLimitado = Math.copySign(
+            
+        double arlindoLimitado = Math.copySign(
             Math.min(Math.abs(arlindoRpm), ConstantesShooter.RPM_MAXIMO_CONTROLE),
             arlindoRpm
         );
@@ -114,14 +163,22 @@ public class Shooter extends SubsystemBase {
     @Override
     public void periodic() {
 
+        double rpmArlindoBruto = io.arlindoEncoder.getVelocity();
+        double rpmBoquinhaBruto = io.boquinhaEncoder.getVelocity();
+        rpmArlindoFiltradoAtual = Math.abs(filtroRpmArlindo.calculate(rpmArlindoBruto));
+        rpmBoquinhaFiltradoAtual = Math.abs(filtroRpmBoquinha.calculate(rpmBoquinhaBruto));
+
+
         switch (sm.get()) {
 
             case ATIRANDO_FRENTE -> {
-                definirSetpoint(+rpmAlvo, +rpmAlvo);
+                double rpmSuavizado = calcularSetpointSuavizado(+rpmAlvo);
+                definirSetpoint(rpmSuavizado, rpmSuavizado);
             }
 
             case ATIRANDO_TRAS -> {
-                definirSetpoint(-rpmAlvo, -rpmAlvo);
+                double rpmSuavizado = calcularSetpointSuavizado(-rpmAlvo);
+                definirSetpoint(rpmSuavizado, rpmSuavizado);
             }
 
             case PARADO -> {
@@ -130,6 +187,11 @@ public class Shooter extends SubsystemBase {
                 ultimoSetpointArlindo = Double.NaN;
                 ultimoSetpointBoquinha = Double.NaN;
                 pronto = false;
+                entrouNaFaixaEm = -1.0;
+                setpointAplicadoRpm = 0.0;
+                ultimaAtualizacaoSetpointS = 0.0;
+                rpmArlindoFiltradoAtual = 0.0;
+                rpmBoquinhaFiltradoAtual = 0.0;
             }
         }
         double agora = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
@@ -137,12 +199,14 @@ public class Shooter extends SubsystemBase {
         ultimoDashboard = agora;
             SmartDashboard.putString("Shooter/Estado", sm.get().name());
             SmartDashboard.putNumber("Shooter/RPM Alvo", rpmAlvo);
-            double rpmArlindo = io.arlindoEncoder.getVelocity();
-            double rpmBoquinha = io.boquinhaEncoder.getVelocity();
-            SmartDashboard.putNumber("Shooter/Arlindo RPM", rpmArlindo);
-            SmartDashboard.putNumber("Shooter/Boquinha RPM", rpmBoquinha);
-            SmartDashboard.putNumber("Shooter/Erro Arlindo RPM", rpmAlvo - Math.abs(rpmArlindo));
-            SmartDashboard.putNumber("Shooter/Erro Boquinha RPM", rpmAlvo - Math.abs(rpmBoquinha));
+            SmartDashboard.putNumber("Shooter/Setpoint Aplicado RPM", setpointAplicadoRpm);
+            SmartDashboard.putNumber("Shooter/Arlindo RPM", rpmArlindoBruto);
+            SmartDashboard.putNumber("Shooter/Boquinha RPM", rpmBoquinhaBruto);
+            SmartDashboard.putNumber("Shooter/Arlindo RPM Filtrado", rpmArlindoFiltradoAtual);
+            SmartDashboard.putNumber("Shooter/Boquinha RPM Filtrado", rpmBoquinhaFiltradoAtual);
+            SmartDashboard.putNumber("Shooter/Erro Arlindo RPM", rpmAlvo - rpmArlindoFiltradoAtual);
+            SmartDashboard.putNumber("Shooter/Erro Boquinha RPM", rpmAlvo - rpmBoquinhaFiltradoAtual);
+            SmartDashboard.putNumber("Shooter/Delta Entre Motores", Math.abs(rpmArlindoFiltradoAtual - rpmBoquinhaFiltradoAtual));
             SmartDashboard.putBoolean("Shooter/Pronto", pronto());
         }
     }
