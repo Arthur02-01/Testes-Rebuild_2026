@@ -41,13 +41,22 @@ public class HardwaresShooter {
 
         SparkMaxConfig cfg = new SparkMaxConfig();
         cfg.idleMode(IdleMode.kBrake)
-           .smartCurrentLimit(60);
+           .smartCurrentLimit(ConstantesShooter.CORRENTE_MAXIMA_A);
+
+        cfg.encoder
+           .velocityConversionFactor(1.0 / ConstantesShooter.arlindoReducao)
+           .positionConversionFactor(1.0 / ConstantesShooter.arlindoReducao);
+
+        cfg.encoder
+           .velocityConversionFactor(1.0 / ConstantesShooter.boquinhaReducao)
+           .positionConversionFactor(1.0 / ConstantesShooter.boquinhaReducao);
 
         cfg.closedLoop
-        .p(0.00025)
-        .i(0.0)
-        .d(0.0)
-        .velocityFF(1.0/5700.0)
+        .p(ConstantesShooter.PID_P)
+        .i(ConstantesShooter.PID_I)
+        .d(ConstantesShooter.PID_D)
+        .iZone(ConstantesShooter.PID_IZONE_RPM)
+        .velocityFF(ConstantesShooter.FF_VELOCIDADE)
         .outputRange(-1.0, 1.0);
         cfg.closedLoopRampRate(ConstantesShooter.RAMP_RATE_S);
 

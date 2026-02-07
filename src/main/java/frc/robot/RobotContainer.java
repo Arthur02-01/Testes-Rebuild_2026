@@ -15,6 +15,9 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.commands.Limelight.AlinhadorHorizontalAprilTag;
 import frc.robot.commands.Limelight.AlinhadorVerticalAprilTag;
 import frc.robot.commands.Pivot.MoverPivotPreset;
+import frc.robot.commands.IntakeFloor.GirarIntake;
+import frc.robot.commands.IntakeFloor.GirarIntakeReverse;
+import frc.robot.commands.IntakeFloor.PararIntake;
 //import frc.robot.commands.Autonomo.LimelightAuto.AlinhadorHorizontalAuto;
 //import frc.robot.commands.Autonomo.LimelightAuto.AlinhadorVerticalAuto;
 import frc.robot.commands.Autonomo.Shooter.AutoAtirar;
@@ -103,14 +106,14 @@ public class RobotContainer {
     )
 );
 
-btnB.onTrue(
+btnB.whileTrue(
     new ShooterVelocidade(
         shooter,
         ConstantesShooter.Velocidade.ALTA
     )
 );
 
-btnY.onTrue(
+btnY.whileTrue(
     new ShooterVelocidade(
         shooter,
         ConstantesShooter.Velocidade.TURBO
@@ -120,6 +123,9 @@ btnY.onTrue(
 
         rb.onTrue(new AtivarFrenteShooter(shooter));
         lb.onTrue(new AtivarAtrasShooter(shooter));
+        /*rb.onTrue(new GirarIntake(intakeFloor) );
+        lb.onTrue(new PararIntake(intakeFloor));*/
+
 
        /* * R4.debounce(0.15).onTrue(
             new ClimberStep(
@@ -135,7 +141,7 @@ btnY.onTrue(
             )
         ); */ 
 
-/*new POVButton(xbox2, 0)
+new POVButton(xbox2, 0)
     .onTrue(new MoverAnguladoPreset(
         angulador,
         AnguloPreset.ALTO
@@ -151,8 +157,8 @@ new POVButton(xbox2, 180)
     .onTrue(new MoverAnguladoPreset(
         angulador,
         AnguloPreset.BAIXO
-    ));*/
-new POVButton(xbox2, 0)
+    ));
+/*new POVButton(xbox2, 0)
     .onTrue(new MoverPivotPreset(
         intakeFloor,
         AngulosPresetPivot.ALTO
@@ -161,7 +167,7 @@ new POVButton(xbox2, 180)
     .onTrue(new MoverPivotPreset(
         intakeFloor,
         AngulosPresetPivot.BAIXO
-    ));
+    ));*/
     }
 
     /* ===== AUTÔNOMO ===== */

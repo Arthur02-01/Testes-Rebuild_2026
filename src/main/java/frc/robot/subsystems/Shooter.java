@@ -63,15 +63,15 @@ public class Shooter extends SubsystemBase {
     }
     public boolean pronto(){
         boolean dentro =
-            Math.abs(rpmAlvo - io.arlindoEncoder.getVelocity())
+            Math.abs(rpmAlvo - Math.abs(io.arlindoEncoder.getVelocity()))
                 < ConstantesShooter.TOLERANCIA_RPM
-            && Math.abs(rpmAlvo - io.boquinhaEncoder.getVelocity())
+            && Math.abs(rpmAlvo - Math.abs(io.boquinhaEncoder.getVelocity()))
                 < ConstantesShooter.TOLERANCIA_RPM;
 
         boolean fora =
-            Math.abs(rpmAlvo - io.arlindoEncoder.getVelocity())
+            Math.abs(rpmAlvo - Math.abs(io.arlindoEncoder.getVelocity()))
                 > ConstantesShooter.TOLERANCIA_RPM_SAIDA
-            || Math.abs(rpmAlvo - io.boquinhaEncoder.getVelocity())
+            || Math.abs(rpmAlvo - Math.abs(io.boquinhaEncoder.getVelocity()))
                 > ConstantesShooter.TOLERANCIA_RPM_SAIDA;
 
         if (!pronto && dentro) {
@@ -84,15 +84,25 @@ public class Shooter extends SubsystemBase {
     }
 
     private void definirSetpoint(double arlindoRpm, double boquinhaRpm) {
+                double arlindoLimitado = Math.copySign(
+            Math.min(Math.abs(arlindoRpm), ConstantesShooter.RPM_MAXIMO_CONTROLE),
+            arlindoRpm
+        );
+
+        double boquinhaLimitado = Math.copySign(
+            Math.min(Math.abs(boquinhaRpm), ConstantesShooter.RPM_MAXIMO_CONTROLE),
+            boquinhaRpm
+        );
+
         if (Double.isNaN(ultimoSetpointArlindo)
-            || ultimoSetpointArlindo != arlindoRpm) {
-            io.arlindopid.setSetpoint(arlindoRpm, ControlType.kVelocity);
-            ultimoSetpointArlindo = arlindoRpm;
+               || ultimoSetpointArlindo != arlindoLimitado) {
+            io.arlindopid.setSetpoint(arlindoLimitado, ControlType.kVelocity);
+            ultimoSetpointArlindo = arlindoLimitado;
         }
         if (Double.isNaN(ultimoSetpointBoquinha)
-            || ultimoSetpointBoquinha != boquinhaRpm) {
-            io.boquinhapid.setSetpoint(boquinhaRpm, ControlType.kVelocity);
-            ultimoSetpointBoquinha = boquinhaRpm;
+               || ultimoSetpointBoquinha != boquinhaLimitado) {
+            io.boquinhapid.setSetpoint(boquinhaLimitado, ControlType.kVelocity);
+            ultimoSetpointBoquinha = boquinhaLimitado;
         }
     }
     
@@ -127,8 +137,13 @@ public class Shooter extends SubsystemBase {
         ultimoDashboard = agora;
             SmartDashboard.putString("Shooter/Estado", sm.get().name());
             SmartDashboard.putNumber("Shooter/RPM Alvo", rpmAlvo);
-            SmartDashboard.putNumber("Shooter/Arlindo RPM", io.arlindoEncoder.getVelocity());
-            SmartDashboard.putNumber("Shooter/Boquinha RPM", io.boquinhaEncoder.getVelocity());
+            double rpmArlindo = io.arlindoEncoder.getVelocity();
+            double rpmBoquinha = io.boquinhaEncoder.getVelocity();
+            SmartDashboard.putNumber("Shooter/Arlindo RPM", rpmArlindo);
+            SmartDashboard.putNumber("Shooter/Boquinha RPM", rpmBoquinha);
+            SmartDashboard.putNumber("Shooter/Erro Arlindo RPM", rpmAlvo - Math.abs(rpmArlindo));
+            SmartDashboard.putNumber("Shooter/Erro Boquinha RPM", rpmAlvo - Math.abs(rpmBoquinha));
+            SmartDashboard.putBoolean("Shooter/Pronto", pronto());
         }
     }
 }

@@ -1,25 +1,15 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
 
 import frc.robot.Hardwares.HardwaresIntake;
 import frc.robot.Constantes.ConstantesAngulador;
 import frc.robot.Constantes.ConstantesIntakeFloor;
-import frc.robot.Extras.AnguloPreset;
 import frc.robot.Extras.AngulosPresetPivot;
-import frc.robot.StatesMachines.StateMachineAngulador;
 import frc.robot.StatesMachines.StateMachineIntakeFloor;
 import frc.robot.Kinematics.KInematicsAngulador;
 import frc.robot.Kinematics.KinematicsIntakeFloor;
-import frc.robot.Constantes.ConstantesIntakeFloor;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -27,14 +17,13 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
-@SuppressWarnings ("unused")
+
 public class IntakeFloor extends SubsystemBase {
 
-    private static final double VELOCIDADE_MAX_INTAKE = 0.25;
+    private static final double VELOCIDADE_MAX_INTAKE = 0.40;
 
     private boolean IntakeGirando = false;
-    private boolean PivotSubindo = false;
-    private boolean PivotDescendo = false;
+
 
     private final HardwaresIntake io = new HardwaresIntake();
     private final StateMachineIntakeFloor sm = new StateMachineIntakeFloor();
@@ -157,12 +146,12 @@ public class IntakeFloor extends SubsystemBase {
 
         double agora = Timer.getFPGATimestamp();
     double dt = agora - ultimoTimestamp;
-    if(dt <= 0.0) {
+    if (dt <= 0.0) {
          dt = ConstantesAngulador.DT;
     }
     double erroSetpoint = Math.abs(setpoint.position - getAnguloPivot());
     
-    double velocidadeGraus = KInematicsAngulador.rotacoesParaGraus(io.encoder_pivot.getVelocity());
+    double velocidadeGraus = KinematicsIntakeFloor.rotacoesParaGrausPivot(io.encoder_pivot.getVelocity());
 
     if (sm.is(StateMachineIntakeFloor.EstadoPivot.PERFIL)
     && erroSetpoint > ConstantesIntakeFloor.ERRO_TOLERANCIA_PIVOT){

@@ -2,10 +2,10 @@ package frc.robot.Constantes;
 
 public class ConstantesIntakeFloor {
     public static final class IntakeFloorMotor{
-      public static final int IntakeMotor = 21;
+      public static final int IntakeMotor = 7;
   }
     public static final class PivotMotor{
-      public static final int PivotMotor = 43;
+      public static final int PivotMotor = 8;
   }
 
   public static class EncoderPivot{
