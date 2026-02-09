@@ -3,10 +3,10 @@ package frc.robot.Constantes;
 public class ConstantesShooter {
 
     public enum Velocidade {
-        NORMAL(2400),
-        MEDIA(3350),
-        ALTA(3500),
-        TURBO(3750);
+        NORMAL(1400),
+        MEDIA(1800),
+        ALTA(2100),
+        TURBO(2400);
 
         public final double rpm;
 

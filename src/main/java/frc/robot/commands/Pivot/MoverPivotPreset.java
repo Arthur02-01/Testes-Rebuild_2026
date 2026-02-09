@@ -6,6 +6,7 @@ import frc.robot.Extras.AngulosPresetPivot;
 import frc.robot.StatesMachines.StateMachineIntakeFloor;
 
 public class MoverPivotPreset extends Command {
+    
     private final IntakeFloor intakeFloor;
     private final AngulosPresetPivot preset;
 

@@ -46,7 +46,7 @@ public class RobotContainer {
     private final XboxController xbox1 = new XboxController(0);
     private final XboxController xbox2 = new XboxController(1);
 
-    /* ===== BOTÕES ===== */
+    /* ===== BOTOES ===== */
     private final JoystickButton btnTurbo =
         new JoystickButton(xbox1, XboxController.Button.kA.value);
 
@@ -86,7 +86,7 @@ public class RobotContainer {
 
     private void configureBindings() {
 
-        /* ===== TRAÇÃO ===== */
+        /* ===== TRACAO ===== */
         btnTurbo.onTrue(new AtivarTurbo(traction));
 
         /* ===== LIMELIGHT / APRILTAG ===== */
@@ -121,10 +121,10 @@ btnY.whileTrue(
 );
 
 
-        /*rb.onTrue(new AtivarFrenteShooter(shooter));
-        lb.onTrue(new AtivarAtrasShooter(shooter));*/
-        rb.onTrue(new GirarIntake(intakeFloor) );
-        lb.onTrue(new PararIntake(intakeFloor));
+        rb.onTrue(new AtivarFrenteShooter(shooter));
+        lb.onTrue(new AtivarAtrasShooter(shooter));
+        /*rb.onTrue(new GirarIntake(intakeFloor) );
+        lb.onTrue(new PararIntake(intakeFloor));*/
 
 
        /* * R4.debounce(0.15).onTrue(
@@ -141,7 +141,7 @@ btnY.whileTrue(
             )
         ); */ 
 
-/*new POVButton(xbox2, 0)
+new POVButton(xbox2, 0)
     .onTrue(new MoverAnguladoPreset(
         angulador,
         AnguloPreset.ALTO
@@ -157,8 +157,8 @@ new POVButton(xbox2, 180)
     .onTrue(new MoverAnguladoPreset(
         angulador,
         AnguloPreset.BAIXO
-    ));*/
-new POVButton(xbox2, 0)
+    ));
+/*new POVButton(xbox2, 0)
     .whileTrue(new MoverPivotPreset(
         intakeFloor,
         AngulosPresetPivot.ALTO
@@ -167,10 +167,10 @@ new POVButton(xbox2, 180)
     .whileTrue(new MoverPivotPreset(
         intakeFloor,
         AngulosPresetPivot.BAIXO
-    ));
+    ));*/
     }
 
-    /* ===== AUTÔNOMO ===== */
+    /* ===== AUTONOMO ===== */
     public Command getAutonomousCommand() {
         return new SequentialCommandGroup(
      new AutoAtirar(shooter)

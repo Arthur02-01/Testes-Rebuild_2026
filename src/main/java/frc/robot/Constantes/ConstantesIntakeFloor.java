@@ -1,39 +1,50 @@
 package frc.robot.Constantes;
 
 public class ConstantesIntakeFloor {
-    public static final class IntakeFloorMotor{
-      public static final int IntakeMotor = 7;
-  }
-    public static final class PivotMotor{
-      public static final int PivotMotor = 8;
-  }
 
-  public static class EncoderPivot{
-    public static final int PivotAngulador = 44;
-  }
+    public static final class IntakeFloorMotor {
+        public static final int IntakeMotor = 7;
+    }
 
-  public static class FFPivot{
-    public static final double kS = 0.35;
-    public static final double kG = 1.00;
-    public static final double kV = 1.2;
-}
-  public static final double LIMITE_INFERIOR_PIVOT = 15.0;
-  public static final double LIMITE_SUPERIOR_PIVOT = 120.0;
+    public static final class PivotMotor {
+        public static final int PivotMotor = 8;
+    }
 
-  public static final double REDUCAO_PIVOT = 25.0;
+    // ======================
+    // CINEMÁTICA
+    // ======================
+    public static final double REDUCAO_PIVOT = 25.0;
 
-  public static final double DT_PIVOT = 0.02;
-  public static final double MARGEM_ERRO_BASE_PIVOT = 1.70;
+    // Zero físico: braço APONTANDO PARA BAIXO
+    public static final double OFFSET_PIVOT_RAD = Math.toRadians(0.0);
 
-  public static final double VELOCIDADE_MAX_PIVOT = 0.25;
-  public static final double VELOCIDADE_MAX_PIVOT_NEGATIVA = -0.25;
-  
-  public static final double MAX_VEL_PIVOT = 90.0;
-  public static final double MAX_ACC_PIVOT = 180.0;
+    // ======================
+    // LIMITES MECÂNICOS
+    // ======================
+    public static final double LIMITE_INFERIOR_PIVOT = Math.toRadians(15.0);
+    public static final double LIMITE_SUPERIOR_PIVOT = Math.toRadians(120.0);
 
-  public static final double VELOCIDADE_MIN_PIVOT = 0.01;
-  public static final double TEMPO_MAX_TRAVADO_PIVOT = 0.8;
-  public static final double ERRO_TOLERANCIA_PIVOT = 2.0;
+    // ======================
+    // PERFIL TRAPEZOIDAL
+    // ======================
+    public static final double DT_PIVOT = 0.02;
+    public static final double MAX_VEL_PIVOT = Math.toRadians(90.0);   // rad/s
+    public static final double MAX_ACC_PIVOT = Math.toRadians(180.0);  // rad/s²
 
-  private ConstantesIntakeFloor () {}
+    // ======================
+    // TOLERÂNCIAS
+    // ======================
+    public static final double ERRO_TOLERANCIA_PIVOT = Math.toRadians(2.5);
+    public static final double MARGEM_ERRO_BASE_PIVOT = Math.toRadians(1.5);
+
+    // ======================
+    // FEEDFORWARD
+    // ======================
+    public static final class FFPivot {
+        public static final double kS = 0.35;
+        public static final double kG = 0.85;   // AJUSTE FINO DEPOIS
+        public static final double kV = 0.2;
+    }
+
+    private ConstantesIntakeFloor() {}
 }

@@ -45,9 +45,9 @@ public class HardwaresIntake {
            .smartCurrentLimit(60);
 
         cfg.closedLoop
-        .p(0.8)
+        .p(0.4)
         .i(0.0)
-        .d(0.02);
+        .d(0.06);
 
         IntakeMotor.configure(
             config,
