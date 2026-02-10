@@ -175,6 +175,10 @@ public class IntakeFloor extends SubsystemBase {
                     < ConstantesIntakeFloor.MARGEM_ERRO_BASE_PIVOT
                 && Math.abs(setpoint.velocity)
                     < Math.toRadians(5.0)
+                /*Math.abs(anguloHoldRad - anguloAtual)
+                    > ConstantesIntakeFloor.MARGEM_ERRO_BASE_PIVOT
+                || Math.abs(setpoint.velocity)
+                    > Math.toRadians(5.0) */
             )
             {
 

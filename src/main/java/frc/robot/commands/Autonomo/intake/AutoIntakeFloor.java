@@ -14,19 +14,14 @@ public class AutoIntakeFloor extends SequentialCommandGroup {
 
         addCommands(
 
-            // 1) Abaixa o intake até o preset de coleta
-            new MoverPivotPreset(intake, AngulosPresetPivot.ALTO),
+        new MoverPivotPreset(intake, AngulosPresetPivot.ALTO),
 
-            // 2) Liga o intake
             new InstantCommand(intake::IntakeOn, intake),
 
-            // 3) Tempo coletando a peça
-            new WaitCommand(1.5),
+            new WaitCommand(2.0),
 
-            // 4) Para o intake
             new InstantCommand(intake::PararIntake, intake),
 
-            // 5) Sobe o intake para posição segura
             new MoverPivotPreset(intake, AngulosPresetPivot.BAIXO)
         );
     }

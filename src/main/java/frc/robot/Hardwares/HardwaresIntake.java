@@ -38,24 +38,23 @@ public class HardwaresIntake {
 
         config.smartCurrentLimit(60);
 
-        PivotMotor.setInverted(true);
 
         SparkMaxConfig cfg = new SparkMaxConfig();
         cfg.idleMode(IdleMode.kBrake)
-           .smartCurrentLimit(60);
-
+           .smartCurrentLimit(60)
+           .inverted(true);
         cfg.closedLoop
         .p(0.4)
         .i(0.0)
-        .d(0.06);
+        .d(0.10);
 
         IntakeMotor.configure(
-            config,
+            cfg,
             ResetMode.kNoResetSafeParameters,
             PersistMode.kNoPersistParameters
         ); 
         PivotMotor.configure(
-            config,
+            cfg,
             ResetMode.kNoResetSafeParameters,
             PersistMode.kNoPersistParameters);
     } 

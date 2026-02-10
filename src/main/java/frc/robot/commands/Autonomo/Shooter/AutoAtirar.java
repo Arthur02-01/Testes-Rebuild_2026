@@ -26,10 +26,10 @@ public class AutoAtirar extends SequentialCommandGroup {
             new AtivarFrenteShooter(shooter),
 
             // tempo para ganhar RPM
-            new WaitCommand(5),
+            new WaitCommand(4),
 
             // tempo extra para disparo
-            new WaitCommand(0.5),
+            new WaitCommand(0.2),
 
             // para tudo no final
             new PararShooter(shooter)

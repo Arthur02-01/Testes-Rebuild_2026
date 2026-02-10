@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
-
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.Traction;
 import frc.robot.subsystems.Angulador;
 import frc.robot.subsystems.IntakeFloor;
@@ -21,6 +21,9 @@ import frc.robot.commands.IntakeFloor.PararIntake;
 //import frc.robot.commands.Autonomo.LimelightAuto.AlinhadorHorizontalAuto;
 //import frc.robot.commands.Autonomo.LimelightAuto.AlinhadorVerticalAuto;
 import frc.robot.commands.Autonomo.Shooter.AutoAtirar;
+import frc.robot.commands.Autonomo.Tracao.AndarEncoder;
+import frc.robot.commands.Autonomo.Tracao.GiroPorAngulo;
+import frc.robot.commands.Autonomo.intake.AutoIntakeFloor;
 //import frc.robot.commands.Autonomo.Tracao.GiroPorAngulo;
 import frc.robot.Constantes.ConstantesShooter;
 import frc.robot.Extras.AnguloPreset;
@@ -56,6 +59,12 @@ public class RobotContainer {
 
     private final JoystickButton lb =
         new JoystickButton(xbox2, XboxController.Button.kLeftBumper.value);
+
+    private final Trigger rt =
+    new Trigger(() -> xbox2.getRightTriggerAxis() > 0.2);
+
+    private final Trigger lt =
+        new Trigger(() -> xbox2.getLeftTriggerAxis() > 0.2);
 
     // SHOOTER
     //private final JoystickButton btnA = new JoystickButton(xbox2, XboxController.Button.kA.value);
@@ -120,11 +129,14 @@ btnY.whileTrue(
     )
 );
 
+        rt.debounce(0.15).onTrue(new AtivarFrenteShooter(shooter));
 
-        rb.onTrue(new AtivarFrenteShooter(shooter));
-        lb.onTrue(new AtivarAtrasShooter(shooter));
-        /*rb.onTrue(new GirarIntake(intakeFloor) );
-        lb.onTrue(new PararIntake(intakeFloor));*/
+        lt.debounce(0.15).onTrue(new AtivarAtrasShooter(shooter));
+
+        /*rb.onTrue(new AtivarFrenteShooter(shooter));
+        lb.onTrue(new AtivarAtrasShooter(shooter));/*/
+        rb.onTrue(new GirarIntakeReverse(intakeFloor) );
+        lb.onTrue(new PararIntake(intakeFloor));
 
 
        /* * R4.debounce(0.15).onTrue(
@@ -141,7 +153,7 @@ btnY.whileTrue(
             )
         ); */ 
 
-new POVButton(xbox2, 0)
+/*new POVButton(xbox2, 0)
     .onTrue(new MoverAnguladoPreset(
         angulador,
         AnguloPreset.ALTO
@@ -157,8 +169,8 @@ new POVButton(xbox2, 180)
     .onTrue(new MoverAnguladoPreset(
         angulador,
         AnguloPreset.BAIXO
-    ));
-/*new POVButton(xbox2, 0)
+    ));*/
+new POVButton(xbox2, 0)
     .whileTrue(new MoverPivotPreset(
         intakeFloor,
         AngulosPresetPivot.ALTO
@@ -167,13 +179,13 @@ new POVButton(xbox2, 180)
     .whileTrue(new MoverPivotPreset(
         intakeFloor,
         AngulosPresetPivot.BAIXO
-    ));*/
+    ));
     }
 
     /* ===== AUTONOMO ===== */
     public Command getAutonomousCommand() {
         return new SequentialCommandGroup(
-     new AutoAtirar(shooter)
+      new AutoIntakeFloor(intakeFloor)
        );
     }
 }

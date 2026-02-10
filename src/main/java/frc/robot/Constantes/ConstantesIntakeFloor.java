@@ -22,7 +22,7 @@ public class ConstantesIntakeFloor {
     // LIMITES MECÂNICOS
     // ======================
     public static final double LIMITE_INFERIOR_PIVOT = Math.toRadians(15.0);
-    public static final double LIMITE_SUPERIOR_PIVOT = Math.toRadians(120.0);
+    public static final double LIMITE_SUPERIOR_PIVOT = Math.toRadians(150.0);
 
     // ======================
     // PERFIL TRAPEZOIDAL
@@ -41,7 +41,7 @@ public class ConstantesIntakeFloor {
     // FEEDFORWARD
     // ======================
     public static final class FFPivot {
-        public static final double kS = 0.35;
+        public static final double kS = 0.65;
         public static final double kG = 0.85;   // AJUSTE FINO DEPOIS
         public static final double kV = 0.2;
     }
