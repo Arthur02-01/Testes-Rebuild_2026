@@ -12,12 +12,14 @@ import frc.robot.subsystems.IntakeFloor;
 //import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Index;
 import frc.robot.commands.Limelight.AlinhadorHorizontalAprilTag;
 import frc.robot.commands.Limelight.AlinhadorVerticalAprilTag;
 import frc.robot.commands.Pivot.MoverPivotPreset;
 import frc.robot.commands.IntakeFloor.GirarIntake;
 import frc.robot.commands.IntakeFloor.GirarIntakeReverse;
 import frc.robot.commands.IntakeFloor.PararIntake;
+//import frc.robot.commands.Index.Indexando;
 //import frc.robot.commands.Autonomo.LimelightAuto.AlinhadorHorizontalAuto;
 //import frc.robot.commands.Autonomo.LimelightAuto.AlinhadorVerticalAuto;
 import frc.robot.commands.Autonomo.Shooter.AutoAtirar;
@@ -43,6 +45,7 @@ public class RobotContainer {
     private final Angulador angulador = new Angulador();
     private final Limelight limelight = new Limelight();
     private final IntakeFloor intakeFloor = new IntakeFloor();
+    private final Index index = new Index();
     //private final Climber climber = new Climber(); 
 
     /* ===== CONTROLES ===== */
@@ -129,9 +132,16 @@ btnY.whileTrue(
     )
 );
 
-        rt.debounce(0.15).onTrue(new AtivarFrenteShooter(shooter));
+        //rt.debounce(0.15).onTrue(new AtivarFrenteShooter(shooter));
+        rt.toggleOnTrue(
+            new LigarShooterComBoquinha(shooter, index)
+        );
 
-        lt.debounce(0.15).onTrue(new AtivarAtrasShooter(shooter));
+        rt.toggleOnFalse(
+            new DesativarShooterComBoquinha(shooter, index)
+        );
+
+        lt.onTrue(new AtirarComBoquinhaAtrasado(shooter, index));
 
         /*rb.onTrue(new AtivarFrenteShooter(shooter));
         lb.onTrue(new AtivarAtrasShooter(shooter));/*/

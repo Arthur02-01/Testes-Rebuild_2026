@@ -11,14 +11,10 @@ import frc.robot.Constantes.ConstantesShooter;
 public class HardwaresShooter {
 
     public final SparkMax arlindo;
-    public final SparkMax boquinha;
 
     public final RelativeEncoder arlindoEncoder;
-    public final RelativeEncoder boquinhaEncoder;
 
     public final SparkClosedLoopController arlindopid;
-    public final SparkClosedLoopController boquinhapid;
-
 
     @SuppressWarnings("removal" )
     public HardwaresShooter() {
@@ -28,16 +24,10 @@ public class HardwaresShooter {
             SparkLowLevel.MotorType.kBrushless
         );
 
-        boquinha = new SparkMax(
-            ConstantesShooter.Shooter.ShooterBoquinha,
-            SparkLowLevel.MotorType.kBrushless
-        );
-
         arlindoEncoder = arlindo.getEncoder();
-        boquinhaEncoder = boquinha.getEncoder();
+
 
         arlindopid = arlindo.getClosedLoopController();
-        boquinhapid = boquinha.getClosedLoopController();
 
         SparkMaxConfig cfg = new SparkMaxConfig();
         cfg.idleMode(IdleMode.kBrake)
@@ -46,10 +36,6 @@ public class HardwaresShooter {
         cfg.encoder
            .velocityConversionFactor(1.0 / ConstantesShooter.arlindoReducao)
            .positionConversionFactor(1.0 / ConstantesShooter.arlindoReducao);
-
-        cfg.encoder
-           .velocityConversionFactor(1.0 / ConstantesShooter.boquinhaReducao)
-           .positionConversionFactor(1.0 / ConstantesShooter.boquinhaReducao);
 
         cfg.closedLoop
         .p(ConstantesShooter.PID_P)
@@ -61,11 +47,6 @@ public class HardwaresShooter {
         cfg.closedLoopRampRate(ConstantesShooter.RAMP_RATE_S);
 
         arlindo.configure(cfg,
-            SparkBase.ResetMode.kNoResetSafeParameters,
-            SparkBase.PersistMode.kNoPersistParameters
-        );
-
-        boquinha.configure(cfg,
             SparkBase.ResetMode.kNoResetSafeParameters,
             SparkBase.PersistMode.kNoPersistParameters
         );
