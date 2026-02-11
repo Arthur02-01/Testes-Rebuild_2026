@@ -133,13 +133,10 @@ btnY.whileTrue(
 );
 
         //rt.debounce(0.15).onTrue(new AtivarFrenteShooter(shooter));
-        rt.toggleOnTrue(
-            new LigarShooterComBoquinha(shooter, index)
+        rt.onTrue(
+            new ToggleShooterComBoquinha(shooter, index)
         );
 
-        rt.toggleOnFalse(
-            new DesativarShooterComBoquinha(shooter, index)
-        );
 
         lt.onTrue(new AtirarComBoquinhaAtrasado(shooter, index));
 
