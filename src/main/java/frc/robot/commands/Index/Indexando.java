@@ -3,8 +3,9 @@ package frc.robot.commands.Index;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Index;
 
-/*public class Indexando extends Command {
-
+@SuppressWarnings ("unused")
+public class Indexando extends Command {
+/*
    private final Index index;
 
     public Indexando(Index index) {
@@ -19,5 +20,5 @@ import frc.robot.subsystems.Index;
         } else {
             index.ligar();
         }
-    }
-}*/
+    }*/
+}

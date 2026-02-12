@@ -60,9 +60,9 @@ public class Controller extends Command {
 
         // Define a velocidade com base no modo turbo do subsistema
         if (traction.turbo) {
-            velocidade = 1.0;   // Modo turbo
+            velocidade = 0.9;   // Modo turbo
         } else {
-            velocidade = 0.8;   // Modo normal
+            velocidade = 0.75;   // Modo normal
         }
 
         

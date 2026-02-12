@@ -13,6 +13,7 @@ import frc.robot.Constantes.ConstantesIndex;
 import frc.robot.Constantes.ConstantesShooter;
 import frc.robot.Hardwares.HardwaresIndex;
 
+@SuppressWarnings ("unused")
 public class Index extends SubsystemBase {
 
    

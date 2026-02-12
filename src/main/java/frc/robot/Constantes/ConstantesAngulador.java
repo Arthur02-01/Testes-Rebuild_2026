@@ -6,7 +6,7 @@ import frc.robot.subsystems.Angulador;
 public final class ConstantesAngulador {
 
     public static class Alinhador{
-      public static final int AlinhadorMotor =9;
+      public static final int AlinhadorMotor =10;
 }
     public static class FFAlinhador{
       public static final double kS = 0.13;

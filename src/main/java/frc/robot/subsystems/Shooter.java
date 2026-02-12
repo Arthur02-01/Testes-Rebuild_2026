@@ -10,6 +10,7 @@ import frc.robot.Constantes.ConstantesShooter;
 import frc.robot.Hardwares.HardwaresShooter;
 import frc.robot.StatesMachines.StateMachineShooter;
 
+@SuppressWarnings ("unused")
 public class Shooter extends SubsystemBase {
 
     private final HardwaresShooter io = new HardwaresShooter();
