@@ -30,7 +30,8 @@ public class Index extends SubsystemBase {
     private double entrouNaFaixaEm = -1.0;
 
     private double tempoInicioDirecionar = -1.0;
-
+    private double tempoInicioIndex = -1.0;
+ 
     private final LinearFilter filtroRpmBoquinha =
         LinearFilter.singlePoleIIR(
             ConstantesShooter.FILTRO_RPM_TAU_S,
@@ -156,15 +157,18 @@ public class Index extends SubsystemBase {
 
                 double rpmSuavizado = calcularSetpointSuave(rpmAlvo);
                 definirSetpointBoquinha(rpmSuavizado);
-
-                if ((agora - tempoInicioDirecionar)
-                        >= ConstantesIndex.ATRASO_INDEX_S) {
-
-                    io.index.set(velocidadeIndex.percentual);
-
-                } else {
-                    io.index.stopMotor();
+                
+                if (pronto()) {
+                    if(tempoInicioIndex < 0.0) {
+                        tempoInicioIndex = agora;
+                    }
                 }
+
+            if (tempoInicioIndex > 0.0 && (agora - tempoInicioIndex) >= ConstantesIndex.ATRASO_INDEX_S) {
+                io.index.set(velocidadeIndex.percentual);
+            }  else {
+                io.index.stopMotor();
+            }
             }
 
             case SOSSEGADO -> {
@@ -173,6 +177,7 @@ public class Index extends SubsystemBase {
                 io.index.stopMotor();
 
                 tempoInicioDirecionar = -1.0;
+                tempoInicioIndex = -1.0;
                 ultimoSetpointBoquinha = Double.NaN;
 
                 pronto = false;

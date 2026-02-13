@@ -26,6 +26,7 @@ import frc.robot.commands.Autonomo.Shooter.AutoAtirar;
 import frc.robot.commands.Autonomo.Tracao.AndarEncoder;
 import frc.robot.commands.Autonomo.Tracao.GiroPorAngulo;
 import frc.robot.commands.Autonomo.intake.AutoIntakeFloor;
+import frc.robot.CommandsRetirados.AtirarComBoquinhaAtrasado;
 //import frc.robot.commands.Autonomo.Tracao.GiroPorAngulo;
 import frc.robot.Constantes.ConstantesShooter;
 import frc.robot.Extras.AnguloPreset;
