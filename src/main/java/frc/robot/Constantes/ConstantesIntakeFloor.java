@@ -3,11 +3,11 @@ package frc.robot.Constantes;
 public class ConstantesIntakeFloor {
 
     public static final class IntakeFloorMotor {
-        public static final int IntakeMotor = 7;
+        public static final int IntakeMotor = 9;
     }
 
     public static final class PivotMotor {
-        public static final int PivotMotor = 8;
+        public static final int PivotMotor = 10;
     }
 
     // ======================
@@ -22,7 +22,7 @@ public class ConstantesIntakeFloor {
     // LIMITES MECÂNICOS
     // ======================
     public static final double LIMITE_INFERIOR_PIVOT = Math.toRadians(15.0);
-    public static final double LIMITE_SUPERIOR_PIVOT = Math.toRadians(150.0);
+    public static final double LIMITE_SUPERIOR_PIVOT = Math.toRadians(180.0);
 
     // ======================
     // PERFIL TRAPEZOIDAL

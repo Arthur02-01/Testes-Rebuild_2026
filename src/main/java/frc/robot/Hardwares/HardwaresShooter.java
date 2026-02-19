@@ -30,7 +30,7 @@ public class HardwaresShooter {
         arlindopid = arlindo.getClosedLoopController();
 
         SparkMaxConfig cfg = new SparkMaxConfig();
-        cfg.idleMode(IdleMode.kBrake)
+        cfg.idleMode(IdleMode.kCoast)
            .smartCurrentLimit(ConstantesShooter.CORRENTE_MAXIMA_A);
 
         cfg.encoder

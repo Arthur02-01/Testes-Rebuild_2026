@@ -17,8 +17,8 @@ public class ConstantesIndex {
     public static final int kDriverControllerPort_01 = 0;
   } 
   public static class Index{
-    public static final int IndexMotor = 77;
-    public static final int ShooterBoquinha =11;
+    public static final int IndexMotor = 7;
+    public static final int ShooterBoquinha =5;
   }
   public static class EncoderShooter{
     public static final int IndexEncoder = 29;

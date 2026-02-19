@@ -6,7 +6,7 @@ import frc.robot.subsystems.Angulador;
 public final class ConstantesAngulador {
 
     public static class Alinhador{
-      public static final int AlinhadorMotor =10;
+      public static final int AlinhadorMotor =8;
 }
     public static class FFAlinhador{
       public static final double kS = 0.13;
@@ -14,7 +14,7 @@ public final class ConstantesAngulador {
       public static final double kV = 1.0;
 }
     public static class EncoderAlinhador{
-      public static final int AnguladorEncoder = 18;
+      public static final int AnguladorEncoder = 26;
 }
 
     public static final double LIMITE_SUPERIOR = 50.0;

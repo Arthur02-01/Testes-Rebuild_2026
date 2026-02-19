@@ -5,7 +5,7 @@ import frc.robot.subsystems.Index;
 
 @SuppressWarnings ("unused")
 public class Indexando extends Command {
-/*
+
    private final Index index;
 
     public Indexando(Index index) {
@@ -20,5 +20,5 @@ public class Indexando extends Command {
         } else {
             index.ligar();
         }
-    }*/
+    }
 }

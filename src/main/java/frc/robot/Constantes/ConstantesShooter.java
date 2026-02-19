@@ -18,10 +18,10 @@ public class ConstantesShooter {
     public static final int kDriverControllerPort = 0;
   }
   public static class Shooter{
-   public static final int ShooterArlindo =9;
+   public static final int ShooterArlindo =6;
   }
   public static class EncoderShooter{
-    public static final int ArlindoEncoder = 13;
+    public static final int ArlindoEncoder = 18;
   }
     public static final double TOLERANCIA_RPM = 120;
     public static final double TOLERANCIA_RPM_SAIDA = 180;

@@ -31,6 +31,8 @@ public class Index extends SubsystemBase {
 
     private double tempoInicioDirecionar = -1.0;
     private double tempoInicioIndex = -1.0;
+
+    private boolean boquinhaProntaLatch = false;
  
     private final LinearFilter filtroRpmBoquinha =
         LinearFilter.singlePoleIIR(
@@ -58,6 +60,18 @@ public class Index extends SubsystemBase {
     public boolean estaLigado() {
         return sm.is(StateMachineIndex.Estado.DIRECIONAR);
     }
+
+    public void entrarModoForcado(double percentual) {
+    io.index.set(percentual);
+    sm.set(StateMachineIndex.Estado.DIRECIONAR);
+}
+
+public void sairModoForcado() {
+    io.index.stopMotor();
+    sm.set(StateMachineIndex.Estado.SOSSEGADO);
+}
+
+
 
     /* ================= BOQUINHA DIRETA (SEM INDEX) ================= */
 
@@ -156,25 +170,26 @@ public class Index extends SubsystemBase {
                 }
 
                 double rpmSuavizado = calcularSetpointSuave(rpmAlvo);
-                definirSetpointBoquinha(rpmSuavizado);
-                
-                if (pronto()) {
-                    if(tempoInicioIndex < 0.0) {
-                        tempoInicioIndex = agora;
-                    }
-                }
+                        definirSetpointBoquinha(rpmSuavizado);
+                        
+        if (!boquinhaProntaLatch && pronto()) {
+            boquinhaProntaLatch = true;
+            tempoInicioIndex = agora;
+        }
 
-            if (tempoInicioIndex > 0.0 && (agora - tempoInicioIndex) >= ConstantesIndex.ATRASO_INDEX_S) {
-                io.index.set(velocidadeIndex.percentual);
-            }  else {
-                io.index.stopMotor();
-            }
+        // só gira o index após o atraso
+        if (boquinhaProntaLatch &&
+            (agora - tempoInicioIndex) >= ConstantesIndex.ATRASO_INDEX_S) {
+            io.index.set(0.4);
+        } else {
+        }
+
             }
 
             case SOSSEGADO -> {
 
                 io.boquinha.stopMotor();
-                io.index.stopMotor();
+        
 
                 tempoInicioDirecionar = -1.0;
                 tempoInicioIndex = -1.0;
@@ -184,6 +199,7 @@ public class Index extends SubsystemBase {
                 entrouNaFaixaEm = -1.0;
                 setpointAplicadoRpm = 0.0;
                 ultimaAtualizacaoSetpointS = 0.0;
+                boquinhaProntaLatch = false;
             }
         }
 
@@ -192,6 +208,6 @@ public class Index extends SubsystemBase {
         SmartDashboard.putString("Index/Estado", sm.get().name());
         SmartDashboard.putNumber("Index/RPM Alvo", rpmAlvo);
         SmartDashboard.putNumber("Index/RPM Boquinha", rpmBoquinhaFiltradoAtual);
-        SmartDashboard.putBoolean("Index/Pronto", pronto());
+        SmartDashboard.putBoolean("Index/Pronto", pronto);
     }
 }

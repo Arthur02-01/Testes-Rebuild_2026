@@ -26,6 +26,8 @@ import frc.robot.commands.Autonomo.Shooter.AutoAtirar;
 import frc.robot.commands.Autonomo.Tracao.AndarEncoder;
 import frc.robot.commands.Autonomo.Tracao.GiroPorAngulo;
 import frc.robot.commands.Autonomo.intake.AutoIntakeFloor;
+import frc.robot.commands.Index.Indexando;
+import frc.robot.commands.Index.RodarIndex;
 import frc.robot.CommandsRetirados.AtirarComBoquinhaAtrasado;
 //import frc.robot.commands.Autonomo.Tracao.GiroPorAngulo;
 import frc.robot.Constantes.ConstantesShooter;
@@ -141,10 +143,11 @@ btnY.whileTrue(
 
         lt.onTrue(new AtirarComBoquinhaAtrasado(shooter, index));
 
+        rb.whileTrue(new RodarIndex(index));
         /*rb.onTrue(new AtivarFrenteShooter(shooter));
-        lb.onTrue(new AtivarAtrasShooter(shooter));/*/
-        rb.onTrue(new GirarIntakeReverse(intakeFloor) );
-        lb.onTrue(new PararIntake(intakeFloor));
+        lb.onTrue(new Indexando(index));*/
+        /*rb.onTrue(new GirarIntakeReverse(intakeFloor) );
+        lb.onTrue(new PararIntake(intakeFloor))*/
 
 
        /* * R4.debounce(0.15).onTrue(
