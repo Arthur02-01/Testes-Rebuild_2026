@@ -52,12 +52,8 @@ public class Shooter extends SubsystemBase {
 
     /** Ativa giro para trás */
     public void atirarTras() {
-       if (sm.is(StateMachineShooter.Estado.ATIRANDO_TRAS)){
-        sm.set(StateMachineShooter.Estado.PARADO);
-       } else {
-        sm.set(StateMachineShooter.Estado.ATIRANDO_TRAS);
-       }
-    }
+    sm.set(StateMachineShooter.Estado.ATIRANDO_TRAS);
+}
 
     public ConstantesShooter.Velocidade getVelocidade() {
     return velocidade;

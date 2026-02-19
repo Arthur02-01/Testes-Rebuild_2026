@@ -8,22 +8,13 @@ import frc.robot.subsystems.IntakeFloor;
 import frc.robot.commands.Pivot.MoverPivotPreset;
 import frc.robot.Extras.AngulosPresetPivot;
 
-public class AutoIntakeFloor extends SequentialCommandGroup {
+public class Autobaixointake extends SequentialCommandGroup {
 
-    public AutoIntakeFloor(IntakeFloor intake) {
+    public Autobaixointake(IntakeFloor intake) {
 
         addCommands(
 
- new MoverPivotPreset(intake, AngulosPresetPivot.ALTO),
-
-            new InstantCommand(intake::IntakeOn, intake),
-
-            new WaitCommand(2.0),
-
-            new InstantCommand(intake::PararIntake, intake),
-
-            new MoverPivotPreset(intake, AngulosPresetPivot.ALTO)
-
+            new InstantCommand(intake::IntakeOn, intake)
         );
     }
 }

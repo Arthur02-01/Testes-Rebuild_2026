@@ -23,9 +23,11 @@ import frc.robot.commands.IntakeFloor.PararIntake;
 //import frc.robot.commands.Autonomo.LimelightAuto.AlinhadorHorizontalAuto;
 //import frc.robot.commands.Autonomo.LimelightAuto.AlinhadorVerticalAuto;
 import frc.robot.commands.Autonomo.Shooter.AutoAtirar;
+import frc.robot.commands.Autonomo.Shooter.BoquinhaAntesShooterAuto;
 import frc.robot.commands.Autonomo.Tracao.AndarEncoder;
 import frc.robot.commands.Autonomo.Tracao.GiroPorAngulo;
 import frc.robot.commands.Autonomo.intake.AutoIntakeFloor;
+import frc.robot.commands.Autonomo.intake.Autobaixointake;
 import frc.robot.commands.Index.Indexando;
 import frc.robot.commands.Index.RodarIndex;
 import frc.robot.CommandsRetirados.AtirarComBoquinhaAtrasado;
@@ -196,7 +198,7 @@ new POVButton(xbox2, 180)
     /* ===== AUTONOMO ===== */
     public Command getAutonomousCommand() {
         return new SequentialCommandGroup(
-      new AutoIntakeFloor(intakeFloor)
+      new BoquinhaAntesShooterAuto(shooter, index)
        );
     }
 }
