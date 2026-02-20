@@ -18,6 +18,7 @@ import frc.robot.commands.Pivot.MoverPivotPreset;
 import frc.robot.commands.IntakeFloor.GirarIntake;
 import frc.robot.commands.IntakeFloor.GirarIntakeReverse;
 import frc.robot.commands.IntakeFloor.PararIntake;
+import frc.robot.commands.Autonomo.Angulador.AnguladorAuto;
 //import frc.robot.commands.Autonomo.LimelightAuto.AlinhadorHorizontalAuto;
 //import frc.robot.commands.Autonomo.LimelightAuto.AlinhadorVerticalAuto;
 import frc.robot.commands.Autonomo.Shooter.AutoAtirar;
@@ -184,7 +185,7 @@ btnY.whileTrue(
     /* ===== AUTONOMO ===== */
     public Command getAutonomousCommand() {
         return new SequentialCommandGroup(
-      new BoquinhaAntesShooterAuto(shooter, index)
+    new AnguladorAuto(angulador, AnguloPreset.CENTRAL)
        );
     }
 }
