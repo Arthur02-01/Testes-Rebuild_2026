@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.Traction;
 import frc.robot.subsystems.Angulador;
 import frc.robot.subsystems.IntakeFloor;
-//import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Index;
@@ -19,7 +18,6 @@ import frc.robot.commands.Pivot.MoverPivotPreset;
 import frc.robot.commands.IntakeFloor.GirarIntake;
 import frc.robot.commands.IntakeFloor.GirarIntakeReverse;
 import frc.robot.commands.IntakeFloor.PararIntake;
-//import frc.robot.commands.Index.Indexando;
 //import frc.robot.commands.Autonomo.LimelightAuto.AlinhadorHorizontalAuto;
 //import frc.robot.commands.Autonomo.LimelightAuto.AlinhadorVerticalAuto;
 import frc.robot.commands.Autonomo.Shooter.AutoAtirar;
@@ -30,13 +28,13 @@ import frc.robot.commands.Autonomo.intake.AutoIntakeFloor;
 import frc.robot.commands.Autonomo.intake.Autobaixointake;
 import frc.robot.commands.Index.Indexando;
 import frc.robot.commands.Index.RodarIndex;
+import frc.robot.commands.Index.ToggleSequencialShooterIndex;
 import frc.robot.CommandsRetirados.AtirarComBoquinhaAtrasado;
 //import frc.robot.commands.Autonomo.Tracao.GiroPorAngulo;
 import frc.robot.Constantes.ConstantesShooter;
 import frc.robot.Extras.AnguloPreset;
 import frc.robot.Extras.AngulosPresetPivot;
 import frc.robot.commands.Angulador.MoverAnguladoPreset;
-//import frc.robot.commands.Climber.ClimberStep;
 import frc.robot.commands.Shooter.*;
 import frc.robot.commands.Traction.AtivarTurbo;
 import frc.robot.commands.Traction.Controller;
@@ -75,7 +73,8 @@ public class RobotContainer {
         new Trigger(() -> xbox2.getLeftTriggerAxis() > 0.2);
 
     // SHOOTER
-    //private final JoystickButton btnA = new JoystickButton(xbox2, XboxController.Button.kA.value);
+    private final JoystickButton btnA =
+        new JoystickButton(xbox2, XboxController.Button.kA.value);
 
 
     private final JoystickButton btnX =
@@ -86,9 +85,6 @@ public class RobotContainer {
 
     private final JoystickButton btnY =
         new JoystickButton(xbox2, XboxController.Button.kY.value);
-        //private final JoystickButton L4 = new JoystickButton(xbox2, 7);
-    //private final JoystickButton R4 = new JoystickButton(xbox2, 8);
-
     private final JoystickButton btnRb = new JoystickButton(xbox1, 6);
     private final JoystickButton btnLb = new JoystickButton(xbox1, 5);
 
@@ -137,34 +133,13 @@ btnY.whileTrue(
     )
 );
 
-        //rt.debounce(0.15).onTrue(new AtivarFrenteShooter(shooter));
         rt.onTrue(
             new ToggleShooterComBoquinha(shooter, index)
         );
+        lt.onTrue(new ToggleSequencialShooterIndex(shooter, index));
 
-
-        lt.onTrue(new AtirarComBoquinhaAtrasado(shooter, index));
-
-        rb.whileTrue(new RodarIndex(index));
-        /*rb.onTrue(new AtivarFrenteShooter(shooter));
-        lb.onTrue(new Indexando(index));*/
-        /*rb.onTrue(new GirarIntakeReverse(intakeFloor) );
-        lb.onTrue(new PararIntake(intakeFloor))*/
-
-
-       /* * R4.debounce(0.15).onTrue(
-            new ClimberStep(
-                climber,
-                0.10   // sobe 10 cm
-            )
-        );
-
-        L4.debounce(0.15).onTrue(
-            new ClimberStep(
-                climber,
-                -0.10  // desce 10 cm
-            )
-        ); */ 
+        rb.onTrue(new GirarIntakeReverse(intakeFloor) );
+        lb.onTrue(new PararIntake(intakeFloor));
 
 /*new POVButton(xbox2, 0)
     .onTrue(new MoverAnguladoPreset(
