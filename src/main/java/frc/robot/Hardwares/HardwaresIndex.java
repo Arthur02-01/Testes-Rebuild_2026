@@ -46,7 +46,8 @@ public class HardwaresIndex {
 
     cfgBoquinha
         .idleMode(IdleMode.kBrake)
-        .smartCurrentLimit(ConstantesIndex.CORRENTE_MAXIMA_A_01);
+        .smartCurrentLimit(ConstantesIndex.CORRENTE_MAXIMA_A_01)
+        .inverted(false);
 
     cfgBoquinha.encoder
         .velocityConversionFactor(1.0 / ConstantesIndex.boquinhaReducao)
@@ -67,7 +68,6 @@ public class HardwaresIndex {
         SparkBase.PersistMode.kNoPersistParameters
     );
 
-    // ================= INDEX =================
 
     SparkMaxConfig cfgIndex = new SparkMaxConfig();
 

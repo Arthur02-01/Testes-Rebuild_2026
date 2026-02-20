@@ -17,8 +17,8 @@ public final class ConstantesAngulador {
       public static final int AnguladorEncoder = 26;
 }
 
-    public static final double LIMITE_SUPERIOR = 50.0;
-    public static final double LIMITE_INFERIOR = 10.0;
+    public static final double LIMITE_SUPERIOR = 160.0;
+    public static final double LIMITE_INFERIOR = 0.0;
 
     public static final double REDUCAO = 25.0;
 

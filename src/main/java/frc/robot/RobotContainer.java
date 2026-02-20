@@ -27,6 +27,7 @@ import frc.robot.commands.Autonomo.Tracao.GiroPorAngulo;
 import frc.robot.commands.Autonomo.intake.AutoIntakeFloor;
 import frc.robot.commands.Autonomo.intake.Autobaixointake;
 import frc.robot.commands.Index.Indexando;
+import frc.robot.commands.Index.PararSequencialIndexShooter;
 import frc.robot.commands.Index.RodarIndex;
 import frc.robot.commands.Index.ToggleSequencialShooterIndex;
 import frc.robot.CommandsRetirados.AtirarComBoquinhaAtrasado;
@@ -133,41 +134,51 @@ btnY.whileTrue(
     )
 );
 
-        rt.onTrue(
-            new ToggleShooterComBoquinha(shooter, index)
-        );
-        lt.onTrue(new ToggleSequencialShooterIndex(shooter, index));
+        rt.onTrue(new ToggleSequencialShooterIndex(shooter, index));
+
+        lt.onTrue(
+            new PararSequencialIndexShooter(shooter, index));
+
+        /*rb.whileTrue(new MoverPivotPreset(
+        intakeFloor,
+        AngulosPresetPivot.BAIXO
+        ));
+
+        lb.whileTrue(new MoverPivotPreset(
+        intakeFloor,
+        AngulosPresetPivot.ALTO
+        ));*/
 
         rb.onTrue(new GirarIntakeReverse(intakeFloor) );
         lb.onTrue(new PararIntake(intakeFloor));
 
-/*new POVButton(xbox2, 0)
-    .onTrue(new MoverAnguladoPreset(
-        angulador,
-        AnguloPreset.ALTO
-    ));
+    /*new POVButton(xbox2, 0)
+        .onTrue(new MoverAnguladoPreset(
+            angulador,
+            AnguloPreset.ALTO
+        ));
 
-new POVButton(xbox2, 270)
-    .onTrue(new MoverAnguladoPreset(
-        angulador,
-        AnguloPreset.CENTRAL
-    ));
+    new POVButton(xbox2, 270)
+        .onTrue(new MoverAnguladoPreset(
+            angulador,
+            AnguloPreset.CENTRAL
+        ));
 
-new POVButton(xbox2, 180)
-    .onTrue(new MoverAnguladoPreset(
-        angulador,
-        AnguloPreset.BAIXO
-    ));*/
-new POVButton(xbox2, 0)
-    .whileTrue(new MoverPivotPreset(
-        intakeFloor,
-        AngulosPresetPivot.ALTO
-    ));
-new POVButton(xbox2, 180)
-    .whileTrue(new MoverPivotPreset(
-        intakeFloor,
-        AngulosPresetPivot.BAIXO
-    ));
+    new POVButton(xbox2, 180)
+        .onTrue(new MoverAnguladoPreset(
+            angulador,
+            AnguloPreset.BAIXO
+        ));*/
+    new POVButton(xbox2, 0)
+        .whileTrue(new MoverPivotPreset(
+            intakeFloor,
+            AngulosPresetPivot.ALTO
+        ));
+    new POVButton(xbox2, 180)
+        .whileTrue(new MoverPivotPreset(
+            intakeFloor,
+            AngulosPresetPivot.BAIXO
+        ));
     }
 
     /* ===== AUTONOMO ===== */

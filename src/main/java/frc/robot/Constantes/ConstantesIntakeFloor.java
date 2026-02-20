@@ -21,8 +21,8 @@ public class ConstantesIntakeFloor {
     // ======================
     // LIMITES MECÂNICOS
     // ======================
-    public static final double LIMITE_INFERIOR_PIVOT = Math.toRadians(15.0);
-    public static final double LIMITE_SUPERIOR_PIVOT = Math.toRadians(180.0);
+    public static final double LIMITE_INFERIOR_PIVOT = Math.toRadians(10.0);
+    public static final double LIMITE_SUPERIOR_PIVOT = Math.toRadians(198.50);
 
     // ======================
     // PERFIL TRAPEZOIDAL

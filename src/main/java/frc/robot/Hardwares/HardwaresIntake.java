@@ -51,7 +51,7 @@ public class HardwaresIntake {
         SparkMaxConfig cfgPivot = new SparkMaxConfig();
          cfgPivot.idleMode(IdleMode.kBrake)
            .smartCurrentLimit(60)
-           .inverted(true);
+           .inverted(false);
         cfgPivot.closedLoop
         .p(0.4)
         .i(0.0)

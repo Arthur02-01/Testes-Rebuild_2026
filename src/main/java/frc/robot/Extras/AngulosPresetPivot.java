@@ -2,8 +2,8 @@ package frc.robot.Extras;
 
 public enum AngulosPresetPivot {
 
-    BAIXO(Math.toRadians(5.0)),
-    ALTO(Math.toRadians(180.0));
+    BAIXO(Math.toRadians(10.0)),
+    ALTO(Math.toRadians(198.50));
 
     public final double rad;
 

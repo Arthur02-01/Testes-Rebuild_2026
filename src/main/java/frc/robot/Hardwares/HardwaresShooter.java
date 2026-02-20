@@ -31,8 +31,8 @@ public class HardwaresShooter {
 
         SparkMaxConfig cfg = new SparkMaxConfig();
         cfg.idleMode(IdleMode.kCoast)
-           .smartCurrentLimit(ConstantesShooter.CORRENTE_MAXIMA_A);
-
+           .smartCurrentLimit(ConstantesShooter.CORRENTE_MAXIMA_A)
+           .inverted(true);
         cfg.encoder
            .velocityConversionFactor(1.0 / ConstantesShooter.arlindoReducao)
            .positionConversionFactor(1.0 / ConstantesShooter.arlindoReducao);

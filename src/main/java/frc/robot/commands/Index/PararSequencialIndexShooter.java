@@ -5,16 +5,15 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Shooter;
-import frc.robot.Constantes.ConstantesIndex;
 
-public class ToggleSequencialShooterIndex extends Command {
+public class PararSequencialIndexShooter extends Command {
 
     private enum Estado {
-        LIGAR_SHOOTER,
-        ESPERAR_SHOOTER,
-        LIGAR_BOQUINHA,
+        PARAR_INDEX,
+        ESPERAR_INDEX,
+        PARAR_BOQUINHA,
         ESPERAR_BOQUINHA,
-        LIGAR_INDEX,
+        PARAR_SHOOTER,
         FINAL
     }
 
@@ -24,7 +23,7 @@ public class ToggleSequencialShooterIndex extends Command {
     private final Timer timer = new Timer();
     private Estado estado;
 
-    public ToggleSequencialShooterIndex(Shooter shooter, Index index) {
+    public PararSequencialIndexShooter(Shooter shooter, Index index) {
         this.shooter = shooter;
         this.index = index;
         addRequirements(shooter, index);
@@ -34,9 +33,7 @@ public class ToggleSequencialShooterIndex extends Command {
     public void initialize() {
         timer.reset();
         timer.start();
-
-        index.setVelocidade(ConstantesIndex.VelocidadeIndex.NORMAL);
-        estado = Estado.LIGAR_SHOOTER;
+        estado = Estado.PARAR_INDEX;
     }
 
     @Override
@@ -44,32 +41,32 @@ public class ToggleSequencialShooterIndex extends Command {
 
         switch (estado) {
 
-            case LIGAR_SHOOTER -> {
-                shooter.atirarFrente();
+            case PARAR_INDEX -> {
+                index.sairModoForcado();
                 timer.reset();
-                estado = Estado.ESPERAR_SHOOTER;
+                estado = Estado.ESPERAR_INDEX;
             }
 
-            case ESPERAR_SHOOTER -> {
-                if (timer.hasElapsed(1.0)) {
-                    estado = Estado.LIGAR_BOQUINHA;
+            case ESPERAR_INDEX -> {
+                if (timer.hasElapsed(0.5)) {
+                    estado = Estado.PARAR_BOQUINHA;
                 }
             }
 
-            case LIGAR_BOQUINHA -> {
-                index.ligar(); 
+            case PARAR_BOQUINHA -> {
+                index.desligar();
                 timer.reset();
                 estado = Estado.ESPERAR_BOQUINHA;
             }
 
             case ESPERAR_BOQUINHA -> {
                 if (timer.hasElapsed(0.5)) {
-                    estado = Estado.LIGAR_INDEX;
+                    estado = Estado.PARAR_SHOOTER;
                 }
             }
 
-            case LIGAR_INDEX -> {
-                index.entrarModoForcado(0.4);
+            case PARAR_SHOOTER -> {
+                shooter.parar();
                 estado = Estado.FINAL;
             }
 
