@@ -74,7 +74,8 @@ public class HardwaresIndex {
 
     cfgIndex
         .idleMode(IdleMode.kBrake)
-        .smartCurrentLimit(ConstantesIndex.CORRENTE_MAXIMA_A_01);
+        .smartCurrentLimit(ConstantesIndex.CORRENTE_MAXIMA_A_01)
+        .inverted(true);
         
 
 

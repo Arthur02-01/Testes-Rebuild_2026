@@ -14,9 +14,7 @@ public class Autobaixointake extends SequentialCommandGroup {
 
         addCommands(
 
-    new InstantCommand(intake::IntakeReverse, intake),
-    new WaitCommand(5),
-    new InstantCommand(intake::PararIntake, intake)
+ new MoverPivotPreset(intake, AngulosPresetPivot.ALTO)
         );
     }
 }

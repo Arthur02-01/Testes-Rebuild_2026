@@ -60,16 +60,13 @@ public class AutoAimShooter extends Command {
 
         /* ================= SHOOTER ================= */
 
-        if (distancia >= 4.30) {
+        if (distancia >= 7.30) {
             shooter.setVelocidade(ConstantesShooter.Velocidade.TURBO);
-        } else if (distancia >= 3.40) {
+        } else if (distancia >= 5.40) {
             shooter.setVelocidade(ConstantesShooter.Velocidade.ALTA);
         } else {
             shooter.setVelocidade(ConstantesShooter.Velocidade.MEDIA);
         }
-
-        shooter.setAlimentando(false);
-        shooter.atirarFrente();
     }
 
     @Override
