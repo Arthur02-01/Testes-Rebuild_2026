@@ -82,7 +82,10 @@ public class PararSequencialIndexShooter extends Command {
     @Override
     public void end(boolean interrupted) {
         timer.stop();
-        shooter.parar();
-        index.desligarBoquinha();
+
+        if (interrupted) {
+            shooter.parar();
+            index.desligarBoquinha();
+        }
     }
 }

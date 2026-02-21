@@ -36,11 +36,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public void atirarFrente() {
-        if (sm.is(StateMachineShooter.Estado.ATIRANDO_FRENTE)) {
-            sm.set(StateMachineShooter.Estado.PARADO);
-        } else {
-            sm.set(StateMachineShooter.Estado.ATIRANDO_FRENTE);
-        }
+    sm.set(StateMachineShooter.Estado.ATIRANDO_FRENTE);
     }
     public void atirarTras() {
     sm.set(StateMachineShooter.Estado.ATIRANDO_TRAS);
