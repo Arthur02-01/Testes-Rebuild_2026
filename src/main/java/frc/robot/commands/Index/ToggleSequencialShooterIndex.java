@@ -69,6 +69,7 @@ public class ToggleSequencialShooterIndex extends Command {
             }
 
             case LIGAR_INDEX -> {
+                shooter.setAlimentando(true);
                 index.entrarModoForcado(0.4);
                 estado = Estado.FINAL;
             }

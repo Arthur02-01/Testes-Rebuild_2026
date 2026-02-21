@@ -31,9 +31,9 @@ public class PararSequencialIndexShooter extends Command {
 
     @Override
     public void initialize() {
+        estado = Estado.PARAR_INDEX;
         timer.reset();
         timer.start();
-        estado = Estado.PARAR_INDEX;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class PararSequencialIndexShooter extends Command {
             }
 
             case PARAR_BOQUINHA -> {
-                index.desligar();
+                index.desligarBoquinha();
                 timer.reset();
                 estado = Estado.ESPERAR_BOQUINHA;
             }
@@ -82,5 +82,7 @@ public class PararSequencialIndexShooter extends Command {
     @Override
     public void end(boolean interrupted) {
         timer.stop();
+        shooter.parar();
+        index.desligarBoquinha();
     }
 }

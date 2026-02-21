@@ -31,12 +31,13 @@ public class ConstantesShooter {
     public static final double RPM_MAXIMO_CONTROLE = 5700.0;
     public static final int CORRENTE_MAXIMA_A = 60;
 
-    public static final double PID_P = 0.0004;
-    public static final double PID_I = 0.0;
+    public static final double PID_P = 0.00045;
+    public static final double PID_I = 0.0000008;
     public static final double PID_D = 0.0;
-    public static final double PID_IZONE_RPM = 250.0;
+    public static final double PID_IZONE_RPM = 400.0;
     public static final double FF_VELOCIDADE = 1.0 / 5700.0;
 
+    public static final double RPM_ANTI_DROP = 150.0;
     public static final double TAXA_RAMPA_SETPOINT_RPM_POR_S = 3000.0;
     public static final double FILTRO_RPM_TAU_S = 0.08;
 

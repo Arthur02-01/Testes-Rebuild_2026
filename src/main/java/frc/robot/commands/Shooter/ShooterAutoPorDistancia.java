@@ -4,9 +4,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constantes.ConstantesShooter;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shooter;
-import frc.robot.StatesMachines.StateMachineShooter;
 
-@SuppressWarnings("unused")
 public class ShooterAutoPorDistancia extends Command {
 
     private final Shooter shooter;
@@ -19,6 +17,11 @@ public class ShooterAutoPorDistancia extends Command {
     }
 
     @Override
+    public void initialize() {
+        shooter.parar();
+    }
+
+    @Override
     public void execute() {
 
         if (!limelight.temAlvo()) {
@@ -26,20 +29,19 @@ public class ShooterAutoPorDistancia extends Command {
             return;
         }
 
-        double M = limelight.getDistanciaFiltrada();
+        double distancia = limelight.getDistanciaFiltrada();
 
-        if (M >= 2.30) {
+        if (distancia >= 2.30) {
             shooter.setVelocidade(ConstantesShooter.Velocidade.TURBO);
-        } else if (M >= 1.45) {
+        } else if (distancia >= 1.45) {
             shooter.setVelocidade(ConstantesShooter.Velocidade.ALTA);
         } else {
             shooter.setVelocidade(ConstantesShooter.Velocidade.MEDIA);
         }
 
-        // garante que está girando para frente
-        if (!shooter.estaAtivo()) {
-            shooter.atirarFrente();
-        }
+        // garante estado correto sem toggle
+        shooter.setAlimentando(false);
+        shooter.atirarFrente();
     }
 
     @Override

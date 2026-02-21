@@ -44,7 +44,6 @@ public class HardwaresShooter {
         .iZone(ConstantesShooter.PID_IZONE_RPM)
         .velocityFF(ConstantesShooter.FF_VELOCIDADE)
         .outputRange(-1.0, 1.0);
-        cfg.closedLoopRampRate(ConstantesShooter.RAMP_RATE_S);
 
         arlindo.configure(cfg,
             SparkBase.ResetMode.kNoResetSafeParameters,
