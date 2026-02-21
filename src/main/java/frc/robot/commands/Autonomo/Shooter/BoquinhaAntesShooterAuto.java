@@ -1,9 +1,7 @@
 package frc.robot.commands.Autonomo.Shooter;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import frc.robot.subsystems.Shooter;
@@ -14,43 +12,51 @@ import frc.robot.Constantes.ConstantesIndex;
 
 public class BoquinhaAntesShooterAuto extends SequentialCommandGroup {
 
-    private static final double ATRASO_SHOOTER = 1.2;
-    private static final double TEMPO_TOTAL = 3.0;
+    private static final double ATRASO_BOQUINHA = 1.0;
+    private static final double ATRASO_INDEX = 1.0;
+    private static final double TEMPO_TOTAL = 10.0;
 
-    public BoquinhaAntesShooterAuto(Shooter shooter, Index boquinha) {
+    public BoquinhaAntesShooterAuto(
+            Shooter shooter,
+            Index boquinha,
+            Index index) {
 
         addCommands(
 
-            // Liga apenas a boquinha
+            // Liga shooter
+            new InstantCommand(() -> {
+                shooter.setVelocidade(ConstantesShooter.Velocidade.MEDIA);
+                shooter.atirarTras();
+            }, shooter),
+
+            // Espera antes da boquinha
+            new WaitCommand(ATRASO_BOQUINHA),
+
+            // Liga boquinha
             new InstantCommand(() -> {
                 boquinha.setVelocidade(ConstantesIndex.VelocidadeIndex.NORMAL);
-                boquinha.ligarBoquinha(ConstantesIndex.VelocidadeIndex.NORMAL.rpm);
+                boquinha.ligarBoquinha(
+                    ConstantesIndex.VelocidadeIndex.NORMAL.rpm
+                );
             }, boquinha),
 
-            // Espera antes de ligar shooter
-            new WaitCommand(ATRASO_SHOOTER),
+            // Espera antes do index
+            new WaitCommand(ATRASO_INDEX),
 
-            // Liga shooter mantendo boquinha rodando
-            new ParallelCommandGroup(
+            // Liga index
+            new InstantCommand(() -> {
+                index.entrarModoForcado(0.3);
+            }, index),
 
-                // Shooter rodando continuamente
-                new RunCommand(() -> {
-                    shooter.setVelocidade(ConstantesShooter.Velocidade.NORMAL);
-                    shooter.atirarTras();
-                }, shooter),
+            //  Mantem tudo rodando pelo tempo restante
+            new WaitCommand(TEMPO_TOTAL - ATRASO_BOQUINHA - ATRASO_INDEX),
 
-                // Mantém boquinha ativa
-                new RunCommand(() -> {
-                    boquinha.ligarBoquinha(ConstantesIndex.VelocidadeIndex.NORMAL.rpm);
-                }, boquinha)
-
-            ).withTimeout(TEMPO_TOTAL - ATRASO_SHOOTER),
-
-            // Para tudo no final
+            // Para tudo
             new InstantCommand(() -> {
                 shooter.parar();
                 boquinha.desligarBoquinha();
-            }, shooter, boquinha)
+                index.sairModoForcado();
+            }, shooter, boquinha, index)
         );
     }
 }

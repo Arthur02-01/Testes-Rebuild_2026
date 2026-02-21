@@ -51,7 +51,7 @@ public class ToggleSequencialShooterIndex extends Command {
             }
 
             case ESPERAR_SHOOTER -> {
-                if (timer.hasElapsed(1.0)) {
+                if (timer.hasElapsed(1.4)) {
                     estado = Estado.LIGAR_BOQUINHA;
                 }
             }
@@ -63,14 +63,14 @@ public class ToggleSequencialShooterIndex extends Command {
             }
 
             case ESPERAR_BOQUINHA -> {
-                if (timer.hasElapsed(0.5)) {
+                if (timer.hasElapsed(0.7)) {
                     estado = Estado.LIGAR_INDEX;
                 }
             }
 
             case LIGAR_INDEX -> {
                 shooter.setAlimentando(true);
-                index.entrarModoForcado(0.4);
+                index.entrarModoForcado(0.2);
                 estado = Estado.FINAL;
             }
 

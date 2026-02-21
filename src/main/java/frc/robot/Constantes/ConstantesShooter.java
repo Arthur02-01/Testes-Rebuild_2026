@@ -4,9 +4,9 @@ public class ConstantesShooter {
 
     public enum Velocidade {
         NORMAL(900),
-        MEDIA(1400),
-        ALTA(1850),
-        TURBO(2000);
+        MEDIA(1100),
+        ALTA(1250),
+        TURBO(1350);
 
         public final double rpm;
 

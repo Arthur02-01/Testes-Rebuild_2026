@@ -25,9 +25,13 @@ public class Shooter extends SubsystemBase {
 
     private double rpmFiltradoDashboard = 0.0;
 
+        private ConstantesShooter.Velocidade velocidade =
+        ConstantesShooter.Velocidade.NORMAL;
+
     /* ================= API ================= */
 
     public void setVelocidade(ConstantesShooter.Velocidade vel) {
+        velocidade = vel;
         rpmAlvo = vel.rpm;
     }
 
@@ -49,6 +53,10 @@ public class Shooter extends SubsystemBase {
     public boolean pronto() {
         double rpm = Math.abs(io.arlindoEncoder.getVelocity());
         return Math.abs(rpmAlvo - rpm) < ConstantesShooter.TOLERANCIA_RPM;
+    }
+    
+    public ConstantesShooter.Velocidade getVelocidade() {
+    return velocidade;
     }
 
     /* ================= LOOP ================= */

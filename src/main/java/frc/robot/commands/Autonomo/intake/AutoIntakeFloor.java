@@ -14,16 +14,16 @@ public class AutoIntakeFloor extends SequentialCommandGroup {
 
         addCommands(
 
- new MoverPivotPreset(intake, AngulosPresetPivot.ALTO),
+    new MoverPivotPreset(intake, AngulosPresetPivot.ALTO),
 
-            new InstantCommand(intake::IntakeOn, intake),
+    new InstantCommand(intake::IntakeReverse, intake),
 
-            new WaitCommand(2.0),
+    new WaitCommand(2.0),
 
-            new InstantCommand(intake::PararIntake, intake),
+    new InstantCommand(intake::PararIntake, intake),
 
-            new MoverPivotPreset(intake, AngulosPresetPivot.ALTO)
+    new MoverPivotPreset(intake, AngulosPresetPivot.BAIXO)
 
-        );
+);
     }
 }

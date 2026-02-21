@@ -36,6 +36,7 @@ import frc.robot.CommandsRetirados.AtirarComBoquinhaAtrasado;
 import frc.robot.Constantes.ConstantesShooter;
 import frc.robot.Extras.AnguloPreset;
 import frc.robot.Extras.AngulosPresetPivot;
+import frc.robot.commands.Angulador.AnguladorAutoPorLimelight;
 import frc.robot.commands.Angulador.MoverAnguladoPreset;
 import frc.robot.commands.Shooter.*;
 import frc.robot.commands.Traction.AtivarTurbo;
@@ -90,6 +91,8 @@ public class RobotContainer {
     private final JoystickButton btnRb = new JoystickButton(xbox1, 6);
     private final JoystickButton btnLb = new JoystickButton(xbox1, 5);
 
+    private final JoystickButton btnJ = new JoystickButton(xbox2, 9);
+
     public RobotContainer() {
         configureBindings();
 
@@ -114,6 +117,8 @@ public class RobotContainer {
         );
 
         /* ===== SHOOTER ===== */
+        btnA.onTrue(new ShooterAutoPorDistancia(shooter, limelight));
+
         btnX.onTrue(
     new ShooterVelocidade(
         shooter,
@@ -128,11 +133,18 @@ btnB.whileTrue(
     )
 );
 
-btnY.whileTrue(
+/*btnY.whileTrue(
     new ShooterVelocidade(
         shooter,
         ConstantesShooter.Velocidade.TURBO
     )
+);*/
+btnY.whileTrue(
+    new AnguladorAutoPorLimelight(angulador, limelight)
+);
+
+btnJ.whileTrue(
+    new AutoAimShooter(angulador, shooter, limelight)
 );
 
         rt.onTrue(new ToggleSequencialShooterIndex(shooter, index));
@@ -185,7 +197,7 @@ btnY.whileTrue(
     /* ===== AUTONOMO ===== */
     public Command getAutonomousCommand() {
         return new SequentialCommandGroup(
-    new AnguladorAuto(angulador, AnguloPreset.CENTRAL)
+    new BoquinhaAntesShooterAuto(shooter, index, index)
        );
     }
 }

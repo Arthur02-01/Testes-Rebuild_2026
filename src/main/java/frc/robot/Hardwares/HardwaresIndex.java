@@ -1,5 +1,6 @@
 package frc.robot.Hardwares;
 
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkClosedLoopController;
@@ -74,6 +75,8 @@ public class HardwaresIndex {
     cfgIndex
         .idleMode(IdleMode.kBrake)
         .smartCurrentLimit(ConstantesIndex.CORRENTE_MAXIMA_A_01);
+        
+
 
     cfgIndex.encoder
         .velocityConversionFactor(1.0 / ConstantesIndex.indexReducao)
