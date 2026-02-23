@@ -197,7 +197,9 @@ btnJ.whileTrue(
     /* ===== AUTONOMO ===== */
     public Command getAutonomousCommand() {
         return new SequentialCommandGroup(
-    new Autobaixointake(intakeFloor)
+    new AndarEncoder(traction, 0.6, 0.15),
+    new Autobaixointake(intakeFloor),
+    new BoquinhaAntesShooterAuto(shooter, index, index)
        );
     }
 }

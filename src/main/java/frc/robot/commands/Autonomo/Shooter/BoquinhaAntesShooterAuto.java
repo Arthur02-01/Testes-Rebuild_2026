@@ -25,8 +25,8 @@ public class BoquinhaAntesShooterAuto extends SequentialCommandGroup {
 
             // Liga shooter
             new InstantCommand(() -> {
-                shooter.setVelocidade(ConstantesShooter.Velocidade.MEDIA);
-                shooter.atirarTras();
+                shooter.setVelocidade(ConstantesShooter.Velocidade.ALTA);
+                shooter.atirarFrente();
             }, shooter),
 
             // Espera antes da boquinha
