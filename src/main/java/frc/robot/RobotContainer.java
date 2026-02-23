@@ -194,10 +194,11 @@ btnJ.whileTrue(
         ));
     }
 
-    /* ===== AUTONOMO ===== */
+    /*  AUTONOMO  */
     public Command getAutonomousCommand() {
         return new SequentialCommandGroup(
-    new AndarEncoder(traction, 0.6, 0.15),
+    new AndarEncoder(traction, 0.7, 0.10),
+    new GiroPorAngulo(traction, 15),
     new Autobaixointake(intakeFloor),
     new BoquinhaAntesShooterAuto(shooter, index, index)
        );

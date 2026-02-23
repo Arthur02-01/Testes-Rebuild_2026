@@ -39,6 +39,10 @@ public class Shooter extends SubsystemBase {
         alimentando = valor;
     }
 
+    public void setRpmDireto(double rpm) {
+    rpmAlvo = rpm;
+    }
+
     public void atirarFrente() {
     sm.set(StateMachineShooter.Estado.ATIRANDO_FRENTE);
     }

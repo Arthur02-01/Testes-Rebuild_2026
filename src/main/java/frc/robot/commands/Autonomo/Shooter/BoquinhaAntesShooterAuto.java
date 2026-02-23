@@ -45,7 +45,7 @@ public class BoquinhaAntesShooterAuto extends SequentialCommandGroup {
 
             // Liga index
             new InstantCommand(() -> {
-                index.entrarModoForcado(0.3);
+                index.entrarModoForcado(0.45);
             }, index),
 
             //  Mantem tudo rodando pelo tempo restante

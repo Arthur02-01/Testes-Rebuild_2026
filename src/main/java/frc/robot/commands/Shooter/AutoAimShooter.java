@@ -14,6 +14,12 @@ public class AutoAimShooter extends Command {
     private final Shooter shooter;
     private final Limelight limelight;
 
+    private static final double DIST_MIN = 4.65;  
+    private static final double RPM_MIN  = 1100.0;
+
+    private static final double DIST_MAX = 7.30;
+    private static final double RPM_MAX  = 1350.0;
+
     public AutoAimShooter(
         Angulador angulador,
         Shooter shooter,
@@ -44,7 +50,7 @@ public class AutoAimShooter extends Command {
         /* ================= ANGULADOR ================= */
 
         double deltaAltura =
-              LimelightConstants.ALTURA_TAG_METROS
+              (LimelightConstants.ALTURA_TAG_METROS + 0.74)
             - LimelightConstants.ALTURA_CAMERA_METROS;
 
         double anguloRad = Math.atan(deltaAltura / distancia);
@@ -60,13 +66,16 @@ public class AutoAimShooter extends Command {
 
         /* ================= SHOOTER ================= */
 
-        if (distancia >= 7.30) {
-            shooter.setVelocidade(ConstantesShooter.Velocidade.TURBO);
-        } else if (distancia >= 5.40) {
-            shooter.setVelocidade(ConstantesShooter.Velocidade.ALTA);
-        } else {
-            shooter.setVelocidade(ConstantesShooter.Velocidade.MEDIA);
-        }
+        distancia = Math.max(DIST_MIN, Math.min(DIST_MAX, distancia));
+
+        // Interpolação linear
+        double rpm =
+            RPM_MIN +
+            (distancia - DIST_MIN) *
+            (RPM_MAX - RPM_MIN) /
+            (DIST_MAX - DIST_MIN);
+
+        shooter.setRpmDireto(rpm);
     }
 
     @Override
