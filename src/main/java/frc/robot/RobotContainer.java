@@ -15,6 +15,7 @@ import frc.robot.subsystems.Index;
 import frc.robot.commands.Limelight.AlinhadorHorizontalAprilTag;
 import frc.robot.commands.Pivot.MoverPivotPreset;
 import frc.robot.commands.IntakeFloor.PararIntake;
+import frc.robot.commands.IntakeFloor.ToggleIntake;
 import frc.robot.commands.IntakeFloor.ToggleIntakeReverse;
 import frc.robot.commands.Autonomo.Shooter.BoquinhaAntesShooterAuto;
 import frc.robot.commands.Autonomo.Tracao.AndarEncoder;
@@ -23,8 +24,10 @@ import frc.robot.commands.Autonomo.intake.Autobaixointake;
 import frc.robot.commands.Index.PararSequencialIndexShooter;
 import frc.robot.commands.Index.ToggleSequencialShooterIndex;
 import frc.robot.Constantes.ConstantesShooter;
+import frc.robot.Extras.AnguloPreset;
 import frc.robot.Extras.AngulosPresetPivot;
 import frc.robot.commands.Angulador.AnguladorAutoPorLimelight;
+import frc.robot.commands.Angulador.MoverAnguladoPreset;
 import frc.robot.commands.Shooter.*;
 import frc.robot.commands.Traction.AtivarTurbo;
 import frc.robot.commands.Traction.Controller;
@@ -136,7 +139,8 @@ btnJ.whileTrue(
             new PararSequencialIndexShooter(shooter, index));
 
         rb.onTrue(new ToggleIntakeReverse(intakeFloor) );
-        lb.onTrue(new PararIntake(intakeFloor));
+        lb.onTrue(new ToggleIntake(intakeFloor));
+
     new POVButton(xbox2, 180)
         .whileTrue(new MoverPivotPreset(
             intakeFloor,
@@ -146,6 +150,29 @@ btnJ.whileTrue(
         .whileTrue(new MoverPivotPreset(
             intakeFloor,
             AngulosPresetPivot.BAIXO
+        ));
+    new POVButton(xbox2, 270)
+        .whileTrue(new MoverPivotPreset(
+            intakeFloor,
+            AngulosPresetPivot.MEDIO
+        ));
+
+    new POVButton(xbox1, 0)
+        .onTrue(new MoverAnguladoPreset(
+            angulador,
+            AnguloPreset.ALTO
+        ));
+
+    new POVButton(xbox1, 270)
+        .onTrue(new MoverAnguladoPreset(
+            angulador,
+            AnguloPreset.CENTRAL
+        ));
+
+    new POVButton(xbox1, 180)
+        .onTrue(new MoverAnguladoPreset(
+            angulador,
+            AnguloPreset.BAIXO
         ));
     }
 

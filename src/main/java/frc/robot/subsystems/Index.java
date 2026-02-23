@@ -180,7 +180,7 @@ public void sairModoForcado() {
         // só gira o index após o atraso
         if (boquinhaProntaLatch &&
             (agora - tempoInicioIndex) >= ConstantesIndex.ATRASO_INDEX_S) {
-            io.index.set(0.4);
+            io.index.set(0.55);
         } else {
         }
 

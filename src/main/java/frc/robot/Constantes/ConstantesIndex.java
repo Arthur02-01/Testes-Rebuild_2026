@@ -2,7 +2,7 @@ package frc.robot.Constantes;
 
 public class ConstantesIndex {
      public enum VelocidadeIndex {
-    NORMAL(1100, 0.35),
+    NORMAL(1200, 0.35),
     ALTA(2100, 0.85);
 
     public final double rpm;
