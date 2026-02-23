@@ -44,9 +44,6 @@ public class IntakeFloor extends SubsystemBase {
 
     private double anguloHoldRad = 0.0;
 
-    /* ======================
-       LEITURA DO ÂNGULO
-       ====================== */
     public double getAnguloPivotRad() {
         return KinematicsIntakeFloor.rotacoesParaRadPivot(
             io.encoder_pivot.getPosition()
@@ -57,9 +54,7 @@ public class IntakeFloor extends SubsystemBase {
         return sm.get();
     }
 
-    /* ======================
-       COMANDO DE MOVIMENTO
-       ====================== */
+   
     public void moverParaAnguloRad(double anguloRad) {
 
         double anguloLimitado = MathUtil.clamp(
@@ -77,10 +72,6 @@ public class IntakeFloor extends SubsystemBase {
     public void moverParaPreset(AngulosPresetPivot preset) {
         moverParaAnguloRad(preset.rad);
     }
-
-    /* ======================
-   CONTROLE DO INTAKE
-   ====================== */
 
     public void IntakeOn() {
         io.IntakeMotor.set(VELOCIDADE_MAX_INTAKE);
@@ -101,10 +92,11 @@ public class IntakeFloor extends SubsystemBase {
         return intakeLigado;
     }
 
+    public void forcarHold() {
+    anguloHoldRad = getAnguloPivotRad();
+    sm.set(StateMachineIntakeFloor.EstadoPivot.HOLD);
+}
 
-    /* ======================
-       LOOP PRINCIPAL
-       ====================== */
     @Override
     public void periodic() {
 
@@ -121,9 +113,6 @@ public class IntakeFloor extends SubsystemBase {
         SmartDashboard.putString("Pivot/Estado", sm.get().name());
     }
 
-    /* ======================
-       PERFIL
-       ====================== */
     private void executarPerfil() {
 
         TrapezoidProfile profile = new TrapezoidProfile(constraints);
