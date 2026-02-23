@@ -5,12 +5,12 @@ public class ConstantesTraction {
 
    // ===== SPARK MAX - TRAÇÃO =====
   // Lado direito
-  public static final int rightFrontMotorID = 2;
-  public static final int rightBackMotorID  = 1;
+  public static final int rightFrontMotorID = 4;
+  public static final int rightBackMotorID  = 3;
 
   // Lado esquerdo
-  public static final int leftFrontMotorID  = 4;
-  public static final int leftBackMotorID   = 3;
+  public static final int leftFrontMotorID  = 2;
+  public static final int leftBackMotorID   = 1;
 
   // ===== ENCODERS (PORTAS DIO DO roboRIO) =====
   // Ajuste se os fios estiverem em outras portas
