@@ -3,7 +3,6 @@ package frc.robot.commands.Shooter;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constantes.ConstantesAngulador;
 import frc.robot.Constantes.ConstantesLimelight.LimelightConstants;
-import frc.robot.Constantes.ConstantesShooter;
 import frc.robot.subsystems.Angulador;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shooter;

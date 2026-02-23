@@ -13,36 +13,26 @@ import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Index;
 import frc.robot.commands.Limelight.AlinhadorHorizontalAprilTag;
-import frc.robot.commands.Limelight.AlinhadorVerticalAprilTag;
 import frc.robot.commands.Pivot.MoverPivotPreset;
-import frc.robot.commands.IntakeFloor.GirarIntake;
-import frc.robot.commands.IntakeFloor.GirarIntakeReverse;
 import frc.robot.commands.IntakeFloor.PararIntake;
-import frc.robot.commands.Autonomo.Angulador.AnguladorAuto;
-//import frc.robot.commands.Autonomo.LimelightAuto.AlinhadorHorizontalAuto;
-//import frc.robot.commands.Autonomo.LimelightAuto.AlinhadorVerticalAuto;
-import frc.robot.commands.Autonomo.Shooter.AutoAtirar;
+import frc.robot.commands.IntakeFloor.ToggleIntakeReverse;
 import frc.robot.commands.Autonomo.Shooter.BoquinhaAntesShooterAuto;
 import frc.robot.commands.Autonomo.Tracao.AndarEncoder;
 import frc.robot.commands.Autonomo.Tracao.GiroPorAngulo;
-import frc.robot.commands.Autonomo.intake.AutoIntakeFloor;
 import frc.robot.commands.Autonomo.intake.Autobaixointake;
-import frc.robot.commands.Index.Indexando;
 import frc.robot.commands.Index.PararSequencialIndexShooter;
-import frc.robot.commands.Index.RodarIndex;
 import frc.robot.commands.Index.ToggleSequencialShooterIndex;
-import frc.robot.CommandsRetirados.AtirarComBoquinhaAtrasado;
-//import frc.robot.commands.Autonomo.Tracao.GiroPorAngulo;
 import frc.robot.Constantes.ConstantesShooter;
-import frc.robot.Extras.AnguloPreset;
 import frc.robot.Extras.AngulosPresetPivot;
 import frc.robot.commands.Angulador.AnguladorAutoPorLimelight;
-import frc.robot.commands.Angulador.MoverAnguladoPreset;
 import frc.robot.commands.Shooter.*;
 import frc.robot.commands.Traction.AtivarTurbo;
 import frc.robot.commands.Traction.Controller;
+import frc.robot.commands.Autonomo.intake.AutoIntakeFloor;
+import frc.robot.commands.Autonomo.Angulador.AnguladorAuto;
+import frc.robot.commands.Autonomo.Shooter.AutoAtirar;
 
-@SuppressWarnings ("unused")
+@SuppressWarnings("unused")
 public class RobotContainer {
 
     /* ===== SUBSYSTEMS ===== */
@@ -105,10 +95,9 @@ public class RobotContainer {
 
     private void configureBindings() {
 
-        /* ===== TRACAO ===== */
+  
         btnTurbo.onTrue(new AtivarTurbo(traction));
 
-        /* ===== LIMELIGHT / APRILTAG ===== */
         btnRb.whileTrue(
             new AlinhadorHorizontalAprilTag(limelight, traction )
         );
@@ -117,7 +106,6 @@ public class RobotContainer {
             new AutoAimShooter( angulador, shooter, limelight)
         );
 
-        /* ===== SHOOTER ===== */
         btnA.onTrue(new ShooterAutoPorDistancia(shooter, limelight));
 
         btnX.onTrue(
@@ -134,12 +122,6 @@ btnB.whileTrue(
     )
 );
 
-/*btnY.whileTrue(
-    new ShooterVelocidade(
-        shooter,
-        ConstantesShooter.Velocidade.TURBO
-    )
-);*/
 btnY.whileTrue(
     new AnguladorAutoPorLimelight(angulador, limelight)
 );
@@ -153,36 +135,8 @@ btnJ.whileTrue(
         lt.onTrue(
             new PararSequencialIndexShooter(shooter, index));
 
-        /*rb.whileTrue(new MoverPivotPreset(
-        intakeFloor,
-        AngulosPresetPivot.BAIXO
-        ));
-
-        lb.whileTrue(new MoverPivotPreset(
-        intakeFloor,
-        AngulosPresetPivot.ALTO
-        ));*/
-
-        rb.onTrue(new GirarIntakeReverse(intakeFloor) );
+        rb.onTrue(new ToggleIntakeReverse(intakeFloor) );
         lb.onTrue(new PararIntake(intakeFloor));
-
-    /*new POVButton(xbox2, 0)
-        .onTrue(new MoverAnguladoPreset(
-            angulador,
-            AnguloPreset.ALTO
-        ));
-
-    new POVButton(xbox2, 270)
-        .onTrue(new MoverAnguladoPreset(
-            angulador,
-            AnguloPreset.CENTRAL
-        ));
-
-    new POVButton(xbox2, 180)
-        .onTrue(new MoverAnguladoPreset(
-            angulador,
-            AnguloPreset.BAIXO
-        ));*/
     new POVButton(xbox2, 180)
         .whileTrue(new MoverPivotPreset(
             intakeFloor,
