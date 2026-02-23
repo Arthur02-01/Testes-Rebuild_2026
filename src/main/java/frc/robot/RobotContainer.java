@@ -90,6 +90,7 @@ public class RobotContainer {
         new JoystickButton(xbox2, XboxController.Button.kY.value);
     private final JoystickButton btnRb = new JoystickButton(xbox1, 6);
     private final JoystickButton btnLb = new JoystickButton(xbox1, 5);
+    
 
     private final JoystickButton btnJ = new JoystickButton(xbox2, 9);
 
@@ -113,7 +114,7 @@ public class RobotContainer {
         );
 
         btnLb.whileTrue(
-            new AlinhadorVerticalAprilTag(limelight, traction)
+            new AutoAimShooter( angulador, shooter, limelight)
         );
 
         /* ===== SHOOTER ===== */
@@ -182,12 +183,12 @@ btnJ.whileTrue(
             angulador,
             AnguloPreset.BAIXO
         ));*/
-    new POVButton(xbox2, 0)
+    new POVButton(xbox2, 180)
         .whileTrue(new MoverPivotPreset(
             intakeFloor,
             AngulosPresetPivot.ALTO
         ));
-    new POVButton(xbox2, 180)
+    new POVButton(xbox2, 0)
         .whileTrue(new MoverPivotPreset(
             intakeFloor,
             AngulosPresetPivot.BAIXO
