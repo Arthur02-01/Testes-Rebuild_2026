@@ -31,8 +31,8 @@ public class ConstantesShooter {
     public static final double RPM_MAXIMO_CONTROLE = 5700.0;
     public static final int CORRENTE_MAXIMA_A = 60;
 
-    public static final double PID_P = 0.0005;
-    public static final double PID_I = 0.0000012
+    public static final double PID_P = 0.00065;
+    public static final double PID_I = 0.0000010
     ;
     public static final double PID_D = 0.0;
     public static final double PID_IZONE_RPM = 300.0;
