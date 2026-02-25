@@ -49,7 +49,6 @@ public HardwaresTraction() {
 
         pigeon.reset();
 
-        // Configuração motores da direita
         configSparkMotorDireita
                 .idleMode(IdleMode.kBrake)
                 .smartCurrentLimit(60);
@@ -64,7 +63,6 @@ public HardwaresTraction() {
                 ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters);
 
-        // Configuração motores da esquerda
         configSparkMotorEsquerda
                 .idleMode(IdleMode.kBrake)
                 .smartCurrentLimit(60);
@@ -79,7 +77,6 @@ public HardwaresTraction() {
                 ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters);
 
-        // Inicializa encoders do Spark
         leftEncoder = leftMotorFront.getEncoder();
         rightEncoder = rightMotorFront.getEncoder();
 

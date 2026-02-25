@@ -72,9 +72,6 @@ public void sairModoForcado() {
 }
 
 
-
-    /* ================= BOQUINHA DIRETA (SEM INDEX) ================= */
-
     public void ligarBoquinha(double rpm) {
         this.rpmAlvo = rpm;
         sm.set(StateMachineIndex.Estado.DIRECIONAR);
@@ -177,7 +174,6 @@ public void sairModoForcado() {
             tempoInicioIndex = agora;
         }
 
-        // só gira o index após o atraso
         if (boquinhaProntaLatch &&
             (agora - tempoInicioIndex) >= ConstantesIndex.ATRASO_INDEX_S) {
             io.index.set(0.55);

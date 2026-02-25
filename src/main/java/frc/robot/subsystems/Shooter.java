@@ -34,8 +34,6 @@ public class Shooter extends SubsystemBase {
 
         private double entrouNaFaixaEm = -1.0;
 
-    /* ================= API ================= */
-
     public void setVelocidade(ConstantesShooter.Velocidade vel) {
         velocidade = vel;
         rpmAlvo = vel.rpm;
@@ -88,7 +86,6 @@ public class Shooter extends SubsystemBase {
     }
 
 
-    /* ================= LOOP ================= */
 
     @Override
     public void periodic() {
@@ -102,7 +99,6 @@ public class Shooter extends SubsystemBase {
 
                 double alvo = rpmAlvo;
 
-                /* ===== ANTI-DROP DINÂMICO ===== */
                 if (alimentando) {
                     double erro = rpmAlvo - rpmBruto;
                     alvo += MathUtil.clamp(
@@ -111,6 +107,12 @@ public class Shooter extends SubsystemBase {
                         ConstantesShooter.RPM_ANTI_DROP
                     );
                 }
+
+            alvo = MathUtil.clamp(
+                alvo,
+                0.0,
+                ConstantesShooter.RPM_MAXIMO_CONTROLE
+                );
 
                 aplicarControleVelocidade(alvo);
             }
@@ -136,9 +138,6 @@ public class Shooter extends SubsystemBase {
      private void aplicarControleVelocidade(double alvoRpm) {
 
         if (Double.isNaN(ultimoSetpoint) || ultimoSetpoint != alvoRpm) {
-
-            double ffVolts =
-                alvoRpm * ConstantesShooter.FF_VELOCIDADE * 12.0;
 
             io.arlindopid.setSetpoint(
                 alvoRpm,

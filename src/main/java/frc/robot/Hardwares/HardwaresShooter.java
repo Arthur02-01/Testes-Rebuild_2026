@@ -34,8 +34,8 @@ public class HardwaresShooter {
            .smartCurrentLimit(ConstantesShooter.CORRENTE_MAXIMA_A)
            .inverted(true);
         cfg.encoder
-           .velocityConversionFactor(1.0 / ConstantesShooter.arlindoReducao)
-           .positionConversionFactor(1.0 / ConstantesShooter.arlindoReducao);
+           .velocityConversionFactor(1.0 )
+           .positionConversionFactor(1.0 );
 
         cfg.closedLoop
         .p(ConstantesShooter.PID_P)
@@ -44,7 +44,7 @@ public class HardwaresShooter {
         .iZone(ConstantesShooter.PID_IZONE_RPM)
         .velocityFF(ConstantesShooter.FF_VELOCIDADE)
         .outputRange(-1.0, 1.0);
-        cfg.closedLoopRampRate(ConstantesShooter.RAMP_RATE_S);
+        cfg.closedLoopRampRate(0.05);
 
         arlindo.configure(cfg,
             SparkBase.ResetMode.kNoResetSafeParameters,

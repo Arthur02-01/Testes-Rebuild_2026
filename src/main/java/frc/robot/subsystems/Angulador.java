@@ -47,7 +47,7 @@ public class Angulador extends SubsystemBase {
     private double tempoSemMovimento = 0.0;
     private double ultimoTimestamp = Timer.getFPGATimestamp();
 
-    /* ================= API ================= */
+
 
     public double getAngulo() {
         return KInematicsAngulador.rotacoesParaGraus(
@@ -97,10 +97,6 @@ public class Angulador extends SubsystemBase {
         setpoint = new TrapezoidProfile.State(anguloAtual, 0.0);
         sm.set(StateMachineAngulador.Estado.HOLD);
     }
-
-    
-
-    /* ================= LOOP ================= */
 
     @Override
     public void periodic() {

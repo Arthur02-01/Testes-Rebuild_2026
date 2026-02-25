@@ -39,7 +39,7 @@ public class IntakeFloor extends SubsystemBase {
     private TrapezoidProfile.State goal = new TrapezoidProfile.State();
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
 
-    private static final double VELOCIDADE_MAX_INTAKE = 0.9;
+    private static final double VELOCIDADE_MAX_INTAKE = 1.0;
     private boolean intakeLigado = false;
 
     private double anguloHoldRad = 0.0;
@@ -143,9 +143,6 @@ public class IntakeFloor extends SubsystemBase {
         }
     }
 
-    /* ======================
-       HOLD
-       ====================== */
     private void executarHold() {
 
         double anguloAtual = getAnguloPivotRad();

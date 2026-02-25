@@ -5,9 +5,9 @@ import frc.robot.subsystems.Climber;
 
 @SuppressWarnings("unused")
 public class ConstantesClimber {
-        /* ================== CONSTANTES FÍSICAS ================== */
 
-    public static final double DIAMETRO_TAMBOR = 0.30;               // Estão em Metros todas
+
+    public static final double DIAMETRO_TAMBOR = 0.30;           
     public static final double CIRCUNFERENCIA = Math.PI * DIAMETRO_TAMBOR;
     public static final double REDUCAO = 64.0;
 

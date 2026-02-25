@@ -27,8 +27,6 @@ public class Climber extends SubsystemBase {
     private double tempoSemMovimento = 0.0;
     private double ultimoTimestamp = Timer.getFPGATimestamp();
 
-    /* ================= API ================= */
-
     public double getAltura() {
         return KinematicsClimber.rotacoesMotorParaAltura(
             io.encoder.getPosition()
@@ -70,7 +68,6 @@ public class Climber extends SubsystemBase {
         io.motor.stopMotor();
     }
 
-    /* ================= EXECUÇÕES ================= */
 
     private void executarMovendo() {
 
@@ -99,7 +96,6 @@ public class Climber extends SubsystemBase {
         }
     }
 
-    /* ================= PERIODIC ================= */
 
     @Override
     public void periodic() {

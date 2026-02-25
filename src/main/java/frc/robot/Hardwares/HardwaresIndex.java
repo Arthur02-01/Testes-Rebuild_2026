@@ -40,8 +40,6 @@ public class HardwaresIndex {
     boquinhapid = boquinha.getClosedLoopController();
     indexpid = index.getClosedLoopController();
 
-    // ================= BOQUINHA =================
-
     SparkMaxConfig cfgBoquinha = new SparkMaxConfig();
 
     cfgBoquinha

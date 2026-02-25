@@ -90,7 +90,6 @@ public class RobotContainer {
     public RobotContainer() {
         configureBindings();
 
-        // CONTROLE MANUAL DA TRAÇÃO (DEFAULT)
         traction.setDefaultCommand(
             new Controller(traction, xbox1)
         );
@@ -179,9 +178,6 @@ btnJ.whileTrue(
     /*  AUTONOMO  */
     public Command getAutonomousCommand() {
         return new SequentialCommandGroup(
-    new AndarEncoder(traction, 0.7, 0.10),
-    new GiroPorAngulo(traction, 15),
-    new Autobaixointake(intakeFloor),
     new BoquinhaAntesShooterAuto(shooter, index, index)
        );
     }

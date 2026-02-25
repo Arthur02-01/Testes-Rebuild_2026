@@ -14,10 +14,10 @@ public class AutoAimShooter extends Command {
     private final Limelight limelight;
 
     private static final double DIST_MIN = 1.65;  
-    private static final double RPM_MIN  = 900.0;
+    private static final double RPM_MIN  = 1500.0;
 
     private static final double DIST_MAX = 5.30;
-    private static final double RPM_MAX  = 1200.0;
+    private static final double RPM_MAX  = 2300.0;
 
     public AutoAimShooter(
         Angulador angulador,
