@@ -31,20 +31,20 @@ public class HardwaresShooter {
 
         SparkMaxConfig cfg = new SparkMaxConfig();
         cfg.idleMode(IdleMode.kCoast)
-           .smartCurrentLimit(ConstantesShooter.CORRENTE_MAXIMA_A)
+           .smartCurrentLimit(60)
            .inverted(true);
         cfg.encoder
            .velocityConversionFactor(1.0 )
            .positionConversionFactor(1.0 );
 
         cfg.closedLoop
-        .p(ConstantesShooter.PID_P)
-        .i(ConstantesShooter.PID_I)
-        .d(ConstantesShooter.PID_D)
+        .p(0.00045)
+        .i(0.0)
+        .d(0.00001)
         .iZone(ConstantesShooter.PID_IZONE_RPM)
         .velocityFF(ConstantesShooter.FF_VELOCIDADE)
         .outputRange(-1.0, 1.0);
-        cfg.closedLoopRampRate(0.05);
+        cfg.closedLoopRampRate(0.0);
 
         arlindo.configure(cfg,
             SparkBase.ResetMode.kNoResetSafeParameters,

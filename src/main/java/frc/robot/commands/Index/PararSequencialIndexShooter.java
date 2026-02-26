@@ -11,8 +11,6 @@ public class PararSequencialIndexShooter extends Command {
     private enum Estado {
         PARAR_INDEX,
         ESPERAR_INDEX,
-        PARAR_BOQUINHA,
-        ESPERAR_BOQUINHA,
         PARAR_SHOOTER,
         FINAL
     }
@@ -42,24 +40,12 @@ public class PararSequencialIndexShooter extends Command {
         switch (estado) {
 
             case PARAR_INDEX -> {
-                index.sairModoForcado();
+                index.desligar(); // Para index + boquinha
                 timer.reset();
                 estado = Estado.ESPERAR_INDEX;
             }
 
             case ESPERAR_INDEX -> {
-                if (timer.hasElapsed(0.5)) {
-                    estado = Estado.PARAR_BOQUINHA;
-                }
-            }
-
-            case PARAR_BOQUINHA -> {
-                index.desligarBoquinha();
-                timer.reset();
-                estado = Estado.ESPERAR_BOQUINHA;
-            }
-
-            case ESPERAR_BOQUINHA -> {
                 if (timer.hasElapsed(0.5)) {
                     estado = Estado.PARAR_SHOOTER;
                 }
@@ -84,8 +70,8 @@ public class PararSequencialIndexShooter extends Command {
         timer.stop();
 
         if (interrupted) {
+            index.desligar();
             shooter.parar();
-            index.desligarBoquinha();
         }
     }
 }

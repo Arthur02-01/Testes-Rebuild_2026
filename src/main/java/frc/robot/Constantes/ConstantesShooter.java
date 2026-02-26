@@ -1,14 +1,12 @@
 package frc.robot.Constantes;
 
-import static edu.wpi.first.units.Units.RPM;
-
 public class ConstantesShooter {
 
     public enum Velocidade {
-        NORMAL(2275),
-        MEDIA(2350),
-        ALTA(2550),
-        AUTO(2350),
+        NORMAL(2300),
+        MEDIA(2500),
+        ALTA(2700),
+        AUTO(3000),
         TURBO(2500);
         
 
@@ -33,17 +31,13 @@ public class ConstantesShooter {
     public static final double TEMPO_ESTABILIZACAO_S = 0.20;
 
     public static final double RAMP_RATE_S = 0.10;
-    public static final double RPM_MAXIMO_CONTROLE = 4200.0;
+    public static final double RPM_MAXIMO_CONTROLE = 3200.0;
     public static final int CORRENTE_MAXIMA_A = 60;
 
-    public static final double PID_P = 0.000735;
-    public static final double PID_I = 0.0000011;
-
-    public static final double PID_D = 0.0;
     public static final double PID_IZONE_RPM = 300.0;
-    public static final double FF_VELOCIDADE = 1.0 / 4200.0;
+    public static final double FF_VELOCIDADE = 1.0 / 3200.0;
 
-    public static final double RPM_ANTI_DROP = 150.0;
+    public static final double RPM_ANTI_DROP = 80.0;
     public static final double TAXA_RAMPA_SETPOINT_RPM_POR_S = 3000.0;
     public static final double FILTRO_RPM_TAU_S = 0.08;
     private ConstantesShooter() {}

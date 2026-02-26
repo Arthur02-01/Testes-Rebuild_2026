@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -13,7 +12,7 @@ import frc.robot.Constantes.ConstantesShooter;
 import frc.robot.Hardwares.HardwaresShooter;
 import frc.robot.StatesMachines.StateMachineShooter;
 
-@SuppressWarnings ("unused")
+@SuppressWarnings("unused")
 public class Shooter extends SubsystemBase {
 
     private final HardwaresShooter io = new HardwaresShooter();
@@ -29,10 +28,12 @@ public class Shooter extends SubsystemBase {
 
     private double rpmFiltradoDashboard = 0.0;
 
-        private ConstantesShooter.Velocidade velocidade =
+    private ConstantesShooter.Velocidade velocidade =
         ConstantesShooter.Velocidade.NORMAL;
 
-        private double entrouNaFaixaEm = -1.0;
+    private double entrouNaFaixaEm = -1.0;
+
+    /* ==================== API ==================== */
 
     public void setVelocidade(ConstantesShooter.Velocidade vel) {
         velocidade = vel;
@@ -44,14 +45,19 @@ public class Shooter extends SubsystemBase {
     }
 
     public void setRpmDireto(double rpm) {
-    rpmAlvo = rpm;
+        rpmAlvo = rpm;
+    }
+
+    public ConstantesShooter.Velocidade getVelocidade() {
+    return velocidade;
     }
 
     public void atirarFrente() {
-    sm.set(StateMachineShooter.Estado.ATIRANDO_FRENTE);
+        sm.set(StateMachineShooter.Estado.ATIRANDO_FRENTE);
     }
+
     public void atirarTras() {
-    sm.set(StateMachineShooter.Estado.ATIRANDO_TRAS);
+        sm.set(StateMachineShooter.Estado.ATIRANDO_TRAS);
     }
 
     public void parar() {
@@ -59,15 +65,12 @@ public class Shooter extends SubsystemBase {
     }
 
     public boolean pronto() {
-        double rpm = Math.abs(io.arlindoEncoder.getVelocity());
-        return Math.abs(rpmAlvo - rpmFiltradoDashboard) < ConstantesShooter.TOLERANCIA_RPM;
-    }
-    
-    public ConstantesShooter.Velocidade getVelocidade() {
-    return velocidade;
+        return Math.abs(rpmAlvo - rpmFiltradoDashboard)
+            < ConstantesShooter.TOLERANCIA_RPM;
     }
 
     public boolean prontoEstavel() {
+
         double rpm = Math.abs(io.arlindoEncoder.getVelocity());
         double erro = Math.abs(rpmAlvo - rpm);
         double agora = Timer.getFPGATimestamp();
@@ -82,10 +85,9 @@ public class Shooter extends SubsystemBase {
         }
 
         return entrouNaFaixaEm > 0.0 &&
-               (agora - entrouNaFaixaEm) >= ConstantesShooter.TEMPO_ESTABILIZACAO_S;
+               (agora - entrouNaFaixaEm)
+                   >= ConstantesShooter.TEMPO_ESTABILIZACAO_S;
     }
-
-
 
     @Override
     public void periodic() {
@@ -95,47 +97,23 @@ public class Shooter extends SubsystemBase {
 
         switch (sm.get()) {
 
-            case ATIRANDO_FRENTE -> {
+            case ATIRANDO_FRENTE -> aplicarControleVelocidade(rpmAlvo);
 
-                double alvo = rpmAlvo;
-
-                if (alimentando && Math.abs(rpmBruto - rpmAlvo) < 200) {
-                    double erro = rpmAlvo - rpmBruto;
-                    alvo += MathUtil.clamp(
-                        erro * 0.6,
-                        0.0,
-                        ConstantesShooter.RPM_ANTI_DROP
-                    );
-                }
-
-            alvo = MathUtil.clamp(
-                alvo,
-                0.0,
-                ConstantesShooter.RPM_MAXIMO_CONTROLE
-                );
-
-                aplicarControleVelocidade(alvo);
-            }
-
-            case ATIRANDO_TRAS -> {
-                aplicarControleVelocidade(-rpmAlvo);
-            }
+            case ATIRANDO_TRAS -> aplicarControleVelocidade(-rpmAlvo);
 
             case PARADO -> {
                 io.arlindo.stopMotor();
                 ultimoSetpoint = Double.NaN;
-                alimentando = false;
                 entrouNaFaixaEm = -1.0;
             }
         }
 
-        SmartDashboard.putString("Shooter/Estado", sm.get().name());
+        SmartDashboard.putNumber("Shooter/RPM", rpmFiltradoDashboard);
         SmartDashboard.putNumber("Shooter/RPM Alvo", rpmAlvo);
-        SmartDashboard.putNumber("Shooter/RPM Bruto", rpmBruto);
-        SmartDashboard.putNumber("Shooter/RPM Filtrado", rpmFiltradoDashboard);
-        SmartDashboard.putBoolean("Shooter/Pronto", pronto());
     }
-     private void aplicarControleVelocidade(double alvoRpm) {
+
+
+    private void aplicarControleVelocidade(double alvoRpm) {
 
         if (Double.isNaN(ultimoSetpoint) || ultimoSetpoint != alvoRpm) {
 
@@ -150,4 +128,3 @@ public class Shooter extends SubsystemBase {
         }
     }
 }
-

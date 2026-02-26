@@ -179,8 +179,8 @@ btnJ.whileTrue(
     /*  AUTONOMO  */
     public Command getAutonomousCommand() {
         return new SequentialCommandGroup(
-    new AndarEncoder(traction, -0.7, 0.15),
-    new GiroPorAngulo(traction, 30),
+    new AndarEncoder(traction, -0.7, 0.28),
+    new GiroPorAngulo(traction, 25),
     new Autobaixointake(intakeFloor),
     new BoquinhaAntesShooterAuto(shooter, index, index)
 

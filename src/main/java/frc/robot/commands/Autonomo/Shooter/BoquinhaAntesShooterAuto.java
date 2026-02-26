@@ -8,7 +8,6 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Index;
 
 import frc.robot.Constantes.ConstantesShooter;
-import frc.robot.Constantes.ConstantesIndex;
 
 public class BoquinhaAntesShooterAuto extends SequentialCommandGroup {
 
@@ -34,10 +33,7 @@ public class BoquinhaAntesShooterAuto extends SequentialCommandGroup {
 
             // Liga boquinha
             new InstantCommand(() -> {
-                boquinha.setVelocidade(ConstantesIndex.VelocidadeIndex.ALTA);
-                boquinha.ligarBoquinha(
-                    ConstantesIndex.VelocidadeIndex.NORMAL.rpm
-                );
+                index.ligar();
             }, boquinha),
 
             // Espera antes do index
@@ -45,7 +41,7 @@ public class BoquinhaAntesShooterAuto extends SequentialCommandGroup {
 
             // Liga index
             new InstantCommand(() -> {
-                index.entrarModoForcado(0.45);
+                index.ligar();
             }, index),
 
             //  Mantem tudo rodando pelo tempo restante
@@ -54,8 +50,7 @@ public class BoquinhaAntesShooterAuto extends SequentialCommandGroup {
             // Para tudo
             new InstantCommand(() -> {
                 shooter.parar();
-                boquinha.desligarBoquinha();
-                index.sairModoForcado();
+                index.desligar();
             }, shooter, boquinha, index)
         );
     }
