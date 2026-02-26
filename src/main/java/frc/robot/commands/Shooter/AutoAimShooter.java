@@ -13,11 +13,11 @@ public class AutoAimShooter extends Command {
     private final Shooter shooter;
     private final Limelight limelight;
 
-    private static final double DIST_MIN = 1.65;  
-    private static final double RPM_MIN  = 1500.0;
+    private static final double DIST_MIN = 1.05;  
+    private static final double RPM_MIN  = 2150.0;
 
-    private static final double DIST_MAX = 5.30;
-    private static final double RPM_MAX  = 2300.0;
+    private static final double DIST_MAX = 8.45;
+    private static final double RPM_MAX  = 2850.0;
 
     public AutoAimShooter(
         Angulador angulador,
@@ -49,7 +49,7 @@ public class AutoAimShooter extends Command {
         /* ================= ANGULADOR ================= */
 
         double deltaAltura =
-              (LimelightConstants.ALTURA_TAG_METROS + 0.74)
+              (LimelightConstants.ALTURA_TAG_METROS + 0.40)
             - LimelightConstants.ALTURA_CAMERA_METROS;
 
         double anguloRad = Math.atan(deltaAltura / distancia);

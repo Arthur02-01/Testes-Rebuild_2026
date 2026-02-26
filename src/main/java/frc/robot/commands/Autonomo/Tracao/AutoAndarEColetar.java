@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import frc.robot.subsystems.Traction;
+import frc.robot.commands.Autonomo.intake.Autobaixointake;
 import frc.robot.subsystems.IntakeFloor;
 
 @SuppressWarnings ("unused")
@@ -14,7 +15,9 @@ import frc.robot.subsystems.IntakeFloor;
 
         super(
 
-            new AndarEncoder(traction, 0.5, 0.4),
+            new AndarEncoder(traction, -0.7, 0.2),
+            new Autobaixointake(intake),
+
 
             new StartEndCommand(
                 () -> {

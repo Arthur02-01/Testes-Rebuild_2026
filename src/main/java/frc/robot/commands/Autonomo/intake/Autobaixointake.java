@@ -14,7 +14,7 @@ public class Autobaixointake extends SequentialCommandGroup {
 
         addCommands(
 
- new MoverPivotPreset(intake, AngulosPresetPivot.ALTO)
+ new MoverPivotPreset(intake, AngulosPresetPivot.MEDIO)
         );
     }
 }

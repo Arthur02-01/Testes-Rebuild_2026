@@ -60,7 +60,7 @@ public class Shooter extends SubsystemBase {
 
     public boolean pronto() {
         double rpm = Math.abs(io.arlindoEncoder.getVelocity());
-        return Math.abs(rpmAlvo - rpm) < ConstantesShooter.TOLERANCIA_RPM;
+        return Math.abs(rpmAlvo - rpmFiltradoDashboard) < ConstantesShooter.TOLERANCIA_RPM;
     }
     
     public ConstantesShooter.Velocidade getVelocidade() {
@@ -99,7 +99,7 @@ public class Shooter extends SubsystemBase {
 
                 double alvo = rpmAlvo;
 
-                if (alimentando) {
+                if (alimentando && Math.abs(rpmBruto - rpmAlvo) < 200) {
                     double erro = rpmAlvo - rpmBruto;
                     alvo += MathUtil.clamp(
                         erro * 0.6,

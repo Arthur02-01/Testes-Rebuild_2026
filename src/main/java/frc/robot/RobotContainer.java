@@ -33,6 +33,7 @@ import frc.robot.commands.Traction.AtivarTurbo;
 import frc.robot.commands.Traction.Controller;
 import frc.robot.commands.Autonomo.intake.AutoIntakeFloor;
 import frc.robot.commands.Autonomo.Angulador.AnguladorAuto;
+import frc.robot.commands.Autonomo.LimelightAuto.AlinhadorHorizontalAuto;
 import frc.robot.commands.Autonomo.Shooter.AutoAtirar;
 
 @SuppressWarnings("unused")
@@ -178,7 +179,12 @@ btnJ.whileTrue(
     /*  AUTONOMO  */
     public Command getAutonomousCommand() {
         return new SequentialCommandGroup(
+    new AndarEncoder(traction, -0.7, 0.15),
+    new GiroPorAngulo(traction, 30),
+    new Autobaixointake(intakeFloor),
     new BoquinhaAntesShooterAuto(shooter, index, index)
+
        );
-    }
+    }   
 }
+    
