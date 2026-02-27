@@ -188,7 +188,10 @@ btnJ.whileTrue(
     public Command getAutonomousCommand() {
         return new SequentialCommandGroup(
 
-    new BoquinhaAntesShooterAuto(shooter, index, index)
+        new AndarEncoder(traction, 0.7, 0.16),
+        new GiroPorAngulo(traction, -23),
+        new Autobaixointake(intakeFloor),
+        new BoquinhaAntesShooterAuto(shooter, index, index, intakeFloor)
 
        );
     }   

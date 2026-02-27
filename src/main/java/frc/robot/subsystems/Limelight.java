@@ -47,73 +47,107 @@ public class Limelight extends SubsystemBase {
 
 
     public double getTxFiltrado() {
-        double tx = getTx();
-        txFiltrado = (1 - ALPHA) * txFiltrado + ALPHA * tx;
+    if (!temAlvo()) {
+        return txFiltrado;
+    }    double tx = getTx();
+    txFiltrado = (1 - ALPHA) * txFiltrado + ALPHA * tx;
+    return txFiltrado;
+    }
+
+    public double getTxComOffset() {
+
+    if (!temAlvo()) {
         return txFiltrado;
     }
+
+    int id = getAprilTagID();
+    double tx = getTxFiltrado();
+    double distancia = getDistanciaFiltrada();
+
+    if (id < 0 || distancia <= 0.05 || Double.isNaN(distancia)) {
+        return tx;
+    }
+
+    double offsetMetros = switch (id) {
+        case 11 ->  0.10;
+        case 2  -> -0.9;
+        case 3  -> -0.20;
+        case 4  -> -0.40;
+        case 8  ->  0.05;
+        case 5, 9 -> 0.10;
+        default ->  0.0;
+    };
+
+    double offsetGraus =
+        Math.toDegrees(Math.atan(offsetMetros / distancia));
+
+    return tx + offsetGraus;
+}
 
     public double getDistanciaAprilTag() {
         if (!temAlvo()) {
             return Double.NaN;
         }
 
-double ty = getTy();
-double anguloTotalGraus = ConstantesLimelight.LimelightConstants.ANGULO_CAMERA_EFETIVO_GRAUS + ty;
-double anguloTotalRad = Math.toRadians(anguloTotalGraus);
+    
 
-double tangente = Math.tan(anguloTotalRad);
-if (Math.abs(tangente) < Tan_Angulo_Minimo) {
-    DriverStation.reportWarning(
-        "Limelight: tan(angulo) muito pequeno, distancia invalida. Angulo=" + anguloTotalGraus,
-        false
-    );
-    return UltimaDistanciaValida == 0.0 ? Double.NaN : UltimaDistanciaValida;
-}
+        double ty = getTy();
+        double anguloTotalGraus = ConstantesLimelight.LimelightConstants.ANGULO_CAMERA_EFETIVO_GRAUS + ty;
+        double anguloTotalRad = Math.toRadians(anguloTotalGraus);
 
-
-double distanciaCamera =
-(ConstantesLimelight.LimelightConstants.ALTURA_TAG_METROS - ConstantesLimelight.LimelightConstants.ALTURA_CAMERA_METROS) / tangente;
-
-
-double distanciaBumper = distanciaCamera - ConstantesLimelight.LimelightConstants.OFFSET_CAMERA_BUMPER_METROS;
-return Math.max(distanciaBumper, 0.0);
-}
-
-
-    public double getDistanciaFiltrada() {
-        double d = getDistanciaAprilTag();
-        if (Double.isNaN(d)) {
-            return UltimaDistanciaValida;
+        double tangente = Math.tan(anguloTotalRad);
+        if (Math.abs(tangente) < Tan_Angulo_Minimo) {
+            DriverStation.reportWarning(
+                "Limelight: tan(angulo) muito pequeno, distancia invalida. Angulo=" + anguloTotalGraus,
+                false
+            );
+            return UltimaDistanciaValida == 0.0 ? Double.NaN : UltimaDistanciaValida;
         }
-        distFiltrada = (1 - ALPHA) * distFiltrada + ALPHA * d;
-        UltimaDistanciaValida = distFiltrada;
-        return distFiltrada;
+
+
+        double distanciaCamera =
+        (ConstantesLimelight.LimelightConstants.ALTURA_TAG_METROS - ConstantesLimelight.LimelightConstants.ALTURA_CAMERA_METROS) / tangente;
+
+
+        double distanciaBumper = distanciaCamera - ConstantesLimelight.LimelightConstants.OFFSET_CAMERA_BUMPER_METROS;
+        return Math.max(distanciaBumper, 0.0);
     }
 
-    public void ligarLED() {
-        table.getEntry("ledMode").setNumber(3);
-    }
 
-    public void desligarLED() {
-        table.getEntry("ledMode").setNumber(1);
-    }
+        public double getDistanciaFiltrada() {
+            double d = getDistanciaAprilTag();
+            if (Double.isNaN(d)) {
+                return UltimaDistanciaValida;
+            }
+            distFiltrada = (1 - ALPHA) * distFiltrada + ALPHA * d;
+            UltimaDistanciaValida = distFiltrada;
+            return distFiltrada;
+        }
 
-    public int getAprilTagID() {
-        return (int) table.getEntry("tid").getDouble(-1);
-    }
-    public void setPipeline(int pipeline) {
-        table.getEntry("pipeline").setNumber(pipeline);
-    }
-    @Override
-    public void periodic() {
-        double agora = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
-        if (agora - ultimoDashboard >= 0.2) {
-        ultimoDashboard = agora;
-        SmartDashboard.putBoolean("Limelight/Tem Alvo", temAlvo());
-        SmartDashboard.putNumber("Limelight/tx (graus)", getTx());
-        SmartDashboard.putNumber("Limelight/ty (graus)", getTy());
-        SmartDashboard.putNumber("Limelight/Distancia (m)", getDistanciaAprilTag());
-        SmartDashboard.putNumber("limelight/Distancia Filtrada (m)", getDistanciaFiltrada());
+        public void ligarLED() {
+            table.getEntry("ledMode").setNumber(3);
+        }
+
+        public void desligarLED() {
+            table.getEntry("ledMode").setNumber(1);
+        }
+
+        public int getAprilTagID() {
+            return (int) table.getEntry("tid").getDouble(-1);
+        }
+        public void setPipeline(int pipeline) {
+            table.getEntry("pipeline").setNumber(pipeline);
+        }
+        @Override
+        public void periodic() {
+            double agora = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+            if (agora - ultimoDashboard >= 0.2) {
+            ultimoDashboard = agora;
+            SmartDashboard.putBoolean("Limelight/Tem Alvo", temAlvo());
+            SmartDashboard.putNumber("Limelight/tx (graus)", getTx());
+            SmartDashboard.putNumber("Limelight/ty (graus)", getTy());
+            SmartDashboard.putNumber("Limelight/Distancia (m)", getDistanciaAprilTag());
+            SmartDashboard.putNumber("limelight/Distancia Filtrada (m)", getDistanciaFiltrada());
+            }
         }
     }
-}

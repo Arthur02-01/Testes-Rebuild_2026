@@ -6,19 +6,23 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Index;
+import frc.robot.subsystems.IntakeFloor;
 
 import frc.robot.Constantes.ConstantesShooter;
 
 public class BoquinhaAntesShooterAuto extends SequentialCommandGroup {
 
-    private static final double ATRASO_BOQUINHA = 0.8;
-    private static final double ATRASO_INDEX = 1.2;
-    private static final double TEMPO_TOTAL = 12;
+    private static final double ATRASO_BOQUINHA = 0.9;
+    private static final double ATRASO_INDEX = 1.9;
+    private static final double TEMPO_TOTAL = 5;
 
     public BoquinhaAntesShooterAuto(
-            Shooter shooter,
-            Index boquinha,
-            Index index) {
+    Shooter shooter,
+    Index boquinha,
+    Index index,
+    IntakeFloor intake
+
+) {
 
         addCommands(
 
@@ -43,6 +47,8 @@ public class BoquinhaAntesShooterAuto extends SequentialCommandGroup {
             new InstantCommand(() -> {
                 index.ligar();
             }, index),
+   
+            new InstantCommand(intake::IntakeReverse, intake),
 
             //  Mantem tudo rodando pelo tempo restante
             new WaitCommand(TEMPO_TOTAL - ATRASO_BOQUINHA - ATRASO_INDEX),
@@ -51,7 +57,8 @@ public class BoquinhaAntesShooterAuto extends SequentialCommandGroup {
             new InstantCommand(() -> {
                 shooter.parar();
                 index.desligar();
-            }, shooter, boquinha, index)
+                intake.PararIntake();
+            }, shooter, boquinha, index, intake)
         );
     }
 }

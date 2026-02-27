@@ -13,7 +13,7 @@ public class AutoAimShooter extends Command {
     private final Shooter shooter;
     private final Limelight limelight;
 
-    private static final double DIST_MIN = 1.05;  
+    private static final double DIST_MIN = 1.05;
     private static final double RPM_MIN  = 2150.0;
 
     private static final double DIST_MAX = 8.45;
@@ -27,7 +27,6 @@ public class AutoAimShooter extends Command {
         this.angulador = angulador;
         this.shooter = shooter;
         this.limelight = limelight;
-
         addRequirements(angulador, shooter);
     }
 
@@ -41,15 +40,19 @@ public class AutoAimShooter extends Command {
 
         if (!limelight.temAlvo()) {
             shooter.parar();
+            angulador.parar();
             return;
         }
 
         double distancia = limelight.getDistanciaFiltrada();
 
-        /* ================= ANGULADOR ================= */
+        if (distancia <= 0.05 || Double.isNaN(distancia)) {
+            shooter.parar();
+            return;
+        }
 
         double deltaAltura =
-              (LimelightConstants.ALTURA_TAG_METROS + 0.40)
+              (LimelightConstants.ALTURA_TAG_METROS + 0.85)
             - LimelightConstants.ALTURA_CAMERA_METROS;
 
         double anguloRad = Math.atan(deltaAltura / distancia);
@@ -63,23 +66,25 @@ public class AutoAimShooter extends Command {
 
         angulador.moverParaAngulo(anguloGraus);
 
-        /* ================= SHOOTER ================= */
-
         distancia = Math.max(DIST_MIN, Math.min(DIST_MAX, distancia));
 
-        // Interpolação linear
         double rpm =
             RPM_MIN +
             (distancia - DIST_MIN) *
             (RPM_MAX - RPM_MIN) /
             (DIST_MAX - DIST_MIN);
 
-        shooter.setRpmDireto(rpm);
+        if (angulador.noAngulo()) {
+            shooter.setRpmDireto(rpm);
+        } else {
+            shooter.parar();
+        }
     }
 
     @Override
     public void end(boolean interrupted) {
         shooter.parar();
+        angulador.parar();
     }
 
     @Override

@@ -6,7 +6,7 @@ public class ConstantesShooter {
         NORMAL(3250),
         MEDIA(3350),
         ALTA(3500),
-        AUTO(3050),
+        AUTO(3225 ),
         TURBO(2500);
         
 

@@ -5,10 +5,10 @@ import com.revrobotics.spark.SparkBase;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constantes.ConstantesAngulador;
 import frc.robot.Extras.AnguloPreset;
@@ -16,7 +16,6 @@ import frc.robot.Hardwares.HardwaresAngulador;
 import frc.robot.Kinematics.KInematicsAngulador;
 import frc.robot.StatesMachines.StateMachineAngulador;
 
-@SuppressWarnings ("unused")
 public class Angulador extends SubsystemBase {
 
     private final HardwaresAngulador io = new HardwaresAngulador();
@@ -38,45 +37,48 @@ public class Angulador extends SubsystemBase {
     private TrapezoidProfile.State goal = new TrapezoidProfile.State();
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
 
-    @SuppressWarnings("unused")
     private double alvoGraus = Double.NaN;
+    private double anguloHold = 0.0;
+
     private double manualOutput = 0.0;
     private double testeOutput = 0.0;
-    private double anguloHold = 0.0;
-    public static final double ERRO_MAX_HOLD =  2.0;
-    private double tempoSemMovimento = 0.0;
+
+    private double tempoTravado = 0.0;
     private double ultimoTimestamp = Timer.getFPGATimestamp();
-
-
 
     public double getAngulo() {
         return KInematicsAngulador.rotacoesParaGraus(
             io.encoder.getPosition()
         );
     }
-    public StateMachineAngulador.Estado getEstado() {
-    return sm.get();
-}
+
+    public boolean noAngulo() {
+        return Math.abs(alvoGraus - getAngulo())
+            < ConstantesAngulador.ERRO_TOLERANCIA;
+    }
+
 
     public void moverParaAngulo(double graus) {
-    double grausLimitado = MathUtil.clamp(
-        graus,
-        ConstantesAngulador.LIMITE_INFERIOR,
-        ConstantesAngulador.LIMITE_SUPERIOR
+
+        double limitado = MathUtil.clamp(
+            graus,
+            ConstantesAngulador.LIMITE_INFERIOR,
+            ConstantesAngulador.LIMITE_SUPERIOR
         );
-        alvoGraus = grausLimitado;
-        goal = new TrapezoidProfile.State(grausLimitado, 0.0);
 
-    setpoint = new TrapezoidProfile.State(
-        getAngulo(),
-        0.0
-    );
-    sm.set(StateMachineAngulador.Estado.PERFIL);
-}
+        alvoGraus = limitado;
+        goal = new TrapezoidProfile.State(limitado, 0.0);
+        setpoint = new TrapezoidProfile.State(getAngulo(), 0.0);
 
+        sm.set(StateMachineAngulador.Estado.PERFIL);
+    }
 
     public void moverParaPreset(AnguloPreset preset) {
-    moverParaAngulo(preset.graus);
+        moverParaAngulo(preset.graus);
+    }
+
+    public StateMachineAngulador.Estado getEstado(){
+        return sm.get();
     }
 
     public void controleManual(double output) {
@@ -84,122 +86,114 @@ public class Angulador extends SubsystemBase {
         sm.set(StateMachineAngulador.Estado.MANUAL);
     }
 
-    public void testeMotor (double output){
+    public void testeMotor(double output) {
         testeOutput = output;
         sm.set(StateMachineAngulador.Estado.TESTE);
     }
 
-    public void resetarFalha(){
-        tempoSemMovimento = 0.0;
-        double anguloAtual = getAngulo();
-        anguloHold = anguloAtual;
-        goal = new TrapezoidProfile.State(anguloAtual, 0.0);
-        setpoint = new TrapezoidProfile.State(anguloAtual, 0.0);
-        sm.set(StateMachineAngulador.Estado.HOLD);
+    public void parar() {
+        io.motor.stopMotor();
     }
 
     @Override
     public void periodic() {
 
+        double agora = Timer.getFPGATimestamp();
+        double dt = agora - ultimoTimestamp;
+        if (dt <= 0.0) dt = ConstantesAngulador.DT;
+
         switch (sm.get()) {
 
-            case PERFIL -> executarPerfil();
-            case HOLD   -> executarHold();
+            case PERFIL -> executarPerfil(dt);
+
+            case HOLD -> executarHold();
+
             case MANUAL -> io.motor.set(manualOutput);
+
             case TESTE -> io.motor.set(testeOutput);
-            default     -> io.motor.stopMotor();
+
+            case FALHA -> io.motor.stopMotor();
+
+            default -> io.motor.stopMotor();
         }
 
-        
+        detectarTravamento(dt);
+
         SmartDashboard.putNumber("Angulador/Angulo", getAngulo());
         SmartDashboard.putString("Angulador/Estado", sm.get().name());
-
-        double agora = Timer.getFPGATimestamp();
-    double dt = agora - ultimoTimestamp;
-    if(dt <= 0.0) {
-         dt = ConstantesAngulador.DT;
-    }
-    double erroSetpoint = Math.abs(setpoint.position - getAngulo());
-    
-    double velocidadeGraus = KInematicsAngulador.rotacoesParaGraus(io.encoder.getVelocity());
-
-    if (sm.is(StateMachineAngulador.Estado.PERFIL)
-            && erroSetpoint > ConstantesAngulador.ERRO_TOLERANCIA) {
-            boolean perfilLento = Math.abs(setpoint.velocity) < ConstantesAngulador.VELOCIDADE_MIN;
-            if (Math.abs(velocidadeGraus) < ConstantesAngulador.VELOCIDADE_MIN 
-            && perfilLento){ tempoSemMovimento += dt;
-            } else {
-                tempoSemMovimento = 0.0;
-            }
-        } else {
-            tempoSemMovimento = 0.0;
-        }
-
-        if (tempoSemMovimento >= ConstantesAngulador.TEMPO_MAX_TRAVADO) {
-            sm.set(StateMachineAngulador.Estado.FALHA);
-            io.motor.stopMotor();
-        }
 
         ultimoTimestamp = agora;
     }
 
-   private void executarPerfil() {
-    TrapezoidProfile profile = new TrapezoidProfile(constraints);
+    private void executarPerfil(double dt) {
 
-    setpoint = profile.calculate(
-        ConstantesAngulador.DT,
-        setpoint,
-        goal
-    );
+        TrapezoidProfile profile =
+            new TrapezoidProfile(constraints);
 
-    double ffVolts = ff.calculate(
-        Math.toRadians(setpoint.position),
-        Math.toRadians(setpoint.velocity)
-    );
+        setpoint = profile.calculate(dt, setpoint, goal);
 
-    io.pid.setSetpoint(
-        KInematicsAngulador.grausParaRotacoes(setpoint.position),
-        SparkBase.ControlType.kPosition,
-        ClosedLoopSlot.kSlot0,
-        ffVolts
-    );
+        double ffVolts = ff.calculate(
+            Math.toRadians(getAngulo()),
+            Math.toRadians(setpoint.velocity)
+        );
 
-    if (Math.abs(goal.position - setpoint.position)
-        < ConstantesAngulador.MARGEM_ERRO_BASE) {
+        io.pid.setSetpoint(
+            KInematicsAngulador.grausParaRotacoes(setpoint.position),
+            SparkBase.ControlType.kPosition,
+            ClosedLoopSlot.kSlot0,
+            ffVolts
+        );
 
-        anguloHold = goal.position;
-        sm.set(StateMachineAngulador.Estado.HOLD);
+        boolean chegou =
+            Math.abs(goal.position - setpoint.position)
+                < ConstantesAngulador.MARGEM_ERRO_BASE
+            && Math.abs(setpoint.velocity)
+                < ConstantesAngulador.VELOCIDADE_MIN;
+
+        if (chegou) {
+            anguloHold = goal.position;
+            sm.set(StateMachineAngulador.Estado.HOLD);
+        }
     }
-}
-
 
     private void executarHold() {
 
-    double anguloAtual = getAngulo();
-    double erro = anguloHold - anguloAtual;
-
-    double ffVolts = ff.calculate(
-        Math.toRadians(anguloAtual),
-        0.0
-    );
-
-    io.pid.setSetpoint(
-        KInematicsAngulador.grausParaRotacoes(anguloHold),
-        SparkBase.ControlType.kPosition,
-        ClosedLoopSlot.kSlot0,
-        ffVolts
-    );
-    if (Math.abs(erro) > ERRO_MAX_HOLD) {
-        setpoint = new TrapezoidProfile.State(
-            anguloAtual,
+        double ffVolts = ff.calculate(
+            Math.toRadians(getAngulo()),
             0.0
         );
-        goal = new TrapezoidProfile.State(
-            anguloHold,
-            0.0
+
+        io.pid.setSetpoint(
+            KInematicsAngulador.grausParaRotacoes(anguloHold),
+            SparkBase.ControlType.kPosition,
+            ClosedLoopSlot.kSlot0,
+            ffVolts
         );
-        sm.set(StateMachineAngulador.Estado.PERFIL);
     }
-}
 
+
+    private void detectarTravamento(double dt) {
+
+        double velocidade =
+            Math.abs(
+                KInematicsAngulador.rotacoesParaGraus(
+                    io.encoder.getVelocity()
+                )
+            );
+
+        if (sm.is(StateMachineAngulador.Estado.PERFIL)
+            && velocidade < ConstantesAngulador.VELOCIDADE_MIN) {
+
+            tempoTravado += dt;
+        } else {
+            tempoTravado = 0.0;
+        }
+
+        if (tempoTravado
+            > ConstantesAngulador.TEMPO_MAX_TRAVADO) {
+
+            sm.set(StateMachineAngulador.Estado.FALHA);
+            io.motor.stopMotor();
+        }
+    }
 }

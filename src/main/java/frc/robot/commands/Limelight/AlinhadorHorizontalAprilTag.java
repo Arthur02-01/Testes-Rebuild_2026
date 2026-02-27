@@ -10,7 +10,6 @@ public class AlinhadorHorizontalAprilTag extends Command {
     private final Traction traction;
 
     private static final double KP_ROT = 0.035;
-    private static final double ANGULO_OK = 0.05;
 
     public AlinhadorHorizontalAprilTag(Limelight limelight, Traction traction) {
         this.limelight = limelight;
@@ -32,14 +31,25 @@ public class AlinhadorHorizontalAprilTag extends Command {
             return;
         }
 
-        double erroX = limelight.getTx();
-        double rot = 0.0;
+        double erroX = limelight.getTxFiltrado();
 
-        if (Math.abs(erroX) > ANGULO_OK) {
-            rot = erroX * KP_ROT;
+        if (Math.abs(erroX) < 0.03) {
+            traction.stop();
+            return;
         }
 
-        rot = Math.max(Math.min(rot, 0.8), -0.8);
+        double erroAbs = Math.abs(erroX);
+
+        double ganhoDinamico =
+            erroAbs > 5.0 ? 1.0 :
+            erroAbs > 2.0 ? 0.5 :
+            erroAbs > 1.0 ? 0.25 :
+                            0.15;
+
+        double rot = erroX * KP_ROT * ganhoDinamico;
+
+        rot = Math.max(Math.min(rot, 0.45), -0.45);
+
         traction.arcadeMode(0.0, rot);
     }
 
