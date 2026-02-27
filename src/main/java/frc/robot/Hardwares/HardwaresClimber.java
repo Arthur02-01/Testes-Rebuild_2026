@@ -40,7 +40,7 @@ public class HardwaresClimber {
         SparkMaxConfig masterCfg = new SparkMaxConfig();
         masterCfg
             .idleMode(IdleMode.kBrake)
-            .smartCurrentLimit(60);
+            .smartCurrentLimit(40);
 
         masterCfg.closedLoop
             .p(0.4)
@@ -52,7 +52,7 @@ public class HardwaresClimber {
         followerCfg
             .follow(motor, false)
             .idleMode(IdleMode.kBrake)
-            .smartCurrentLimit(60);
+            .smartCurrentLimit(40);
 
         motor.configure(
             masterCfg,

@@ -3,10 +3,10 @@ package frc.robot.Constantes;
 public class ConstantesShooter {
 
     public enum Velocidade {
-        NORMAL(2300),
-        MEDIA(2500),
-        ALTA(2700),
-        AUTO(3000),
+        NORMAL(3250),
+        MEDIA(3350),
+        ALTA(3500),
+        AUTO(3050),
         TURBO(2500);
         
 
@@ -22,6 +22,7 @@ public class ConstantesShooter {
 
   public static class Shooter{
    public static final int ShooterArlindo =6;
+   public static final int ShooterArlindoFollower = 12;
   }
   public static class EncoderShooter{
     public static final int ArlindoEncoder = 18;
@@ -31,11 +32,13 @@ public class ConstantesShooter {
     public static final double TEMPO_ESTABILIZACAO_S = 0.20;
 
     public static final double RAMP_RATE_S = 0.10;
-    public static final double RPM_MAXIMO_CONTROLE = 3200.0;
+    public static final double RPM_MAXIMO_CONTROLE = 4000.0;
     public static final int CORRENTE_MAXIMA_A = 60;
 
     public static final double PID_IZONE_RPM = 300.0;
-    public static final double FF_VELOCIDADE = 1.0 / 3200.0;
+
+    public static final double kS = 0.0875;
+    public static final double kV = 0.160;
 
     public static final double RPM_ANTI_DROP = 80.0;
     public static final double TAXA_RAMPA_SETPOINT_RPM_POR_S = 3000.0;

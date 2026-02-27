@@ -29,7 +29,7 @@ public class HardwaresAngulador {
 
         SparkMaxConfig cfg = new SparkMaxConfig();
         cfg.idleMode(IdleMode.kBrake)
-           .smartCurrentLimit(25);
+           .smartCurrentLimit(20);
 
         cfg.closedLoop.p(0.8).i(0.0).d(0.02);
 

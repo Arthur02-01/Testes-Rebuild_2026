@@ -110,7 +110,7 @@ public class RobotContainer {
         );
 
         btnA.onTrue(new ShooterAutoPorDistancia(shooter, limelight));
-
+ 
         btnX.onTrue(
     new ShooterVelocidade(
         shooter,
@@ -125,9 +125,17 @@ btnB.whileTrue(
     )
 );
 
-btnY.whileTrue(
-    new AnguladorAutoPorLimelight(angulador, limelight)
+/*btnB.onTrue(
+    new Testandoff(shooter)
 );
+
+btnY.onTrue(
+    new Tetandoff(shooter, index)
+);
+
+btnX.onTrue(
+    new PararShooter(shooter)
+);*/
 
 btnJ.whileTrue(
     new AutoAimShooter(angulador, shooter, limelight)
@@ -179,9 +187,7 @@ btnJ.whileTrue(
     /*  AUTONOMO  */
     public Command getAutonomousCommand() {
         return new SequentialCommandGroup(
-    new AndarEncoder(traction, -0.7, 0.28),
-    new GiroPorAngulo(traction, 25),
-    new Autobaixointake(intakeFloor),
+
     new BoquinhaAntesShooterAuto(shooter, index, index)
 
        );
