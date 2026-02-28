@@ -41,7 +41,7 @@ public class HardwaresIntake {
 
         SparkMaxConfig cfg = new SparkMaxConfig();
         cfg.idleMode(IdleMode.kBrake)
-           .smartCurrentLimit(40)
+           .smartCurrentLimit(55)
            .inverted(false);
         cfg.closedLoop
         .p(0.4)

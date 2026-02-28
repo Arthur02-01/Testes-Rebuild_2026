@@ -111,7 +111,7 @@ public class RobotContainer {
 
         btnA.onTrue(new ShooterAutoPorDistancia(shooter, limelight));
  
-        btnX.onTrue(
+         btnX.onTrue(
     new ShooterVelocidade(
         shooter,
         ConstantesShooter.Velocidade.MEDIA
@@ -135,7 +135,7 @@ btnY.onTrue(
 
 btnX.onTrue(
     new PararShooter(shooter)
-);*/
+); */
 
 btnJ.whileTrue(
     new AutoAimShooter(angulador, shooter, limelight)

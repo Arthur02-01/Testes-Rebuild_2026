@@ -3,6 +3,7 @@ package frc.robot.commands.Limelight;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Traction;
+import frc.robot.Constantes.ConstantesLimelight.LimelightConstants;
 
 public class AlinhadorHorizontalAprilTag extends Command {
 
@@ -10,8 +11,12 @@ public class AlinhadorHorizontalAprilTag extends Command {
     private final Traction traction;
 
     private static final double KP_ROT = 0.035;
+    private static final double MAX_ROT = 0.8;
 
-    public AlinhadorHorizontalAprilTag(Limelight limelight, Traction traction) {
+    public AlinhadorHorizontalAprilTag(
+        Limelight limelight,
+        Traction traction
+    ) {
         this.limelight = limelight;
         this.traction = traction;
         addRequirements(traction);
@@ -31,24 +36,15 @@ public class AlinhadorHorizontalAprilTag extends Command {
             return;
         }
 
-        double erroX = limelight.getTxFiltrado();
+        double erroX = limelight.getTxShooter();
 
-        if (Math.abs(erroX) < 0.03) {
+        if (Math.abs(erroX) < LimelightConstants.DEADZONE_TX_GRAUS) {
             traction.stop();
             return;
         }
 
-        double erroAbs = Math.abs(erroX);
-
-        double ganhoDinamico =
-            erroAbs > 5.0 ? 1.0 :
-            erroAbs > 2.0 ? 0.5 :
-            erroAbs > 1.0 ? 0.25 :
-                            0.15;
-
-        double rot = erroX * KP_ROT * ganhoDinamico;
-
-        rot = Math.max(Math.min(rot, 0.45), -0.45);
+        double rot = erroX * KP_ROT;
+        rot = Math.max(Math.min(rot, MAX_ROT), -MAX_ROT);
 
         traction.arcadeMode(0.0, rot);
     }

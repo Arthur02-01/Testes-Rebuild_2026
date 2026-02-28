@@ -42,7 +42,7 @@ public class HardwaresIndex {
         cfgIndex
             .idleMode(IdleMode.kBrake)
             .smartCurrentLimit(40)
-            .inverted(true);
+            .inverted(false);
 
         index.configure(
             cfgIndex,

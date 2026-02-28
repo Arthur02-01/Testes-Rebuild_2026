@@ -49,10 +49,12 @@ public class Limelight extends SubsystemBase {
     public double getTxFiltrado() {
     if (!temAlvo()) {
         return txFiltrado;
-    }    double tx = getTx();
-    txFiltrado = (1 - ALPHA) * txFiltrado + ALPHA * tx;
-    return txFiltrado;
     }
+
+    double tx = getTx();
+    txFiltrado = (1 - ConstantesLimelight.LimelightConstants.ALPHA_TX) * txFiltrado + ConstantesLimelight.LimelightConstants.ALPHA_TX * tx;
+    return txFiltrado;
+}
 
     public double getTxComOffset() {
 
@@ -82,6 +84,27 @@ public class Limelight extends SubsystemBase {
         Math.toDegrees(Math.atan(offsetMetros / distancia));
 
     return tx + offsetGraus;
+}
+
+    public double getTxShooter() {
+    if (!temAlvo()) {
+        return txFiltrado;
+    }
+
+    double distancia = getDistanciaFiltrada();
+    if (distancia < 0.1 || Double.isNaN(distancia)) {
+        return txFiltrado;
+    }
+
+    double offsetGraus = Math.toDegrees(
+        Math.atan(ConstantesLimelight.LimelightConstants.OFFSET_SHOOTER_LATERAL_METROS / distancia)
+    );
+
+    return getTxFiltrado() + offsetGraus;
+    }
+
+    public boolean alinhadoComShooter() {
+    return Math.abs(getTxShooter()) < ConstantesLimelight.LimelightConstants.DEADZONE_TX_GRAUS;
 }
 
     public double getDistanciaAprilTag() {

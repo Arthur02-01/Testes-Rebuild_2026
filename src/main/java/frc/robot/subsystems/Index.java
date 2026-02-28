@@ -12,6 +12,9 @@ public class Index extends SubsystemBase {
         io.boquinha.set(0.35); 
         io.index.set(0.36);
     }
+    public void ligarBoquinha() {
+        io.boquinha.set(0.35);
+    }
 
     public void desligar() {
         io.boquinha.stopMotor();

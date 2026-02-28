@@ -15,13 +15,13 @@ public class AutoAimShooter extends Command {
     private final Limelight limelight;
 
     private static final double DIST_MIN = 1.05;
-    private static final double DIST_MAX = 8.45;
+    private static final double DIST_MAX = 9.45;
 
-    private static final double RPM_MIN  = 2800.0; // ajustar
-    private static final double RPM_MAX  = 3450.0; // ajustar
+    private static final double RPM_MIN  = 2200.0; // ajustar
+    private static final double RPM_MAX  = 3350.0; // ajustar
 
-    private static final double OFFSET_PROFUNDIDADE_HUB = 0.10; // 10 cm pra dentro
-    private static final double OFFSET_ALTURA_HUB = 0.73;       // 73 cm acima da tag
+    private static final double OFFSET_PROFUNDIDADE_HUB = 0.12; // 10 cm pra dentro
+    private static final double OFFSET_ALTURA_HUB = 0.93;       // 73 cm acima da tag
 
     public AutoAimShooter(
         Angulador angulador,
@@ -36,48 +36,52 @@ public class AutoAimShooter extends Command {
 
     @Override
     public void initialize() {
-        shooter.atirarFrente();
+        limelight.ligarLED();
     }
 
     @Override
-    public void execute() {
+public void execute() {
 
-        if (!limelight.temAlvo()) {
-            shooter.parar();
-            return;
-        }
-
-        double distancia =
-            limelight.getDistanciaFiltrada()
-            + OFFSET_PROFUNDIDADE_HUB;
-
-        distancia = MathUtil.clamp(distancia, DIST_MIN, DIST_MAX);
-
-        double rpm =
-            RPM_MIN +
-            (distancia - DIST_MIN) *
-            (RPM_MAX - RPM_MIN) /
-            (DIST_MAX - DIST_MIN);
-
-        shooter.setRpmDireto(rpm);
-
-        double alturaAlvo =
-            LimelightConstants.ALTURA_TAG_METROS
-            + OFFSET_ALTURA_HUB
-            - LimelightConstants.ALTURA_CAMERA_METROS;
-
-        double anguloRad = Math.atan2(alturaAlvo, distancia);
-        double anguloGraus = Math.toDegrees(anguloRad);
-
-        anguloGraus = MathUtil.clamp(
-            anguloGraus,
-            ConstantesAngulador.LIMITE_INFERIOR,
-            ConstantesAngulador.LIMITE_SUPERIOR
-        );
-
-        angulador.moverParaAngulo(anguloGraus);
+    if (!limelight.temAlvo()) {
+        shooter.parar();
+        return;
     }
 
+    if (!limelight.alinhadoComShooter()) {
+        shooter.parar();
+        return;
+    }
+
+    double distancia =
+        limelight.getDistanciaFiltrada()
+        + OFFSET_PROFUNDIDADE_HUB;
+
+    distancia = MathUtil.clamp(distancia, DIST_MIN, DIST_MAX);
+
+    double rpm =
+        RPM_MIN +
+        (distancia - DIST_MIN) *
+        (RPM_MAX - RPM_MIN) /
+        (DIST_MAX - DIST_MIN);
+
+    shooter.setRpmDireto(rpm);
+
+    double alturaAlvo =
+        LimelightConstants.ALTURA_TAG_METROS
+        + OFFSET_ALTURA_HUB
+        - LimelightConstants.ALTURA_CAMERA_METROS;
+
+    double anguloRad = Math.atan2(alturaAlvo, distancia);
+    double anguloGraus = Math.toDegrees(anguloRad);
+
+    anguloGraus = MathUtil.clamp(
+        anguloGraus,
+        ConstantesAngulador.LIMITE_INFERIOR,
+        ConstantesAngulador.LIMITE_SUPERIOR
+    );
+
+    angulador.moverParaAngulo(anguloGraus);
+}
     @Override
     public void end(boolean interrupted) {
         shooter.parar();
