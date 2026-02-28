@@ -1,5 +1,6 @@
 package frc.robot.commands.Shooter;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constantes.ConstantesAngulador;
 import frc.robot.Constantes.ConstantesLimelight.LimelightConstants;
@@ -14,10 +15,13 @@ public class AutoAimShooter extends Command {
     private final Limelight limelight;
 
     private static final double DIST_MIN = 1.05;
-    private static final double RPM_MIN  = 2150.0;
-
     private static final double DIST_MAX = 8.45;
-    private static final double RPM_MAX  = 2850.0;
+
+    private static final double RPM_MIN  = 2800.0; // ajustar
+    private static final double RPM_MAX  = 3450.0; // ajustar
+
+    private static final double OFFSET_PROFUNDIDADE_HUB = 0.10; // 10 cm pra dentro
+    private static final double OFFSET_ALTURA_HUB = 0.73;       // 73 cm acima da tag
 
     public AutoAimShooter(
         Angulador angulador,
@@ -32,7 +36,7 @@ public class AutoAimShooter extends Command {
 
     @Override
     public void initialize() {
-        shooter.parar();
+        shooter.atirarFrente();
     }
 
     @Override
@@ -40,33 +44,14 @@ public class AutoAimShooter extends Command {
 
         if (!limelight.temAlvo()) {
             shooter.parar();
-            angulador.parar();
             return;
         }
 
-        double distancia = limelight.getDistanciaFiltrada();
+        double distancia =
+            limelight.getDistanciaFiltrada()
+            + OFFSET_PROFUNDIDADE_HUB;
 
-        if (distancia <= 0.05 || Double.isNaN(distancia)) {
-            shooter.parar();
-            return;
-        }
-
-        double deltaAltura =
-              (LimelightConstants.ALTURA_TAG_METROS + 0.85)
-            - LimelightConstants.ALTURA_CAMERA_METROS;
-
-        double anguloRad = Math.atan(deltaAltura / distancia);
-        double anguloGraus = Math.toDegrees(anguloRad)
-                + LimelightConstants.ANGULO_CAMERA_EFETIVO_GRAUS;
-
-        anguloGraus = Math.max(
-            ConstantesAngulador.LIMITE_INFERIOR,
-            Math.min(ConstantesAngulador.LIMITE_SUPERIOR, anguloGraus)
-        );
-
-        angulador.moverParaAngulo(anguloGraus);
-
-        distancia = Math.max(DIST_MIN, Math.min(DIST_MAX, distancia));
+        distancia = MathUtil.clamp(distancia, DIST_MIN, DIST_MAX);
 
         double rpm =
             RPM_MIN +
@@ -74,17 +59,28 @@ public class AutoAimShooter extends Command {
             (RPM_MAX - RPM_MIN) /
             (DIST_MAX - DIST_MIN);
 
-        if (angulador.noAngulo()) {
-            shooter.setRpmDireto(rpm);
-        } else {
-            shooter.parar();
-        }
+        shooter.setRpmDireto(rpm);
+
+        double alturaAlvo =
+            LimelightConstants.ALTURA_TAG_METROS
+            + OFFSET_ALTURA_HUB
+            - LimelightConstants.ALTURA_CAMERA_METROS;
+
+        double anguloRad = Math.atan2(alturaAlvo, distancia);
+        double anguloGraus = Math.toDegrees(anguloRad);
+
+        anguloGraus = MathUtil.clamp(
+            anguloGraus,
+            ConstantesAngulador.LIMITE_INFERIOR,
+            ConstantesAngulador.LIMITE_SUPERIOR
+        );
+
+        angulador.moverParaAngulo(anguloGraus);
     }
 
     @Override
     public void end(boolean interrupted) {
         shooter.parar();
-        angulador.parar();
     }
 
     @Override
