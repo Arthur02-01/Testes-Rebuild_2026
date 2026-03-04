@@ -115,62 +115,43 @@ public class IntakeFloor extends SubsystemBase {
 
     private void executarPerfil() {
 
-        TrapezoidProfile profile = new TrapezoidProfile(constraints);
+    TrapezoidProfile profile = new TrapezoidProfile(constraints);
 
-        setpoint = profile.calculate(
-            ConstantesIntakeFloor.DT_PIVOT,
-            setpoint,
-            goal
-        );
+    setpoint = profile.calculate(
+        ConstantesIntakeFloor.DT_PIVOT,
+        setpoint,
+        goal
+    );
 
-        double ffVolts = ff.calculate(
-            setpoint.position,
-            setpoint.velocity
-        );
+    double ffVolts = ff.calculate(
+        setpoint.position,
+        setpoint.velocity
+    );
 
-        io.pid.setSetpoint(
-            KinematicsIntakeFloor.radParaRotacoesPivot(setpoint.position),
-            SparkBase.ControlType.kPosition,
-            ClosedLoopSlot.kSlot0,
-            ffVolts
-        );
+    io.pid.setSetpoint(
+        KinematicsIntakeFloor.radParaRotacoesPivot(setpoint.position),
+        SparkBase.ControlType.kPosition,
+        ClosedLoopSlot.kSlot0,
+        ffVolts
+    );
 
-        if (Math.abs(goal.position - setpoint.position)
+    if (Math.abs(goal.position - setpoint.position)
             < ConstantesIntakeFloor.MARGEM_ERRO_BASE_PIVOT) {
 
-            anguloHoldRad = goal.position;
-            sm.set(StateMachineIntakeFloor.EstadoPivot.HOLD);
-        }
+        anguloHoldRad = goal.position;
+        sm.set(StateMachineIntakeFloor.EstadoPivot.HOLD);
     }
+}
 
     private void executarHold() {
 
-        double anguloAtual = getAnguloPivotRad();
+    double anguloAtual = getAnguloPivotRad();
 
-        double ffVolts = ff.calculate(anguloHoldRad, 0.0);
+    double ffVolts = ff.calculate(
+        anguloAtual, // SEMPRE o ângulo atual
+        0.0
+    );
 
-        io.pid.setSetpoint(
-            KinematicsIntakeFloor.radParaRotacoesPivot(anguloHoldRad),
-            SparkBase.ControlType.kPosition,
-            ClosedLoopSlot.kSlot0,
-            ffVolts
-        );
-
-        if (
-                Math.abs(goal.position - setpoint.position)
-                    < ConstantesIntakeFloor.MARGEM_ERRO_BASE_PIVOT
-                && Math.abs(setpoint.velocity)
-                    < Math.toRadians(5.0)
-                /*Math.abs(anguloHoldRad - anguloAtual)
-                    > ConstantesIntakeFloor.MARGEM_ERRO_BASE_PIVOT
-                || Math.abs(setpoint.velocity)
-                    > Math.toRadians(5.0) */
-            )
-            {
-
-            setpoint = new TrapezoidProfile.State(anguloAtual, 0.0);
-            goal = new TrapezoidProfile.State(anguloHoldRad, 0.0);
-            sm.set(StateMachineIntakeFloor.EstadoPivot.PERFIL);
-        }
-    }
+    io.PivotMotor.setVoltage(ffVolts);
+}
 }
