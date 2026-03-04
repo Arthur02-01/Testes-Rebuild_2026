@@ -177,17 +177,29 @@ btnJ.whileTrue(
         ));
     }
 
-    /*  AUTONOMO  */
+   
+   /* Autonomo LEFT
+    public Command getAutonomousCommand() {
+        return new SequentialCommandGroup(
+        new AndarEncoder(traction, -0.7, 0.05),    
+        new AlinhadorHorizontalAprilTag(limelight, traction).withTimeout(3),
+        new Autobaixointake(intakeFloor),
+        new BoquinhaAntesShooterAuto(shooter, index, index, intakeFloor)
+
+        );
+    }   */
+
+    
+    /*  AUTONOMO  MEIO */
     public Command getAutonomousCommand() {
         return new SequentialCommandGroup(
 
-        new AndarEncoder(traction, -0.7, 0.19),
-        new Autobaixointake(intakeFloor).withTimeout(5),
-        new GiroPorAngulo(traction, 40),
+        new AndarEncoder(traction, 0.7, 0.05),
+        new GiroPorAngulo(traction, -70),
         new AlinhadorHorizontalAprilTag(limelight, traction).withTimeout(3),
+        new Autobaixointake(intakeFloor),
         new BoquinhaAntesShooterAuto(shooter, index, index, intakeFloor)
-
        );
-    }   
+    }    
+
 }
-    

@@ -18,13 +18,15 @@ public class AjusteAnguloShooterTraction extends Command {
     private final Shooter shooter;
     private final Angulador angulador;
 
-    private static final double KP_ROT = 0.055;
+    private static final double KP_ROT = 0.038;
     private static final double MAX_ROT = 0.60;
+
+    private boolean podeAtirar = false;
 
     private static final double DIST_MIN = 1.55;
     private static final double DIST_MAX = 9.45;
 
-    private static final double RPM_MIN = 2150.0;
+    private static final double RPM_MIN = 2125.0;
     private static final double RPM_MAX = 3350.0;
 
     private static final double OFFSET_PROFUNDIDADE_HUB = 0.12;
@@ -48,11 +50,16 @@ public class AjusteAnguloShooterTraction extends Command {
         addRequirements(traction, shooter, angulador);
     }
 
+    public boolean podeAtirar(){
+        return podeAtirar;
+    }
+
     @Override
     public void initialize() {
         limelight.setPipeline(0);
         limelight.ligarLED();
         ultimoAjuste = 0.0;
+        podeAtirar = false;
     }
 
     @Override
@@ -110,12 +117,25 @@ public class AjusteAnguloShooterTraction extends Command {
             angulador.moverParaAngulo(anguloGraus);
             ultimoAjuste = agora;
         }
+
+        boolean alinhadoX = 
+            Math.abs(erroX) <= LimelightConstants.DEADZONE_TX_GRAUS;
+
+        boolean shooterPronto = 
+            shooter.prontoEstavel();
+
+        boolean anguloOk = 
+            angulador.noAngulo() 
+            && angulador.getEstado() == frc.robot.StatesMachines.StateMachineAngulador.Estado.HOLD;
+
+        podeAtirar = alinhadoX && shooterPronto && anguloOk;
     }
 
     @Override
     public void end(boolean interrupted) {
         traction.stop();
         limelight.desligarLED();
+        podeAtirar = false;     
     }
 
     @Override

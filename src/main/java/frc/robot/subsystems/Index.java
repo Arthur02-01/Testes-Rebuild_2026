@@ -9,7 +9,7 @@ public class Index extends SubsystemBase {
     private final HardwaresIndex io = new HardwaresIndex();
 
     public void ligar() {
-        io.boquinha.set(0.35); 
+        io.boquinha.set(0.39); 
         io.index.set(0.42);
     }
     public void ligarBoquinha() {
