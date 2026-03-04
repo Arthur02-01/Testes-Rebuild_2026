@@ -28,9 +28,8 @@ public class ToggleSequencialShooterIndex extends Command {
 
     @Override
     public void execute() {
-        if (!transporteLigado && timer.hasElapsed(1.0)) {
-            index.ligar(); 
-            //index.ligarBoquinha();           
+        if (!transporteLigado && timer.hasElapsed(1.25)) {
+            index.ligar();         
             transporteLigado = true;
         }
     }

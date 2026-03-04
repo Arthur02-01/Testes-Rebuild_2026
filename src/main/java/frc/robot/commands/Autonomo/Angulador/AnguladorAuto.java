@@ -29,4 +29,4 @@ public class AnguladorAuto extends Command {
 }
 
 
-//new AnguladorAuto(angulador, AnguloPreset.ALTO)
+//new AnguladorAuto(angulador, AnguloPreset.AUTO)

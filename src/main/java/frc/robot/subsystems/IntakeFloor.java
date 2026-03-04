@@ -74,12 +74,12 @@ public class IntakeFloor extends SubsystemBase {
     }
 
     public void IntakeOn() {
-        io.IntakeMotor.set(VELOCIDADE_MAX_INTAKE);
+        io.IntakeMotor.set(1.0);
         intakeLigado = true;
     }
 
     public void IntakeReverse() {
-        io.IntakeMotor.set(-VELOCIDADE_MAX_INTAKE);
+        io.IntakeMotor.set(1.0);
         intakeLigado = true;
     }
 

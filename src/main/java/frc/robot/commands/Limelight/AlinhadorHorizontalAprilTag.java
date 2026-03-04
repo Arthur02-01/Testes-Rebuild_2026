@@ -11,7 +11,8 @@ public class AlinhadorHorizontalAprilTag extends Command {
     private final Traction traction;
 
     private static final double KP_ROT = 0.035;
-    private static final double MAX_ROT = 0.8;
+    private static final double MAX_ROT = 0.6;
+    
 
     public AlinhadorHorizontalAprilTag(
         Limelight limelight,

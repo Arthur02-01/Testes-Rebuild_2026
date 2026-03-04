@@ -12,9 +12,9 @@ import frc.robot.Constantes.ConstantesShooter;
 
 public class BoquinhaAntesShooterAuto extends SequentialCommandGroup {
 
-    private static final double ATRASO_BOQUINHA = 0.9;
-    private static final double ATRASO_INDEX = 1.9;
-    private static final double TEMPO_TOTAL = 5;
+    private static final double ATRASO_BOQUINHA = 0.6;
+    private static final double ATRASO_INDEX = 0.9;
+    private static final double TEMPO_TOTAL = 4.0;
 
     public BoquinhaAntesShooterAuto(
     Shooter shooter,
@@ -28,7 +28,7 @@ public class BoquinhaAntesShooterAuto extends SequentialCommandGroup {
 
             // Liga shooter
             new InstantCommand(() -> {
-                shooter.setVelocidade(ConstantesShooter.Velocidade.AUTO);
+                shooter.setVelocidade(ConstantesShooter.Velocidade.AUTOMEIO);
                 shooter.atirarFrente();
             }, shooter),
 

@@ -6,8 +6,10 @@ public class ConstantesShooter {
         NORMAL(2350),
         MEDIA(2500),
         ALTA(2700),
-        AUTO(3225 ),
+        AUTO(2700),
+        AUTOMEIO(2200),
         TURBO(2500);
+        
         
 
         public final double rpm;

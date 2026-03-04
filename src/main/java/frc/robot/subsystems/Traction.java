@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Hardwares.HardwaresTraction;
+
 public class Traction extends SubsystemBase {
 
     // VARIAVEIS
@@ -69,6 +70,17 @@ public void periodic() {
         );*/
         SmartDashboard.putNumber("Pigeon/Yaw", yaw);
         SmartDashboard.putNumber("Pigeon/RateZ", rateZ);
+
+      double leftDistance =
+    (io.leftEncoder.getPosition() / GEAR_RATIO) * METERS_PER_ROTATION;
+
+double rightDistance =
+    (-io.rightEncoder.getPosition() / GEAR_RATIO) * METERS_PER_ROTATION;
+
+SmartDashboard.putNumber("Encoder/LeftDistance", leftDistance);
+SmartDashboard.putNumber("Encoder/RightDistance", rightDistance);
+SmartDashboard.putNumber("Encoder/AverageDistance", getAverageDistance());
+
     }
 }
 

@@ -1,6 +1,7 @@
 package frc.robot.commands.Autonomo.intake;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Extras.AngulosPresetPivot;
@@ -14,7 +15,18 @@ public class Autobaixointake extends SequentialCommandGroup {
 
         addCommands(
 
- new MoverPivotPreset(intake, AngulosPresetPivot.MEDIO)
+ new MoverPivotPreset(intake, AngulosPresetPivot.ALTO),
+
+ new StartEndCommand(
+                () -> {
+                    intake.forcarHold();
+                    intake.IntakeReverse();
+                },
+                intake::PararIntake,
+                intake
+            )
+
+
         );
     }
 }

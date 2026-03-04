@@ -14,14 +14,14 @@ public class AutoAimShooter extends Command {
     private final Shooter shooter;
     private final Limelight limelight;
 
-    private static final double DIST_MIN = 1.05;
+    private static final double DIST_MIN = 1.55;
     private static final double DIST_MAX = 9.45;
 
-    private static final double RPM_MIN  = 2200.0; // ajustar
-    private static final double RPM_MAX  = 3350.0; // ajustar
+    private static final double RPM_MIN  = 2150.0; // ajustar se for muito fraco, aumente
+    private static final double RPM_MAX  = 3350.0; // ajustar se for muito forte, abaixe
 
     private static final double OFFSET_PROFUNDIDADE_HUB = 0.12; // 10 cm pra dentro
-    private static final double OFFSET_ALTURA_HUB = 0.93;       // 73 cm acima da tag
+    private static final double OFFSET_ALTURA_HUB = 1.03;       // 73 cm acima da tag
 
     public AutoAimShooter(
         Angulador angulador,

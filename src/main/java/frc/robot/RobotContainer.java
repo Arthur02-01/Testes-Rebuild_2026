@@ -19,10 +19,12 @@ import frc.robot.commands.IntakeFloor.ToggleIntake;
 import frc.robot.commands.IntakeFloor.ToggleIntakeReverse;
 import frc.robot.commands.Autonomo.Shooter.BoquinhaAntesShooterAuto;
 import frc.robot.commands.Autonomo.Tracao.AndarEncoder;
+import frc.robot.commands.Autonomo.Tracao.AutoAndarEColetar;
 import frc.robot.commands.Autonomo.Tracao.GiroPorAngulo;
 import frc.robot.commands.Autonomo.intake.Autobaixointake;
 import frc.robot.commands.Index.PararSequencialIndexShooter;
 import frc.robot.commands.Index.ToggleSequencialShooterIndex;
+import frc.robot.commands.Limelight.AjusteAnguloShooterTraction;
 import frc.robot.Constantes.ConstantesShooter;
 import frc.robot.Extras.AnguloPreset;
 import frc.robot.Extras.AngulosPresetPivot;
@@ -33,8 +35,10 @@ import frc.robot.commands.Traction.AtivarTurbo;
 import frc.robot.commands.Traction.Controller;
 import frc.robot.commands.Autonomo.intake.AutoIntakeFloor;
 import frc.robot.commands.Autonomo.Angulador.AnguladorAuto;
+import frc.robot.commands.Autonomo.Auto.AutoShoot;
 import frc.robot.commands.Autonomo.LimelightAuto.AlinhadorHorizontalAuto;
 import frc.robot.commands.Autonomo.Shooter.AutoAtirar;
+import frc.robot.commands.Autonomo.Shooter.AutoShootCompleto;
 
 @SuppressWarnings("unused")
 public class RobotContainer {
@@ -101,9 +105,10 @@ public class RobotContainer {
   
         btnTurbo.onTrue(new AtivarTurbo(traction));
 
-        btnRb.whileTrue(
+        /*btnRb.whileTrue(
             new AlinhadorHorizontalAprilTag(limelight, traction )
-        );
+        );*/
+        btnRb.whileTrue(new AjusteAnguloShooterTraction(limelight, traction, shooter, angulador));
 
         btnLb.whileTrue(
             new AutoAimShooter( angulador, shooter, limelight)
@@ -124,18 +129,6 @@ btnB.whileTrue(
         ConstantesShooter.Velocidade.ALTA
     )
 );
-
-/*btnB.onTrue(
-    new Testandoff(shooter)
-);
-
-btnY.onTrue(
-    new Tetandoff(shooter, index)
-);
-
-btnX.onTrue(
-    new PararShooter(shooter)
-); */
 
 btnJ.whileTrue(
     new AutoAimShooter(angulador, shooter, limelight)
@@ -188,9 +181,10 @@ btnJ.whileTrue(
     public Command getAutonomousCommand() {
         return new SequentialCommandGroup(
 
-        new AndarEncoder(traction, 0.7, 0.16),
-        new GiroPorAngulo(traction, -23),
-        new Autobaixointake(intakeFloor),
+        new AndarEncoder(traction, -0.7, 0.19),
+        new Autobaixointake(intakeFloor).withTimeout(5),
+        new GiroPorAngulo(traction, 40),
+        new AlinhadorHorizontalAprilTag(limelight, traction).withTimeout(3),
         new BoquinhaAntesShooterAuto(shooter, index, index, intakeFloor)
 
        );

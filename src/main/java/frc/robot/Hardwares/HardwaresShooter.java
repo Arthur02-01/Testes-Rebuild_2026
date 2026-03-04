@@ -43,7 +43,7 @@ public class HardwaresShooter {
            .positionConversionFactor(1.0 );
 
         cfg.closedLoop
-        .p(0.000460) //0.06 testar
+        .p(0.000400) //anterior 450, proximo 350
         .i(0.0)
         .d(0.00001)
         .iZone(ConstantesShooter.PID_IZONE_RPM)
