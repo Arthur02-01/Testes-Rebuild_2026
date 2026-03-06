@@ -146,5 +146,5 @@ public class IntakeFloor extends SubsystemBase {
     );
 
     io.PivotMotor.setVoltage(ffVolts);
-}
+    }
 }
