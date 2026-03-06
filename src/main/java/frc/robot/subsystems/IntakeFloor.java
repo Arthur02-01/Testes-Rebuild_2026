@@ -39,7 +39,7 @@ public class IntakeFloor extends SubsystemBase {
     private TrapezoidProfile.State goal = new TrapezoidProfile.State();
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
 
-    private static final double VELOCIDADE_MAX_INTAKE = 1.0;
+    private static final double VELOCIDADE_MAX_INTAKE = 0.70;
     private boolean intakeLigado = false;
 
     private double anguloHoldRad = 0.0;
@@ -74,12 +74,12 @@ public class IntakeFloor extends SubsystemBase {
     }
 
     public void IntakeOn() {
-        io.IntakeMotor.set(1.0);
+        io.IntakeMotor.set(0.8);
         intakeLigado = true;
     }
 
     public void IntakeReverse() {
-        io.IntakeMotor.set(1.0);
+        io.IntakeMotor.set(0.8);
         intakeLigado = true;
     }
 
@@ -113,64 +113,38 @@ public class IntakeFloor extends SubsystemBase {
         SmartDashboard.putString("Pivot/Estado", sm.get().name());
     }
 
-    private void executarPerfil() {
-
-        TrapezoidProfile profile = new TrapezoidProfile(constraints);
-
-        setpoint = profile.calculate(
-            ConstantesIntakeFloor.DT_PIVOT,
-            setpoint,
-            goal
-        );
-
-        double ffVolts = ff.calculate(
-            setpoint.position,
-            setpoint.velocity
-        );
-
-        io.pid.setSetpoint(
-            KinematicsIntakeFloor.radParaRotacoesPivot(setpoint.position),
-            SparkBase.ControlType.kPosition,
-            ClosedLoopSlot.kSlot0,
-            ffVolts
-        );
-
-        if (Math.abs(goal.position - setpoint.position)
-            < ConstantesIntakeFloor.MARGEM_ERRO_BASE_PIVOT) {
-
-            anguloHoldRad = goal.position;
-            sm.set(StateMachineIntakeFloor.EstadoPivot.HOLD);
-        }
+    private void executarPerfil() { 
+        TrapezoidProfile profile = 
+            new TrapezoidProfile(constraints); 
+                setpoint = profile.calculate(
+                     ConstantesIntakeFloor.DT_PIVOT, setpoint, goal 
+                     ); 
+        double ffVolts =
+             ff.calculate( 
+                setpoint.position, setpoint.velocity 
+            ); 
+        io.pid.setSetpoint( 
+            KinematicsIntakeFloor.radParaRotacoesPivot(
+                setpoint.position
+            ),
+        SparkBase.ControlType.kPosition, 
+        ClosedLoopSlot.kSlot0, ffVolts 
+        ); 
+    if (Math.abs(goal.position - setpoint.position) < ConstantesIntakeFloor.MARGEM_ERRO_BASE_PIVOT) {
+         anguloHoldRad = goal.position; 
+         sm.set(StateMachineIntakeFloor.EstadoPivot.HOLD); 
+        } 
     }
 
     private void executarHold() {
 
-        double anguloAtual = getAnguloPivotRad();
+    double anguloAtual = getAnguloPivotRad();
 
-        double ffVolts = ff.calculate(anguloHoldRad, 0.0);
+    double ffVolts = ff.calculate(
+        anguloAtual, 
+        0.0
+    );
 
-        io.pid.setSetpoint(
-            KinematicsIntakeFloor.radParaRotacoesPivot(anguloHoldRad),
-            SparkBase.ControlType.kPosition,
-            ClosedLoopSlot.kSlot0,
-            ffVolts
-        );
-
-        if (
-                Math.abs(goal.position - setpoint.position)
-                    < ConstantesIntakeFloor.MARGEM_ERRO_BASE_PIVOT
-                && Math.abs(setpoint.velocity)
-                    < Math.toRadians(5.0)
-                /*Math.abs(anguloHoldRad - anguloAtual)
-                    > ConstantesIntakeFloor.MARGEM_ERRO_BASE_PIVOT
-                || Math.abs(setpoint.velocity)
-                    > Math.toRadians(5.0) */
-            )
-            {
-
-            setpoint = new TrapezoidProfile.State(anguloAtual, 0.0);
-            goal = new TrapezoidProfile.State(anguloHoldRad, 0.0);
-            sm.set(StateMachineIntakeFloor.EstadoPivot.PERFIL);
-        }
-    }
+    io.PivotMotor.setVoltage(ffVolts);
+}
 }

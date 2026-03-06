@@ -14,7 +14,7 @@ public class BoquinhaAntesShooterAuto extends SequentialCommandGroup {
 
     private static final double ATRASO_BOQUINHA = 0.6;
     private static final double ATRASO_INDEX = 0.9;
-    private static final double TEMPO_TOTAL = 4.0;
+    private static final double TEMPO_TOTAL = 5.5;
 
     public BoquinhaAntesShooterAuto(
     Shooter shooter,

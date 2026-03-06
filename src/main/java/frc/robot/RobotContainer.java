@@ -194,11 +194,13 @@ btnJ.whileTrue(
     public Command getAutonomousCommand() {
         return new SequentialCommandGroup(
 
-        new AndarEncoder(traction, 0.7, 0.05),
+        new AndarEncoder(traction, 0.7, 0.06),
         new GiroPorAngulo(traction, -70),
         new AlinhadorHorizontalAprilTag(limelight, traction).withTimeout(3),
-        new Autobaixointake(intakeFloor),
-        new BoquinhaAntesShooterAuto(shooter, index, index, intakeFloor)
+        new AutoIntakeFloor(intakeFloor),
+        new BoquinhaAntesShooterAuto(shooter, index, index, intakeFloor),
+        new AndarEncoder(traction, 0.7, 0.4),
+        new GiroPorAngulo(traction, -14)
        );
     }    
 

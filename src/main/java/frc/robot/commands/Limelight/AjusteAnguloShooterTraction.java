@@ -18,8 +18,9 @@ public class AjusteAnguloShooterTraction extends Command {
     private final Shooter shooter;
     private final Angulador angulador;
 
-    private static final double KP_ROT = 0.038;
-    private static final double MAX_ROT = 0.60;
+    private static final double KP_ROT = 0.05;
+    private static final double MAX_ROT = 0.55;
+    private static final double MIN_ROT = 0.05;
 
     private boolean podeAtirar = false;
 
@@ -42,6 +43,7 @@ public class AjusteAnguloShooterTraction extends Command {
         Shooter shooter,
         Angulador angulador
     ) {
+
         this.limelight = limelight;
         this.traction = traction;
         this.shooter = shooter;
@@ -56,8 +58,10 @@ public class AjusteAnguloShooterTraction extends Command {
 
     @Override
     public void initialize() {
+
         limelight.setPipeline(0);
         limelight.ligarLED();
+
         ultimoAjuste = 0.0;
         podeAtirar = false;
     }
@@ -72,16 +76,23 @@ public class AjusteAnguloShooterTraction extends Command {
 
         double erroX = limelight.getTxShooter();
 
-        if (Math.abs(erroX) > LimelightConstants.DEADZONE_TX_GRAUS) {
+        double rot = erroX * KP_ROT;
 
-            double rot = erroX * KP_ROT;
-            rot = MathUtil.clamp(rot, -MAX_ROT, MAX_ROT);
-
-            traction.arcadeMode(0.0, rot);
-            return; 
+        if (Math.abs(rot) < MIN_ROT && Math.abs(erroX) > LimelightConstants.DEADZONE_TX_GRAUS) {
+            rot = Math.copySign(MIN_ROT, rot);
         }
 
-        traction.stop();
+        rot = MathUtil.clamp(rot, -MAX_ROT, MAX_ROT);
+
+        boolean alinhadoX =
+            Math.abs(erroX) <= LimelightConstants.DEADZONE_TX_GRAUS;
+
+        if (!alinhadoX) {
+            traction.arcadeMode(0.0, rot);
+            return;
+        }
+
+        traction.arcadeMode(0.0, 0.0);
 
         double distancia =
             limelight.getDistanciaFiltrada()
@@ -113,29 +124,33 @@ public class AjusteAnguloShooterTraction extends Command {
         double agora = Timer.getFPGATimestamp();
 
         if (agora - ultimoAjuste >= TEMPO_ENTRE_AJUSTES) {
+
             shooter.setRpmDireto(rpmCalculado);
             angulador.moverParaAngulo(anguloGraus);
+
             ultimoAjuste = agora;
         }
 
-        boolean alinhadoX = 
-            Math.abs(erroX) <= LimelightConstants.DEADZONE_TX_GRAUS;
-
-        boolean shooterPronto = 
+        boolean shooterPronto =
             shooter.prontoEstavel();
 
-        boolean anguloOk = 
-            angulador.noAngulo() 
-            && angulador.getEstado() == frc.robot.StatesMachines.StateMachineAngulador.Estado.HOLD;
+        boolean anguloOk =
+            angulador.noAngulo()
+            && angulador.getEstado() ==
+            frc.robot.StatesMachines.StateMachineAngulador.Estado.HOLD;
 
-        podeAtirar = alinhadoX && shooterPronto && anguloOk;
+        podeAtirar =
+            alinhadoX
+            && shooterPronto
+            && anguloOk;
     }
 
     @Override
     public void end(boolean interrupted) {
+
         traction.stop();
         limelight.desligarLED();
-        podeAtirar = false;     
+        podeAtirar = false;
     }
 
     @Override

@@ -13,10 +13,17 @@ public class Autobaixointake extends SequentialCommandGroup {
 
     public Autobaixointake(IntakeFloor intake) {
 
-        addCommands(
-
- new MoverPivotPreset(intake, AngulosPresetPivot.MEDIO)
- 
-        );
+        new StartEndCommand(
+                () -> {
+                    intake.moverParaPreset(AngulosPresetPivot.MEDIO); 
+                    intake.forcarHold();
+                    intake.IntakeReverse();
+                },
+                () -> {
+                    intake.PararIntake();
+                },
+                intake
+            );
+        
     }
-}
+;}

@@ -8,6 +8,6 @@ public class ConstantesLimelight {
         public static final double OFFSET_CAMERA_BUMPER_METROS = 0.25;
         public static final double OFFSET_SHOOTER_LATERAL_METROS = 0.07;
         public static final double ALPHA_TX = 0.12;
-        public static final double DEADZONE_TX_GRAUS = 0.20;
+        public static final double DEADZONE_TX_GRAUS = 0.1110;
   }
 }
