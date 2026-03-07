@@ -16,7 +16,7 @@ public class AutoAndarEColetar extends ParallelDeadlineGroup {
 
         super(
 
-            // DEADLINE
+            // DEADLINE 
             new AndarEncoder(traction, -0.7, 0.35),
 
             // Intake + pivot juntos

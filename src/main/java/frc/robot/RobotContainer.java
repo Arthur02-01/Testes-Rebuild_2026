@@ -39,6 +39,10 @@ import frc.robot.commands.Autonomo.Auto.AutoShoot;
 import frc.robot.commands.Autonomo.LimelightAuto.AlinhadorHorizontalAuto;
 import frc.robot.commands.Autonomo.Shooter.AutoAtirar;
 import frc.robot.commands.Autonomo.Shooter.AutoShootCompleto;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+
 
 @SuppressWarnings("unused")
 public class RobotContainer {
@@ -51,6 +55,10 @@ public class RobotContainer {
     private final IntakeFloor intakeFloor = new IntakeFloor();
     private final Index index = new Index();
     //private final Climber climber = new Climber(); 
+
+
+    private final SendableChooser<Command> autonomousChooser = new SendableChooser<>();
+
 
     /* ===== CONTROLES ===== */
     private final XboxController xbox1 = new XboxController(0);
@@ -94,6 +102,7 @@ public class RobotContainer {
 
     public RobotContainer() {
         configureBindings();
+        configureAutonomous();
 
         traction.setDefaultCommand(
             new Controller(traction, xbox1)
@@ -177,7 +186,43 @@ btnJ.whileTrue(
         ));
     }
 
-   
+    private void configureAutonomous() {
+        // Adiciona opções ao chooser
+        autonomousChooser.setDefaultOption("Autnoomo Meio", getAutonomousCommandMeio());
+        autonomousChooser.addOption("Autonomo Esquerda", getAutonomousCommandEsquerda());
+        // Você pode adicionar mais autônomos aqui se quiser
+
+        // Envia para o SmartDashboard
+        SmartDashboard.putData("Autonomous Mode", autonomousChooser);
+    }
+    
+    public Command getSelectedAutonomous() {
+        return autonomousChooser.getSelected();
+    }
+
+   private Command getAutonomousCommandMeio() {
+        return new SequentialCommandGroup(
+            new AndarEncoder(traction, 0.7, 0.05),
+            new GiroPorAngulo(traction, -60),
+            new AlinhadorHorizontalAprilTag(limelight, traction).withTimeout(3),
+            new AutoIntakeFloor(intakeFloor),
+            new BoquinhaAntesShooterAuto(shooter, index, index, intakeFloor),
+            new AndarEncoder(traction, 0.7, 0.4),
+            new GiroPorAngulo(traction, -25)
+        );
+    }
+
+    private Command getAutonomousCommandEsquerda() {
+        return new SequentialCommandGroup(
+            new AndarEncoder(traction, -0.7, 0.05),
+            new AlinhadorHorizontalAprilTag(limelight, traction).withTimeout(3),
+            new Autobaixointake(intakeFloor),
+            new BoquinhaAntesShooterAuto(shooter, index, index, intakeFloor)
+        );
+    }
+
+}
+
    /* Autonomo LEFT
     public Command getAutonomousCommand() {
         return new SequentialCommandGroup(
@@ -190,19 +235,19 @@ btnJ.whileTrue(
     }   */
 
     
-    /*  AUTONOMO  MEIO */
+    /*  AUTONOMO  MEIO 
     public Command getAutonomousCommand() {
         return new SequentialCommandGroup(
 
         new AndarEncoder(traction, 0.7, 0.06),
-        new GiroPorAngulo(traction, -70),
+        new GiroPorAngulo(traction, -60),
         new AlinhadorHorizontalAprilTag(limelight, traction).withTimeout(3),
         new AutoIntakeFloor(intakeFloor),
         new BoquinhaAntesShooterAuto(shooter, index, index, intakeFloor),
         new AndarEncoder(traction, 0.7, 0.4),
-        new GiroPorAngulo(traction, -14)
+        new GiroPorAngulo(traction, -25)
        );
-    }    
-}
+    } */
+
 
 

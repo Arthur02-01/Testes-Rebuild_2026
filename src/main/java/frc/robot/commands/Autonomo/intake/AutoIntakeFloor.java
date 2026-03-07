@@ -14,7 +14,7 @@ public class AutoIntakeFloor extends SequentialCommandGroup {
 
         addCommands(
 
-    new MoverPivotPreset(intake, AngulosPresetPivot.MEDIO).withTimeout(1)
+    new MoverPivotPreset(intake, AngulosPresetPivot.AUTO)
 );
     }
 }
