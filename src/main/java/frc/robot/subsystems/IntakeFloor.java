@@ -79,7 +79,7 @@ public class IntakeFloor extends SubsystemBase {
     }
 
     public void IntakeReverse() {
-        io.IntakeMotor.set(0.8);
+        io.IntakeMotor.set(-0.8);
         intakeLigado = true;
     }
 
@@ -130,7 +130,8 @@ public class IntakeFloor extends SubsystemBase {
         SparkBase.ControlType.kPosition, 
         ClosedLoopSlot.kSlot0, ffVolts 
         ); 
-    if (Math.abs(goal.position - setpoint.position) < ConstantesIntakeFloor.MARGEM_ERRO_BASE_PIVOT) {
+    if ((Math.abs(goal.position - getAnguloPivotRad())
+        < ConstantesIntakeFloor.MARGEM_ERRO_BASE_PIVOT)) {
          anguloHoldRad = goal.position; 
          sm.set(StateMachineIntakeFloor.EstadoPivot.HOLD); 
         } 
@@ -138,13 +139,16 @@ public class IntakeFloor extends SubsystemBase {
 
     private void executarHold() {
 
-    double anguloAtual = getAnguloPivotRad();
-
     double ffVolts = ff.calculate(
-        anguloAtual, 
+        anguloHoldRad,
         0.0
     );
 
-    io.PivotMotor.setVoltage(ffVolts);
-    }
+    io.pid.setSetpoint(
+        KinematicsIntakeFloor.radParaRotacoesPivot(anguloHoldRad),
+        SparkBase.ControlType.kPosition,
+        ClosedLoopSlot.kSlot0,
+        ffVolts
+    );
+}
 }
