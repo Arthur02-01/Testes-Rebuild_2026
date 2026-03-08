@@ -18,6 +18,8 @@ import frc.robot.commands.IntakeFloor.PararIntake;
 import frc.robot.commands.IntakeFloor.ToggleIntake;
 import frc.robot.commands.IntakeFloor.ToggleIntakeReverse;
 import frc.robot.commands.Autonomo.Shooter.BoquinhaAntesShooterAuto;
+import frc.robot.commands.Autonomo.Shooter.ShooterLeft;
+import frc.robot.commands.Autonomo.Shooter.ShooterRight;
 import frc.robot.commands.Autonomo.Tracao.AndarEncoder;
 import frc.robot.commands.Autonomo.Tracao.AutoAndarEColetar;
 import frc.robot.commands.Autonomo.Tracao.GiroPorAngulo;
@@ -190,6 +192,7 @@ btnJ.whileTrue(
         // Adiciona opções ao chooser
         autonomousChooser.setDefaultOption("Autnoomo Meio", getAutonomousCommandMeio());
         autonomousChooser.addOption("Autonomo Esquerda", getAutonomousCommandEsquerda());
+        autonomousChooser.addOption("Autonomo Direita", getAutonomousCommandDireita());
         // Você pode adicionar mais autônomos aqui se quiser
 
         // Envia para o SmartDashboard
@@ -202,7 +205,7 @@ btnJ.whileTrue(
 
    private Command getAutonomousCommandMeio() {
         return new SequentialCommandGroup(
-            new AndarEncoder(traction, 0.7, 0.05),
+            new AndarEncoder(traction, 0.7, 0.06),
             new GiroPorAngulo(traction, -60),
             new AlinhadorHorizontalAprilTag(limelight, traction).withTimeout(3),
             new AutoIntakeFloor(intakeFloor),
@@ -214,10 +217,22 @@ btnJ.whileTrue(
 
     private Command getAutonomousCommandEsquerda() {
         return new SequentialCommandGroup(
-            new AndarEncoder(traction, -0.7, 0.05),
-            new AlinhadorHorizontalAprilTag(limelight, traction).withTimeout(3),
-            new Autobaixointake(intakeFloor),
-            new BoquinhaAntesShooterAuto(shooter, index, index, intakeFloor)
+        new AndarEncoder(traction, -0.7, 0.20),
+        new AutoIntakeFloor(intakeFloor),
+        new AutoAndarEColetar(traction, intakeFloor).withTimeout(4),
+        new AndarEncoder(traction, 0.7, 0.18),
+        new AlinhadorHorizontalAprilTag(limelight, traction).withTimeout(3),
+        new ShooterLeft(shooter, index, index, intakeFloor)
+        );
+    }
+    
+
+    private Command getAutonomousCommandDireita() {
+        return new SequentialCommandGroup(
+        new AndarEncoder(traction,  0.7, 0.10),
+        new GiroPorAngulo(traction, -5.5),
+        new AutoIntakeFloor(intakeFloor),
+        new ShooterRight(shooter, index, index, intakeFloor)
         );
     }
 

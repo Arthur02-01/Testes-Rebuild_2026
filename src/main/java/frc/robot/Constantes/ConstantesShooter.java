@@ -6,11 +6,11 @@ public class ConstantesShooter {
         NORMAL(2350),
         MEDIA(2500),
         ALTA(2700),
-        AUTO(2700),
-        AUTOMEIO(2140),
-        AUTOLEFT(3400),
+        AUTORIGHT(2550),
+        AUTOMEIO(2125),
+        AUTOLEFT(2425),
         TURBO(2500);
-        
+
         
 
         public final double rpm;
@@ -22,7 +22,6 @@ public class ConstantesShooter {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
-
   public static class Shooter{
    public static final int ShooterArlindo =6;
    public static final int ShooterArlindoFollower = 12;

@@ -17,14 +17,13 @@ public class AutoAndarEColetar extends ParallelDeadlineGroup {
         super(
 
             // DEADLINE 
-            new AndarEncoder(traction, -0.7, 0.35),
+            new AndarEncoder(traction, -0.5, 0.7),
 
             // Intake + pivot juntos
             new StartEndCommand(
                 () -> {
-                    intake.moverParaPreset(AngulosPresetPivot.ALTO); // abaixa pivot
                     intake.forcarHold();
-                    intake.IntakeReverse();
+                    intake.IntakeOn();
                 },
                 () -> {
                     intake.PararIntake();

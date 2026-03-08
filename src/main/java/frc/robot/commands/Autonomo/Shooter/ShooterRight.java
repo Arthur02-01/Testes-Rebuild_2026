@@ -10,14 +10,14 @@ import frc.robot.subsystems.IntakeFloor;
 
 import frc.robot.Constantes.ConstantesShooter;
 
-public class ShooterLeft extends SequentialCommandGroup {
+public class ShooterRight extends SequentialCommandGroup {
 
     private static final double ATRASO_BOQUINHA = 0.9;
     private static final double ATRASO_INDEX = 1.2
     ;
     private static final double TEMPO_TOTAL = 5.0;
 
-    public ShooterLeft(
+    public ShooterRight(
     Shooter shooter,
     Index boquinha,
     Index index,
@@ -29,7 +29,7 @@ public class ShooterLeft extends SequentialCommandGroup {
 
             // Liga shooter
             new InstantCommand(() -> {
-                shooter.setVelocidade(ConstantesShooter.Velocidade.AUTOLEFT);
+                shooter.setVelocidade(ConstantesShooter.Velocidade.AUTORIGHT);
                 shooter.atirarFrente();
             }, shooter),
 
