@@ -52,7 +52,7 @@ public HardwaresTraction() {
         configSparkMotorDireita
                 .idleMode(IdleMode.kBrake)
                 .smartCurrentLimit(40)
-                .openLoopRampRate(0.35)
+                .openLoopRampRate(0.3)
                 .closedLoopRampRate(0.25);
 
         rightMotorFront.configure(
@@ -68,7 +68,7 @@ public HardwaresTraction() {
         configSparkMotorEsquerda
                 .idleMode(IdleMode.kBrake)
                 .smartCurrentLimit(40)
-                .openLoopRampRate(0.35)
+                .openLoopRampRate(0.3)
                 .closedLoopRampRate(0.25);
 
         leftMotorFront.configure(

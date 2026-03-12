@@ -205,7 +205,7 @@ btnJ.whileTrue(
 
    private Command getAutonomousCommandMeio() {
         return new SequentialCommandGroup(
-            new AndarEncoder(traction, 0.7, 0.06),
+            new AndarEncoder(traction, 0.7, 0.05),
             new GiroPorAngulo(traction, -60),
             new AlinhadorHorizontalAprilTag(limelight, traction).withTimeout(3),
             new AutoIntakeFloor(intakeFloor),
@@ -220,9 +220,11 @@ btnJ.whileTrue(
         new AndarEncoder(traction, -0.7, 0.20),
         new AutoIntakeFloor(intakeFloor),
         new AutoAndarEColetar(traction, intakeFloor).withTimeout(4),
-        new AndarEncoder(traction, 0.7, 0.18),
+        new AndarEncoder(traction, 0.7, 0.29),
+        new GiroPorAngulo(traction, 8),
         new AlinhadorHorizontalAprilTag(limelight, traction).withTimeout(3),
         new ShooterLeft(shooter, index, index, intakeFloor)
+
         );
     }
     

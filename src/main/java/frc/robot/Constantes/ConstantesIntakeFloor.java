@@ -16,7 +16,7 @@ public class ConstantesIntakeFloor {
 
 
     public static final double LIMITE_INFERIOR_PIVOT = Math.toRadians(10.0);
-    public static final double LIMITE_SUPERIOR_PIVOT = Math.toRadians(198.50);
+    public static final double LIMITE_SUPERIOR_PIVOT = Math.toRadians(220.0);
 
 
     public static final double DT_PIVOT = 0.02;

@@ -10,7 +10,7 @@ public class Index extends SubsystemBase {
 
     public void ligar() {
         io.boquinha.set(0.39); 
-        io.index.set(0.42);
+        io.index.set(0.60);
     }
     public void ligarBoquinha() {
         io.boquinha.set(0.35);

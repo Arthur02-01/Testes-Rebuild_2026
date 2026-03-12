@@ -15,7 +15,7 @@ public class ShooterLeft extends SequentialCommandGroup {
     private static final double ATRASO_BOQUINHA = 0.9;
     private static final double ATRASO_INDEX = 1.2
     ;
-    private static final double TEMPO_TOTAL = 5.0;
+    private static final double TEMPO_TOTAL = 7.0;
 
     public ShooterLeft(
     Shooter shooter,

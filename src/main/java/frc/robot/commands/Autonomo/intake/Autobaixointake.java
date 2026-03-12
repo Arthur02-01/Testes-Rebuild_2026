@@ -15,9 +15,8 @@ public class Autobaixointake extends SequentialCommandGroup {
 
         new StartEndCommand(
                 () -> {
-                    intake.moverParaPreset(AngulosPresetPivot.MEDIO); 
+                    intake.moverParaPreset(AngulosPresetPivot.ALTO); 
                     intake.forcarHold();
-                    intake.IntakeReverse();
                 },
                 () -> {
                     intake.PararIntake();
